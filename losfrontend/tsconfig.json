@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "app/(main)/survey/page.js"  ],
   "exclude": [
     "node_modules"
   ]

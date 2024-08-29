@@ -2,11 +2,14 @@
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
 import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import React, { useState } from 'react';
 
 const RealisasiPinjaman = () => {
+    const [visible, setVisible] = useState(false);
+    const [Isloading, setIsLoading] = useState(false);
     const [formLimac, setformLimac] = useState({
         // noAnggota: '',
         // nama: '',
@@ -68,12 +71,15 @@ const RealisasiPinjaman = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true)
         try {
             const response = await axios.post(API_ENDPOINTS.LIMAC, formLimac);
             console.log('Response from API:', response.data);
+            setIsLoading(false)
             // Reset form atau tampilkan pesan sukses di sini
         } catch (error) {
             console.error('Error submitting form:', error);
+            setIsLoading(false)
             // Tampilkan pesan error ke pengguna di sini
         }
         console.log;
@@ -183,7 +189,27 @@ const RealisasiPinjaman = () => {
                 </fieldset>
                 <div className='flex gap-4 justify-content-end pt-4'> {/*Button*/}
                     <Button onClick={resetForm} className=''>Reset</Button>
-                    <Button type='submit' className=''>Submit</Button>
+                    {/* <Button label="Submit" type='submit' onClick={(e) => {
+                        e.preventDefault();
+                        if (validateForm()) {
+                            setVisible(true);
+                        }
+                    }} /> */}
+                    <Button type="submit" className='text-white bg-[#61AB5B] w-auto' disabled={Isloading}>
+                        {Isloading ? (
+                            <div className="flex align-items-center">
+                                <i className="pi pi-spin pi-spinner" style={{ fontSize: "1rem" }}></i>
+                                <label>Loading...</label>
+                            </div>
+                        ) : (
+                            'Kirim'
+                        )}</Button>
+
+                    <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                        <p className="m-0">
+                            Terima Kasih telah mengisi form
+                        </p>
+                    </Dialog>
                 </div>
             </form>
         </div>

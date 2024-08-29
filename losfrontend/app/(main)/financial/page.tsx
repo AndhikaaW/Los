@@ -9,32 +9,10 @@ import { RadioButton } from 'primereact/radiobutton';
 import { TabView, TabPanel } from 'primereact/tabview';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
-// interface FinansialForm {
-//     oms_ramai: number;
-//     oms_normal: number;
-//     oms_sepi: number;
-//     hrg_pokok_jual: number,
-//     btk_tdklangsung: number,
-//     ohc: number,
-//     b_usahalainnya: number,
-//     b_rumahtangga: number,
-//     b_sekolah: number,
-//     b_pln_pdam: number,
-//     b_transport_komunikasi: number,
-//     b_lain_lain: number,
-//     p_lainnya: number,
-//     b_Lainnya: number,
-//     bukti_pendapatan: number,
-//     bukti_biaya: number,
-//     bank_nonbank: number,
-//     koperasi: number,
-//     lainLain: number,
-//     angsuran_baru: number
-// }
-
 const Financial = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [visible, setVisible] = useState(false);
+    const [Isloading, setIsLoading] = useState(false);
 
     const [formFinancial, setFormFinancial] = useState<{ [key: string]: string; }>({
         // Info Keuangan
@@ -83,7 +61,7 @@ const Financial = () => {
         idr_jangka_panjang: '',
         jangka_panjang: '',
         sub_jumlah_hutang: '',
-        modalSendiri: '',
+        modal_sendiri: '',
         laba: '',
         sub_jumlah_modal: '',
         jumlah_passiva: ''
@@ -138,12 +116,15 @@ const Financial = () => {
     // };
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true)
         try {
             const response = await axios.post(API_ENDPOINTS.FINANCIAL, formFinancial);
             console.log('Response from API:', response.data);
+            setIsLoading(false)
             // Reset form atau tampilkan pesan sukses di sini
         } catch (error) {
             console.error('Error submitting form:', error);
+            setIsLoading(false)
             // Tampilkan pesan error ke pengguna di sini
         }
     };
@@ -218,7 +199,7 @@ const Financial = () => {
                             </fieldset>
                         </div>
                         <div className='flex justify-content-end'>
-                            <Button onClick={handleNextTab}>Next</Button>
+                            <Button onClick={handleNextTab}>Lanjut</Button>
                         </div>
                     </TabPanel>
                     <TabPanel header="komponen biaya">
@@ -263,8 +244,8 @@ const Financial = () => {
                             </div>
                         </div>
                         <div className='flex justify-content-between'>
-                            <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Previous</Button>
-                            <Button onClick={handleNextTab}>Next</Button>
+                            <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Kembali</Button>
+                            <Button onClick={handleNextTab}>Lanjut</Button>
                         </div>
                     </TabPanel>
                     <TabPanel header="pendapatan">
@@ -328,8 +309,8 @@ const Financial = () => {
                             </div>
                         </div>
                         <div className='flex justify-content-between'>
-                            <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Previous</Button>
-                            <Button onClick={handleNextTab}>Next</Button>
+                            <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Kembali</Button>
+                            <Button onClick={handleNextTab}>Lanjut</Button>
                         </div>
                     </TabPanel>
                     <TabPanel header="aktiva dan passiva">
@@ -406,16 +387,29 @@ const Financial = () => {
                                 </fieldset>
                             </div>
                         </div>
-                        <div className='flex gap-4 justify-content-end'> {/*Button*/}
-                            <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Previous</Button>
-                            <Button onClick={resetForm} className=''>Reset</Button>
-                            {/* <Button type='submit' onClick={() => setVisible(true)} className=''>Submit</Button> */}
-                            <Button label="Submit" type='submit' onClick={() => setVisible(true)} />
-                            <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
-                                <p className="m-0">
-                                   Terima Kasih telah mengisi form
-                                </p>
-                            </Dialog>
+                        <div className='flex justify-content-between '>
+                            <div>
+                                <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Kembali</Button>
+                            </div>
+                            <div className='flex gap-4'> {/*Button*/}
+                                <Button onClick={resetForm} className=''>Reset</Button>
+                                {/* <Button type='submit' onClick={() => setVisible(true)} className=''>Submit</Button> */}
+                                {/* <Button label="Submit" type='submit'/> */}
+                                <Button type="submit" className='text-white bg-[#61AB5B] w-auto' disabled={Isloading}>
+                                    {Isloading ? (
+                                        <div className="flex align-items-center">
+                                            <i className="pi pi-spin pi-spinner" style={{ fontSize: "1rem" }}></i>
+                                            <label>Loading...</label>
+                                        </div>
+                                    ) : (
+                                        'Kirim'
+                                    )}</Button>
+                                <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                                    <p className="m-0">
+                                        Terima Kasih telah mengisi form
+                                    </p>
+                                </Dialog>
+                            </div>
                         </div>
                     </TabPanel>
                 </TabView>

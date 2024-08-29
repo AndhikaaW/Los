@@ -9,6 +9,7 @@ import { Dialog } from 'primereact/dialog';
 
 const AspekForm = () => {
     const [visible, setVisible] = useState(false);
+    const [Isloading, setIsLoading] = useState(false);
     const [formAspek, setformAspek] = useState<{
         [key: string]: string;
     }>({
@@ -22,32 +23,6 @@ const AspekForm = () => {
         risiko: '',
         mitigasi: ''
     });
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
-        setformAspek({ ...formAspek, [field]: e.target.value });
-    };
-
-    const validateForm = () => {
-        for (const [key, value] of Object.entries(formAspek)) {
-            if (!value) {
-                window.alert(`${key.charAt(0).toUpperCase() + key.slice(1)} tidak boleh kosong!`);
-                return false;
-            }
-        }
-        return true;
-    };
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post(API_ENDPOINTS.ASPEKFORM, formAspek);
-            console.log('Response from API:', response.data);
-            // Reset form atau tampilkan pesan sukses di sini
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            // Tampilkan pesan error ke pengguna di sini
-        }
-    };
     const handleClear = () => {
         setformAspek({
             aspek_hukum: '',
@@ -61,6 +36,36 @@ const AspekForm = () => {
             mitigasi: ''
         });
     };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
+        setformAspek({ ...formAspek, [field]: e.target.value });
+    };
+
+    // const validateForm = () => {
+    //     for (const [key, value] of Object.entries(formAspek)) {
+    //         if (!value) {
+    //             window.alert(`${key.charAt(0).toUpperCase() + key.slice(1)} tidak boleh kosong!`);
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            const response = await axios.post(API_ENDPOINTS.ASPEKFORM, formAspek);
+            console.log('Response from API:', response.data);
+            setIsLoading(false);
+            // Reset form atau tampilkan pesan sukses di sini
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setIsLoading(false);
+            // Tampilkan pesan error ke pengguna di sini
+        }
+    };
+
 
     const aspectFields = [
         { label: 'Aspek Hukum Permohonan', field: 'aspek_hukum' },
@@ -81,7 +86,7 @@ const AspekForm = () => {
                         {aspectFields.map((aspect, index) => (
                             <div key={index} className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">{aspect.label}</label>
-                                <InputTextarea rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.field]} onChange={(e) => handleInputChange(e, aspect.field)} />
+                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.field]} onChange={(e) => handleInputChange(e, aspect.field)} />
                             </div>
                         ))}
 
@@ -89,20 +94,29 @@ const AspekForm = () => {
                             <h3 className="font-semibold text-lg text-gray-800 mb-2">Aspek Resiko dan Mitigasi</h3>
                             <div className="mb-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Risiko:</label>
-                                <InputTextarea rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" name='risiko' value={formAspek.risiko} onChange={(e) => handleInputChange(e, 'risiko')} />
+                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" name='risiko' value={formAspek.risiko} onChange={(e) => handleInputChange(e, 'risiko')} />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Mitigasi:</label>
-                                <InputTextarea rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" name='mitigasi' value={formAspek.mitigasi} onChange={(e) => handleInputChange(e, 'mitigasi')} />
+                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" name='mitigasi' value={formAspek.mitigasi} onChange={(e) => handleInputChange(e, 'mitigasi')} />
                             </div>
                         </div>
 
                         <div className="text-sm text-black-700 italic pt-3 rounded-lg text-center">Catatan: Kolom di atas berisi hasil-hasil yang didapat</div>
                     </fieldset>
-                    <div className="grid justify-center gap-4">
-                        <Button label="Kosongkan Isi" icon="pi pi-trash" onClick={handleClear} className="p-button-outlined p-button-danger hover:bg-red-100 transition duration-300 px-8 py-3 text-lg rounded-full" />
-                        {/* <Button type='submit' label="Simpan" icon="pi pi-check" className="p-button-raised p-button-success hover:bg-green-600 transition duration-300 px-10 py-3 text-lg rounded-full" /> */}
-                        <Button label="Submit" type='submit' onClick={() => setVisible(true)} />
+                    <div className='flex gap-4 justify-content-end'> {/*Button*/}
+                        <Button onClick={handleClear} className=''>Reset</Button>
+                        {/* <Button type='submit' onClick={() => setVisible(true)} className=''>Submit</Button> */}
+                        {/* <Button label="Submit" type='submit'/> */}
+                        <Button type="submit" className='text-white bg-[#61AB5B] w-auto' disabled={Isloading}>
+                            {Isloading ? (
+                                <div className="flex align-items-center">
+                                    <i className="pi pi-spin pi-spinner" style={{ fontSize: "1rem" }}></i>
+                                    <label>Loading...</label>
+                                </div>
+                            ) : (
+                                'Kirim'
+                            )}</Button>
                         <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                             <p className="m-0">
                                 Terima Kasih telah mengisi form
