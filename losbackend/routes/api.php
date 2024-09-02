@@ -5,6 +5,8 @@ use App\Http\Controllers\FinansialController;
 use App\Http\Controllers\LimaC_Controller;
 use App\Http\Controllers\Pemohon2Controller;
 use App\Http\Controllers\PemohonController;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\RegisterNasabahController;
 use App\Http\Controllers\SidebarController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
@@ -28,12 +30,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/finansial', [FinansialController::class, 'finansial']);
 
-Route::post('/aspekform', [AspekFormController::class, 'aspekform']);
+// Route::post('/aspekform', [AspekFormController::class, 'aspekform']);
+Route::get('/gettitleaspek', [AspekFormController::class, 'gettitleaspek']);
 
 Route::post('/limac', [LimaC_Controller::class, 'limac']);
 
 Route::post('/pemohon', [PemohonController::class, 'pemohon']);
-Route::get('/getpemohon', [Pemohon2Controller::class, 'index']);
+Route::get('/getallpemohon', [PemohonController::class, 'index']);
+Route::get('/pemohon/{cif}', [PemohonController::class, 'show']);
+Route::get('/getsektorekonomi', [PemohonController::class, 'getSektorEkonomi']);
 
 Route::get('/getSurvey', [SurveyController::class, 'getsurvey']);
 
@@ -47,6 +52,11 @@ Route::get('/getallusersidebar', [UserController::class, 'getAllUsers']);
 Route::post('/sidebars/update-status', [UserController::class, 'updateSidebarStatus']);
 Route::put('/sync-user-sidebars', [UserController::class, 'syncUserSidebars']);
 
+Route::get('/getregisternasabah', [RegisterNasabahController::class, 'index']);
+
+Route::post('/produk', [ProdukController::class, 'produk']);
+Route::get('/getallproduk', [ProdukController::class, 'index']);
+Route::get('/getsifatkredit', [ProdukController::class, 'getSifatKredit']);
 
 // Route::post('/users/{userId}/sidebars/delete', [UserController::class, 'deleteSidebar']);
 // Route::get('/allusersidebarsgrouped', [UserController::class, 'getAllUserSidebarsByUserId']);

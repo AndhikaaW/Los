@@ -1,375 +1,264 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link';
 import { Button } from 'primereact/button';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { TabPanel, TabView } from 'primereact/tabview';
-import axios from 'axios';
+import axios, { all } from 'axios';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
-import { Copy } from 'lucide-react';
+import { Copy, User } from 'lucide-react';
 import { Dialog } from 'primereact/dialog';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Paginator } from 'primereact/paginator';
 
 interface Pemohon {
-  cif: string;
-  nama_lengkap: string;
-  tempat_lahir: string;
+  id: number;
+  CabangEntry: string;
+  Kode: string;
 }
-const pemohon = () => {
-  const [pemohon, setPemohon] = useState<Pemohon[]>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [visible, setVisible] = useState(false);
-  const [Isloading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    //form produk
-    produk: '', bidang_usaha: '', nomor_aplikasi: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: '',
-    //form data pemohon
-    cif: '', tempat_lahir: '', jenis_kelamin: '', status_perkawinan: '', no_ktp: '', profesi_sampingan: '', nama_lengkap: '', tanggal_lahir: '', nama_ibu_kandung: '', jumlah_tanggungan: '', ktp_berlaku: '', no_hp: '',
-    //form alamat pemohon
-    alamat: '', kode_pos: '', provinsi: '', kecamatan: '', telepon: '', status_tempat_tinggal: '', kota: '', kelurahan: '', fax: '', lama_tinggal: '',
-    //form data usaha
-    nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', sektor_ekonomi: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
-  });
-  const resetForm = () => {
-    setFormData({
-      //form produk
-      produk: '', bidang_usaha: '', nomor_aplikasi: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: '',
-      //form data pemohon
-      cif: '', tempat_lahir: '', jenis_kelamin: '', status_perkawinan: '', no_ktp: '', profesi_sampingan: '', nama_lengkap: '', tanggal_lahir: '', nama_ibu_kandung: '', jumlah_tanggungan: '', ktp_berlaku: '', no_hp: '',
-      //form alamat pemohon
-      alamat: '', kode_pos: '', provinsi: '', kecamatan: '', telepon: '', status_tempat_tinggal: '', kota: '', kelurahan: '', fax: '', lama_tinggal: '',
-      //form data usaha
-      nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', sektor_ekonomi: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
-    });
-  };
+interface Sektor {
+  Kode: number;
+  Keterangan: string;
+}
 
+const pemohon = () => {
+  // const [pemohon, setPemohon] = useState<Pemohon[]>([]);
+  const [allpemohon, setAllPemohon] = useState([]);
+  // const [sektorEkonomi, setSektorEkonomi] = useState<Sektor[]>([]);
+  // const [activeIndex, setActiveIndex] = useState(0);
+  // const [visible, setVisible] = useState(false);
+  // const [visibleadd, setVisibleadd] = useState(false);
+  const [Isloading, setIsLoading] = useState(false);
+  const [first, setFirst] = useState(0);
+  const [rows, setRows] = useState(5);
+  const [paginatedData, setPaginatedData] = useState([]);
+  // const [formData, setFormData] = useState({
+  //   // //form produk
+  //   // produk: '', bidang_usaha: '', nomor_aplikasi: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: '',
+  //   //form data pemohon
+  //   cif: '', TempatLahir: '', Kelamin: '', StatusPerkawinan: '', KTP: '', profesi_sampingan: '', Nama: '', TglLahir: '', nama_ibu_kandung: '', jumlah_tanggungan: '', ktp_berlaku: '', no_hp: '',
+  //   //form alamat pemohon
+  //   Alamat: '', kode_pos: '', provinsi: '', kecamatan: '', telepon: '', status_tempat_tinggal: '', kota: '', kelurahan: '', fax: '', lama_tinggal: '',
+  //   //form data usaha
+  //   nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', sektor_ekonomi: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
+  // });
+  // const resetForm = () => {
+  //   setFormData({
+  //     // //form produk
+  //     // produk: '', bidang_usaha: '', nomor_aplikasi: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: '',
+  //     //form data pemohon
+  //     cif: '', TempatLahir: '', Kelamin: '', StatusPerkawinan: '', KTP: '', profesi_sampingan: '', Nama: '', TglLahir: '', nama_ibu_kandung: '', jumlah_tanggungan: '', ktp_berlaku: '', no_hp: '',
+  //     //form alamat pemohon
+  //     Alamat: '', kode_pos: '', provinsi: '', kecamatan: '', telepon: '', status_tempat_tinggal: '', kota: '', kelurahan: '', fax: '', lama_tinggal: '',
+  //     //form data usaha
+  //     nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', sektor_ekonomi: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   const fetchNasabah = async () => {
+  //     try {
+  //       const response = await axios.get(API_ENDPOINTS.GETNASABAH);
+  //       setPemohon(response.data);
+  //     } catch (error) {
+  //       console.error('There was an error fetching the users!', error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchNasabah();
+  // }, []);
+
+  //get semua data pemohon
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchPemohonAll = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GETPEMOHON);
-        setPemohon(response.data);
+        const response = await axios.get(API_ENDPOINTS.GETALLPEMOHON);
+        setAllPemohon(response.data)
+        setPaginatedData(response.data.slice(first, first + rows));
       } catch (error) {
         console.error('There was an error fetching the users!', error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchUsers();
-  }, []);
+    fetchPemohonAll();
+  }, [first, rows]);
 
-  const copyAddress = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      alamat_usaha: prevData.alamat, kode_pos_usaha: prevData.kode_pos, provinsi_usaha: prevData.provinsi, kecamatan_usaha: prevData.kecamatan, kota_usaha: prevData.kota, kelurahan_usaha: prevData.kelurahan,
-    }));
+  // //sektor ekonomi
+  // useEffect(() => {
+  //   const fetchsektor = async () => {
+  //     try {
+  //       const response = await axios.get(API_ENDPOINTS.GETSEKTOREKONOMI);
+  //       setSektorEkonomi(response.data)
+  //     } catch (error) {
+  //       console.error('There was an error fetching the users!', error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchsektor();
+  // }, []);
+
+  // const handleChange = async (e: any) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  //   if (name === 'cif' && value) {
+  //     try {
+  //       const response = await axios.get(`http://192.168.1.35:8000/api/pemohon/${value}`);
+  //       const nasabahData = response.data;
+  //       setFormData((prevData) => ({
+  //         ...prevData,
+  //         ...nasabahData,
+  //       }));
+  //     } catch (error) {
+  //       console.error('Error fetching nasabah data:', error);
+  //     }
+  //   }
+  // };
+  // // console.log(formData)
+
+
+  // const copyAddress = () => {
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     alamat_usaha: prevData.Alamat, kode_pos_usaha: prevData.kode_pos, provinsi_usaha: prevData.provinsi, kecamatan_usaha: prevData.kecamatan, kota_usaha: prevData.kota, kelurahan_usaha: prevData.kelurahan,
+  //   }));
+  // };
+
+  // const handleNextTab = () => {
+  //   if (activeIndex < 3) { // Asumsi Anda memiliki 4 tab panel
+  //     setActiveIndex(activeIndex + 1);
+  //   }
+  //   console.log(formData)
+  // };
+  // const handlePreviousTab = () => {
+  //   if (activeIndex > 0) {
+  //     setActiveIndex(activeIndex - 1);
+  //   }
+  // };
+
+  // // const handleChange = (e: any) => {
+  // //   const { name, value } = e.target;
+  // //   setFormData((prevData) => ({
+  // //     ...prevData,
+  // //     [name]: value,
+  // //   }));
+  // // };
+
+  // const validateForm = () => {
+  //   for (const [key, value] of Object.entries(formData)) {
+  //     if (!value) {
+  //       window.alert(`${key.charAt(0) + key.slice(1)} tidak boleh kosong!`);
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // };
+
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   // if (!validateForm()) {
+  //   //   return;
+  //   // }
+  //   console.log(formData)
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await axios.post(API_ENDPOINTS.PEMOHON, formData);
+  //     console.log('Response from API:', response.data);
+  //     setIsLoading(false);
+  //     setVisible(true);
+  //   } catch (error) {
+  //     console.error('Error submitting form:', error);
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const pemohonOptions = pemohon.map((item, index) => ({
+  //   label: item.Kode,
+  //   value: item.Kode
+  // }));
+  // const sektorEkonomiOptions = sektorEkonomi.map((item) => ({
+  //   label: item.Keterangan,
+  //   value: item.Keterangan
+  // }));
+
+  // // const CifDropdown = ({ options }: any) => (
+  // //   <Dropdown
+  // //     name='cif'
+  // //     value={formData.cif}
+  // //     onChange={handleChange}
+  // //     options={pemohonOptions}
+  // //     placeholder="Pilih CIF nasabah/debitur"
+  // //     className="w-full md:w-full"
+  // //   />
+  // // );
+  // const headerElement = (
+  //   <div className="inline-flex align-items-center justify-content-center gap-2">
+  //     <span className="font-bold white-space-nowrap">Data Pemohon</span>
+  //   </div>
+  // );
+  // const footerContent = (
+  //   <div>
+  //     <Button label="Ok" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus />
+  //   </div>
+  // );
+  const onPageChange = (event: any) => {
+    setFirst(event.first);
+    setRows(event.rows);
+    setPaginatedData(allpemohon.slice(event.first, event.first + event.rows));
   };
-
-  const handleNextTab = () => {
-    // if (!validateForm()) {
-    //   return;
-    // } else if (activeIndex < 3) { // Asumsi Anda memiliki 4 tab panel
-    //   setActiveIndex(activeIndex + 1);
-    // }
-    if (activeIndex < 3) { // Asumsi Anda memiliki 4 tab panel
-      setActiveIndex(activeIndex + 1);
-    }
-    console.log(formData)
-  };
-  const handlePreviousTab = () => {
-    if (activeIndex > 0) {
-      setActiveIndex(activeIndex - 1);
-    }
-  };
-
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const validateForm = () => {
-    for (const [key, value] of Object.entries(formData)) {
-      if (!value) {
-        window.alert(`${key.charAt(0) + key.slice(1)} tidak boleh kosong!`);
-        return false;
-      }
-    }
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const response = await axios.post(API_ENDPOINTS.PEMOHON, formData);
-      console.log('Response from API:', response.data);
-      // Reset form atau tampilkan pesan sukses di sini
-      setIsLoading(false);
-      setVisible(true);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setIsLoading(false);
-      // Tampilkan pesan error ke pengguna di sini
-    }
-  };
-
-  const pemohonOptions = pemohon.map((item, index) => ({
-    label: item.cif
-  }));
-
-  const CifDropdown = ({ options }: any) => (
-    <Dropdown
-      name='cif'
-      value={formData.cif}
-      onChange={handleChange}
-      options={pemohonOptions}
-      placeholder="Pilih CIF nasabah/debitur"
-      className="w-full md:w-full"
-    />
-  );
-
   return (
-    <div className="surface-card p-4 shadow-2 border-round">
-      <form onSubmit={handleSubmit}>
-        <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
-          <TabPanel header="Data Pemohon">
-            <fieldset className='grid md:justify-content-between border-round p-4 mb-4'>{/*data pemohon*/}
-              <legend className="text-xl font-bold">Data Pemohon</legend>
-              <div className="col-12 md:col-6">
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">CIF Debitur</label>
-                  <CifDropdown formData={formData} handleChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Tempat Lahir</label>
-                  <InputText required name='tempat_lahir' type="text" placeholder='Isikan kota/Kabupaten tempat lahir debitur' className="p-inputtext p-component w-full" value={formData.tempat_lahir} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-3">Jenis Kelamin</label>
-                  <div className='flex gap-3'>
-                    <div className='mb-2'>
-                      <RadioButton name="jenis_kelamin" value="laki-laki" onChange={handleChange} checked={formData.jenis_kelamin === 'laki-laki'} />
-                      <label htmlFor="" className="ml-2">laki-laki</label>
-                    </div>
-                    <div className='mb-2'>
-                      <RadioButton name="jenis_kelamin" value="perempuan" onChange={handleChange} checked={formData.jenis_kelamin === 'perempuan'} />
-                      <label htmlFor="" className="ml-2">perempuan</label>
-                    </div>
-                  </div>
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Status Perkawinan</label>
-                  <Dropdown
-                    name='status_perkawinan'
-                    value={formData.status_perkawinan}
-                    onChange={handleChange}
-                    options={['Belum Kawin', 'Kawin']}
-                    placeholder="Status Perkawinan"
-                    className="w-full md:w-full"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">No. KTP</label>
-                  <InputText required name='no_ktp' type="text" placeholder='Isikan Nomor KTP/NIK anda' className="p-inputtext p-component w-full" value={formData.no_ktp} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Profesi Sampingan</label>
-                  <InputText required name='profesi_sampingan' type="text" placeholder='Pilih profesi sampingan' className="p-inputtext p-component w-full" value={formData.profesi_sampingan} onChange={handleChange} />
-                </div>
-              </div>
-              <div className="col-12 md:col-6">
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Nama Lengkap</label>
-                  <InputText required name='nama_lengkap' type="text" placeholder='Isikan nama lengkap debitur' className="p-inputtext p-component w-full" value={formData.nama_lengkap} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Tanggal Lahir</label>
-                  <InputText required name='tanggal_lahir' type="date" placeholder='Format Tanggal DD-MM-YY, contoh 17-08-1980' className="p-inputtext p-component w-full" value={formData.tanggal_lahir} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Nama Gadis Ibu Kandung</label>
-                  <InputText required name='nama_ibu_kandung' type="text" placeholder='Isikan nama gadis ibu kandung debitur' className="p-inputtext p-component w-full" value={formData.nama_ibu_kandung} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Jumlah Tanggungan</label>
-                  <div className='flex gap-2 align-items-center'>
-                    <InputText required name='jumlah_tanggungan' type="number" placeholder='Isikan dengan angka untuk jumlah tanggungan' className="p-inputtext p-component w-full" value={formData.jumlah_tanggungan} onChange={handleChange} />
-                    <label htmlFor="" className='text-900 font-medium'>Orang</label>
-                  </div>
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">KTP Berlaku</label>
-                  <InputText required name='ktp_berlaku' type="date" placeholder='Isikan mas akhir KTP, contoh 12-01-1980' className="p-inputtext p-component w-full" value={formData.ktp_berlaku} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">No. Telp / HP</label>
-                  <InputText required name='no_hp' type="number" placeholder='Isikan nomor telepon yang bisa dihubungi, tanpa kode negara, misal 0812345678' className="p-inputtext p-component w-full" value={formData.no_hp} onChange={handleChange} />
-                </div>
-              </div>
-            </fieldset>
-            <div className='flex justify-content-end'>
-              <Button onClick={handleNextTab}>Lanjut</Button>
-            </div>
-          </TabPanel>
-          <TabPanel header="Alamat Pemohon">
-            <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Alamat pemohon*/}
-              <legend className="text-xl font-bold">Alamat Pemohon</legend>
-              <div className="col-12 grid md:justify-content-between ">
-                <div className=" col-12 md:col-10">
-                  <label className="block text-900 font-medium mb-2">Alamat</label>
-                  <InputText required name='alamat' type="text" placeholder='Isikan alamat rumah/lokasi tempat usaha/kantor debitur' className="p-inputtext p-component w-full" value={formData.alamat} onChange={handleChange} />
-                </div>
-                <div className=" col-12 md:col-2">
-                  <label className="block text-900 font-medium mb-2">Kode Pos</label>
-                  <InputText required name='kode_pos' type="number" placeholder='contoh 61254' className="p-inputtext p-component w-full" value={formData.kode_pos} onChange={handleChange} />
-                </div>
-              </div>
-              <div className="col-12 md:col-6">
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Provinsi</label>
-                  <InputText required name='provinsi' type="text" placeholder='Pilih Provinsi dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.provinsi} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Kecamatan</label>
-                  <InputText required name='kecamatan' type="text" placeholder='Pilih Kecamatan dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kecamatan} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Telepon</label>
-                  <InputText required name='telepon' type="number" placeholder='Isikan no telepon' className="p-inputtext p-component w-full" value={formData.telepon} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Status Tempat Tinggal</label>
-                  <InputText required name='status_tempat_tinggal' type="text" placeholder='Pilih status tempat tinggal' className="p-inputtext p-component w-full" value={formData.status_tempat_tinggal} onChange={handleChange} />
-                </div>
-              </div>
-              <div className="col-12 md:col-6 mb-4">
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Kota/Kabupaten</label>
-                  <InputText required name='kota' type="text" placeholder='Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kota} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Kelurahan</label>
-                  <InputText required name='kelurahan' type="text" placeholder='Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kelurahan} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Fax</label>
-                  <InputText required name='fax' type="text" placeholder='Isikan no fax jika ada' className="p-inputtext p-component w-full" value={formData.fax} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Lama Tinggal</label>
-                  <div className='flex gap-2 align-items-center'>
-                    <InputText required name='lama_tinggal' type="number" placeholder='Isikan dengan angka, lama tinggal' className="p-inputtext p-component w-full" value={formData.lama_tinggal} onChange={handleChange} />
-                    <label htmlFor="" className='text-900 font-medium'>Tahun</label>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-            <div className='flex justify-content-between'>
-              <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Kembali</Button>
-              <Button onClick={handleNextTab}>Lanjut</Button>
-            </div>
-          </TabPanel>
-          <TabPanel header="Data Usaha">
-            <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Data Usaha*/}
-              <legend className="text-xl font-bold">Data Usaha</legend>
-              <div className="col-12 md:col-6">
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Nama Usaha</label>
-                  <InputText required name='nama_usaha' type="text" placeholder='Misal: UD Barokah, Toko Jaya, CV Mapan' className="p-inputtext p-component w-full" value={formData.nama_usaha} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Tanggal Mulai Usaha</label>
-                  <InputText required name='tanggal_mulai_usaha' type="date" placeholder='Isikan Tanggal Mulai Usaha' className="p-inputtext p-component w-full" value={formData.tanggal_mulai_usaha} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Status Tempat Usaha</label>
-                  <InputText required name='status_tempat_usaha' type="text" placeholder='Pilih Status Tempat Usaha' className="p-inputtext p-component w-full" value={formData.status_tempat_usaha} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Surat Keterangan Usaha/SIUP No</label>
-                  <InputText required name='surat_keterangan_usaha' type="text" placeholder='Isikan no SIUP jika ada, jika tidak isi dengan : -' className="p-inputtext p-component w-full" value={formData.surat_keterangan_usaha} onChange={handleChange} />
-                </div>
-              </div>
-              <div className="col-12 md:col-6 mb-4">
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Sektor Ekonomi OJK</label>
-                  <InputText required name='sektor_ekonomi' type="text" placeholder='Pilih sektor ekonomi' className="p-inputtext p-component w-full" value={formData.sektor_ekonomi} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Jumlah Karyawan</label>
-                  <div className='flex gap-2 align-items-center'>
-                    <InputText required name='jumlah_karyawan' type="number" placeholder='Isikan jumlah karyawan(orang) dalam angka' className="p-inputtext p-component w-full" value={formData.jumlah_karyawan} onChange={handleChange} />
-                    <label htmlFor="" className='text-900 font-medium'>Orang</label>
-                  </div>
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Jarak Lokasi Usaha</label>
-                  <div className='flex gap-2 align-items-center'>
-                    <InputText required name='jarak_lokasi_usaha' type="number" placeholder='Jarak rumah/tempat usaha/kantor debitur ke kantor BPR' className="p-inputtext p-component w-full" value={formData.jarak_lokasi_usaha} onChange={handleChange} />
-                    <label htmlFor="" className='text-900 font-medium'>km</label>
-                  </div>
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Masalaku/Tanggal</label>
-                  <InputText required name='masa_laku' type="date" placeholder='Isikan masa akhir, contohnya 12-91-2020' className="p-inputtext p-component w-full" value={formData.masa_laku} onChange={handleChange} />
-                </div>
-              </div>
-              <div className='flex gap-3 align-items-center mb-2' >
-                <div className='flex gap-2 align-items-center bg-gray-300 p-2 border-round cursor-pointer' onClick={copyAddress}>
-                  <Copy />
-                  Tempel
-                </div>
-                <label htmlFor="">Klik tombol disamping untuk menempel data dari alamat pemohon ke alamat usaha, jika kedua alamat sama </label>
-              </div>
-              <div className="col-12 grid md:justify-content-between ">
-                <div className=" col-12 md:col-10">
-                  <label className="block text-900 font-medium mb-2">Alamat</label>
-                  <InputText required name='alamat_usaha' type="text" placeholder='Isikan alamat rumah/lokasi tempat usaha/kantor debitur' className="p-inputtext p-component w-full" value={formData.alamat_usaha} onChange={handleChange} />
-                </div>
-                <div className=" col-12 md:col-2">
-                  <label className="block text-900 font-medium mb-2">Kode Pos</label>
-                  <InputText required name='kode_pos_usaha' type="number" placeholder='contoh 61254' className="p-inputtext p-component w-full" value={formData.kode_pos_usaha} onChange={handleChange} />
-                </div>
-              </div>
-              <div className="col-12 md:col-6">
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Provinsi</label>
-                  <InputText required name='provinsi_usaha' type="text" placeholder='Pilih Provinsi dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.provinsi_usaha} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Kecamatan</label>
-                  <InputText required name='kecamatan_usaha' type="text" placeholder='Pilih Kecamatan dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kecamatan_usaha} onChange={handleChange} />
-                </div>
-              </div>
-              <div className="col-12 md:col-6 mb-4">
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Kota/Kabupaten</label>
-                  <InputText required name='kota_usaha' type="text" placeholder='Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kota_usaha} onChange={handleChange} />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-900 font-medium mb-2">Kelurahan</label>
-                  <InputText required name='kelurahan_usaha' type="text" placeholder='Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kelurahan_usaha} onChange={handleChange} />
-                </div>
-              </div>
-            </fieldset>
-            <div className='flex justify-content-between'>
-              <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Kembali</Button>
-              <Button onClick={handleNextTab}>Lanjut</Button>
-            </div>
-          </TabPanel>
-          <TabPanel header="Produk">
-            <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Produk*/}
+    <div>
+      <div className="card">
+        <div className='flex align-items-center justify-content-start mb-2'>
+          {/* <Button label='Add' icon="pi pi-plus" onClick={() => setVisibleadd(true)} style={{ border: '1', color: '#333' }} className='bg-blue-200' /> */}
+          <Link href={'/pemohon/formpemohon'} passHref>
+            <Button label='Add' icon="pi pi-plus" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+          </Link>
+          {/* <Dialog visible={visibleadd} modal header={headerElement} style={{ width: '50rem' }} onHide={() => { if (!visibleadd) return; setVisibleadd(false); }}>
+            
+          </Dialog> */}
+        </div>
+        <DataTable value={paginatedData} tableStyle={{ minWidth: '50rem' }}>
+          <Column field="id" header="ID" />
+          <Column field="cif" header="CIF" />
+          <Column field="Nama" header="Nama Lengkap" />
+          <Column field="Kelamin" header="Jenis Kelamin" />
+          <Column field="StatusPerkawinan" header="Status Perkawinan" />
+          <Column field="KTP" header="No KTP" />
+          <Column field="no_hp" header="No HP" />
+          <Column field="Alamat" header="Alamat" />
+          <Column field="nama_usaha" header="Nama Usaha" />
+        </DataTable>
+        <Paginator
+          first={first}
+          rows={rows}
+          totalRecords={allpemohon.length}
+          rowsPerPageOptions={[5, 10, 20]}
+          onPageChange={onPageChange}
+        />
+      </div>
+    </div>
+  )
+}
+
+export default pemohon
+
+{/* <TabPanel header="Produk">
+            <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> 
               <legend className="text-xl font-bold">Produk</legend>
               <div className="col-12 md:col-6">
                 <div className="mb-2">
                   <label className="block text-900 font-medium mb-2">Produk</label>
-                  <InputText required name='produk' type="text" placeholder='Kredit UMKM Industri' className="p-inputtext p-component w-full" value={formData.produk} onChange={handleChange} />
+                  <InputText  name='produk' type="text" placeholder='Kredit UMKM Industri' className="p-inputtext p-component w-full" value={formData.produk} onChange={handleChange} />
                 </div>
               </div>
               <div className="col-12 md:col-6">
@@ -445,10 +334,9 @@ const pemohon = () => {
                 </div>
               </div>
             </fieldset>
-            <div className='flex gap-4 justify-content-end'> {/*Button*/}
+            <div className='flex gap-4 justify-content-end'> 
               <Button onClick={resetForm} className=''>Reset</Button>
-              {/* <Button type='submit'>Submit</Button> */}
-              {/* <Button label="Submit" type='submit'/> */}
+              
               <Button type="submit" className='text-white bg-[#61AB5B] w-auto' disabled={Isloading}>
                 {Isloading ? (
                   <div className="flex align-items-center">
@@ -464,11 +352,4 @@ const pemohon = () => {
                 </p>
               </Dialog>
             </div>
-          </TabPanel>
-        </TabView>
-      </form>
-    </div>
-  )
-}
-
-export default pemohon
+          </TabPanel> */}

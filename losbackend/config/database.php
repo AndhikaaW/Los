@@ -34,6 +34,23 @@ return [
     */
 
     'connections' => [
+        'los' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+        ],
+
+        'real_los' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_REAL_LOS', '127.0.0.1'),
+            'port' => env('DB_PORT_REAL_LOS', '3306'),
+            'database' => env('DB_DATABASE_REAL_LOS', 'forge'),
+            'username' => env('DB_USERNAME_REAL_LOS', 'forge'),
+            'password' => env('DB_PASSWORD_REAL_LOS', ''),
+        ],
 
         'sqlite' => [
             'driver' => 'sqlite',
@@ -125,7 +142,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [
