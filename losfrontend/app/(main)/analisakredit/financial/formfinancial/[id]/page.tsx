@@ -1,20 +1,40 @@
 'use client';
+import SearchRekening from '@/app/(full-page)/component/searchRekening/page';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { Message } from 'primereact/message';
 import { RadioButton } from 'primereact/radiobutton';
 import { TabView, TabPanel } from 'primereact/tabview';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
-const Financial = () => {
+const EditFormFinancial = () => {
+    const params = useParams();
+    const id = params?.id;
+
     const [activeIndex, setActiveIndex] = useState(0);
     const [visible, setVisible] = useState(false);
     const [Isloading, setIsLoading] = useState(false);
+    useEffect(() => {
+        if (id) {
+            fetchFinancialData(id);
+        }
+    }, [id]);
 
+    const fetchFinancialData = async (id: any) => {
+        try {
+            const response = await axios.get(`${API_ENDPOINTS.GETFINANCIALBYID(id)}`);
+            setFormFinancial(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching financial data:', error);
+        }
+    };
     const [formFinancial, setFormFinancial] = useState<{ [key: string]: string; }>({
+        NomorRekening: '',
         // Info Keuangan
         oms_ramai: '',
         oms_normal: '',
@@ -69,6 +89,7 @@ const Financial = () => {
 
     const resetForm = () => {
         setFormFinancial({
+            NomorRekening: '',
             // Info Keuangan
             oms_ramai: '', oms_normal: '', oms_sepi: '',
             // Komponen Biaya Usaha
@@ -105,29 +126,26 @@ const Financial = () => {
             [name]: value,
         }));
     };
-    // const validateForm = () => {
-    //     for (const [key, value] of Object.entries(formFinancial)) {
-    //         if (!value) {
-    //             window.alert(`${key.charAt(0).toUpperCase() + key.slice(1)} tidak boleh kosong!`);
-    //             return false; // Menghentikan pengiriman jika ada input yang kosong
-    //         }
-    //     }
-    //     return true; // Semua input valid
-    // };
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            const response = await axios.post(API_ENDPOINTS.FINANCIAL, formFinancial);
+            let response;
+            if (id) {
+                response = await axios.put(API_ENDPOINTS.UPDATEFINANCIALBYID(id), formFinancial);
+            } else {
+                response = await axios.post(API_ENDPOINTS.FINANCIAL, formFinancial);
+            }
             console.log('Response from API:', response.data);
-            setIsLoading(false)
-            // Reset form atau tampilkan pesan sukses di sini
+            setIsLoading(false);
+            setVisible(true);
+            if (!id) resetForm();
         } catch (error) {
             console.error('Error submitting form:', error);
-            setIsLoading(false)
-            // Tampilkan pesan error ke pengguna di sini
+            setIsLoading(false);
         }
     };
+
     const infoKeuanganFields = [
         { label: "Penjualan/Omset (Ramai)", field: "oms_ramai", type: "number" },
         { label: "Penjualan/Omset (Normal)", field: "oms_normal", type: "number" },
@@ -177,8 +195,26 @@ const Financial = () => {
         { label: "Sub Jumlah Modal", field: "sub_jumlah_modal" },
         { label: "Jumlah Passiva", field: "jumlah_passiva" }
     ];
+    const handleAccountSelect = (account: any) => {
+        setFormFinancial(prevData => ({
+            ...prevData,
+            NomorRekening: account.NomorRekening
+        }));
+    };
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormFinancial(prevData => ({
+            ...prevData,
+            NomorRekening: e.target.value
+        }));
+    };
     return (
         <div className="surface-card p-4 shadow-2 border-round">
+            <SearchRekening
+                onAccountSelect={handleAccountSelect}
+                value={formFinancial.NomorRekening}
+                onChange={handleSearchChange}
+            />
             <form onSubmit={handleSubmit}>
                 <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                     <TabPanel header="info keuangan">
@@ -391,10 +427,8 @@ const Financial = () => {
                             <div>
                                 <Button onClick={handlePreviousTab} disabled={activeIndex === 0} className=''>Kembali</Button>
                             </div>
-                            <div className='flex gap-4'> {/*Button*/}
-                                <Button onClick={resetForm} className=''>Reset</Button>
-                                {/* <Button type='submit' onClick={() => setVisible(true)} className=''>Submit</Button> */}
-                                {/* <Button label="Submit" type='submit'/> */}
+                            <div className='flex gap-4 justify-content-end pt-4'>
+                                <Button onClick={resetForm} type="button">Reset</Button>
                                 <Button type="submit" className='text-white bg-[#61AB5B] w-auto' disabled={Isloading}>
                                     {Isloading ? (
                                         <div className="flex align-items-center">
@@ -402,11 +436,16 @@ const Financial = () => {
                                             <label>Loading...</label>
                                         </div>
                                     ) : (
-                                        'Kirim'
-                                    )}</Button>
+                                        id ? 'Update' : 'Kirim'
+                                    )}
+                                </Button>
+                                <Link href="/analisakredit/financial" passHref>
+                                    <Button type="button" className='p-button-secondary'>Back to List</Button>
+                                </Link>
+
                                 <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                                     <p className="m-0">
-                                        Terima Kasih telah mengisi form
+                                        {id ? 'Data berhasil diperbarui' : 'Terima Kasih telah mengisi form'}
                                     </p>
                                 </Dialog>
                             </div>
@@ -415,7 +454,7 @@ const Financial = () => {
                 </TabView>
             </form>
         </div >
-    );
-};
+    )
+}
 
-export default Financial;
+export default EditFormFinancial

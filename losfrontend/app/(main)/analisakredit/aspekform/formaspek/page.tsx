@@ -5,59 +5,43 @@ import { Button } from 'primereact/button';
 import axios from 'axios';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import { Dialog } from 'primereact/dialog';
+import SearchRekening from '@/app/(full-page)/component/searchRekening/page';
 
 interface TitleAspek {
-    id : number;
+    id: number;
     title_aspek: string;
 }
-const AspekForm = () => {
+const FormAspek = () => {
     const [titleAspek, settitleAspek] = useState<TitleAspek[]>([])
+
     const [visible, setVisible] = useState(false);
     const [Isloading, setIsLoading] = useState(false);
 
-    const [formAspek, setformAspek] = useState<{
-        [key: string]: string;
-    }>({
-        // aspek_hukum: '',
-        // aspek_organisasi: '',
-        // aspek_pasar: '',
-        // aspek_jaminan: '',
-        // aspek_keuangan: '',
-        // aspek_teknis: '',
-        // aspek_amdal: '',
-        risiko: '',
-        mitigasi: ''
+    const [formAspek, setformAspek] = useState<{ [key: string]: string; }>({
+        NomorRekening: ''
     });
+    
     const handleClear = () => {
-        setformAspek({
-            // aspek_hukum: '',
-            // aspek_organisasi: '',
-            // aspek_pasar: '',
-            // aspek_jaminan: '',
-            // aspek_keuangan: '',
-            // aspek_teknis: '',
-            // aspek_amdal: '',
-            risiko: '',
-            mitigasi: ''
-        });
+        setformAspek(Object.keys(formAspek).reduce((acc, key) => ({ ...acc, [key]: '' }), {}));
     };
 
     useEffect(() => {
         const fetchAspekForm = async () => {
-          try {
-            const response = await axios.get(API_ENDPOINTS.GETTITLEASPEK)
-            settitleAspek(response.data)
-            console.log(response.data)
-          } catch (error) {
-            console.error("There was an error fetching the survey!", error)
-          }
+            try {
+                const response = await axios.get(API_ENDPOINTS.GETTITLEASPEK)
+                settitleAspek(response.data)
+                // console.log(response.data)
+            } catch (error) {
+                console.error("There was an error fetching the survey!", error)
+            }
         }
         fetchAspekForm()
-      }, [])
-      
+    }, [])
+
+
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
         setformAspek({ ...formAspek, [field]: e.target.value });
-        // console.log(formAspek)
     };
 
     // const validateForm = () => {
@@ -74,33 +58,38 @@ const AspekForm = () => {
         e.preventDefault();
         setIsLoading(true);
         console.log(formAspek)
-        // try {
-        //     const response = await axios.post(API_ENDPOINTS.ASPEKFORM, formAspek);
-        //     console.log('Response from API:', response.data);
-        //     setIsLoading(false);
-        //     // Reset form atau tampilkan pesan sukses di sini
-        // } catch (error) {
-        //     console.error('Error submitting form:', error);
-        //     setIsLoading(false);
-        //     // Tampilkan pesan error ke pengguna di sini
-        // }
+        try {
+            const response = await axios.post(API_ENDPOINTS.ASPEKFORM, formAspek);
+            console.log('Response from API:', response.data);
+            setIsLoading(false);
+            setVisible(true);
+            handleClear()
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setIsLoading(false);
+        }
+    };
+    const handleAccountSelect = (account: any) => {
+        setformAspek(prevData => ({
+            ...prevData,
+            NomorRekening: account.NomorRekening
+        }));
     };
 
-
-    // const aspectFields = [
-    //     { label: 'Aspek Hukum Permohonan', field: 'aspek_hukum' },
-    //     { label: 'Aspek Organisasi dan Manajemen', field: 'aspek_organisasi' },
-    //     { label: 'Aspek Pasar dan Pemasaran', field: 'aspek_pasar' },
-    //     { label: 'Aspek Jaminan dan Asuransi', field: 'aspek_jaminan' },
-    //     { label: 'Aspek Keuangan', field: 'aspek_keuangan' },
-    //     { label: 'Aspek Teknis Produksi', field: 'aspek_teknis' },
-    //     { label: 'Aspek Amdal', field: 'aspek_amdal' }
-    // ];
-
-
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setformAspek(prevData => ({
+            ...prevData,
+            NomorRekening: e.target.value
+        }));
+    };
     return (
         <div className="surface-card max-w-4xl mx-auto shadow-lg border-round">
             <div className="p-4">
+                <SearchRekening
+                    onAccountSelect={handleAccountSelect}
+                    value={formAspek.NomorRekening}
+                    onChange={handleSearchChange}
+                />
                 <form onSubmit={handleSubmit}>
                     <fieldset className="border-round mb-4 p-6">
                         <legend className="text-xl font-bold">Formulir Aspek</legend>
@@ -147,7 +136,7 @@ const AspekForm = () => {
                 </form>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default AspekForm;
+export default FormAspek

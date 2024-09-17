@@ -15,15 +15,15 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 
-interface Pemohon {
-  id: number;
-  CabangEntry: string;
-  Kode: string;
-}
-interface Sektor {
-  Kode: number;
-  Keterangan: string;
-}
+// interface Pemohon {
+//   id: number;
+//   CabangEntry: string;
+//   Kode: string;
+// }
+// interface Sektor {
+//   Kode: number;
+//   Keterangan: string;
+// }
 
 const pemohon = () => {
   // const [pemohon, setPemohon] = useState<Pemohon[]>([]);
@@ -36,6 +36,8 @@ const pemohon = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(5);
   const [paginatedData, setPaginatedData] = useState([]);
+  const [selectedRow, setSelectedRow] = useState<any>({});
+  const [visible, setVisible] = useState(false);
   // const [formData, setFormData] = useState({
   //   // //form produk
   //   // produk: '', bidang_usaha: '', nomor_aplikasi: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: '',
@@ -215,6 +217,17 @@ const pemohon = () => {
     setRows(event.rows);
     setPaginatedData(allpemohon.slice(event.first, event.first + event.rows));
   };
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(API_ENDPOINTS.DELETEPEMOHONBYID(id));
+      setAllPemohon(allpemohon.filter((item: any) => item.id !== id));
+      const response = await axios.get(API_ENDPOINTS.GETALLPEMOHON);
+      setAllPemohon(response.data);
+      setPaginatedData(response.data.slice(first, first + rows));
+    } catch (error) {
+      console.error('Error deleting form pemohon:', error);
+    }
+  };
   return (
     <div>
       <div className="card">
@@ -224,12 +237,11 @@ const pemohon = () => {
             <Button label='Add' icon="pi pi-plus" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
           </Link>
           {/* <Dialog visible={visibleadd} modal header={headerElement} style={{ width: '50rem' }} onHide={() => { if (!visibleadd) return; setVisibleadd(false); }}>
-            
           </Dialog> */}
         </div>
         <DataTable value={paginatedData} tableStyle={{ minWidth: '50rem' }}>
           <Column field="id" header="ID" />
-          <Column field="cif" header="CIF" />
+          <Column field="Cif" header="CIF" />
           <Column field="Nama" header="Nama Lengkap" />
           <Column field="Kelamin" header="Jenis Kelamin" />
           <Column field="StatusPerkawinan" header="Status Perkawinan" />
@@ -237,6 +249,26 @@ const pemohon = () => {
           <Column field="no_hp" header="No HP" />
           <Column field="Alamat" header="Alamat" />
           <Column field="nama_usaha" header="Nama Usaha" />
+          <Column header="Edit" body={(rowData) => (
+            <Link href={`/pemohon/formpemohon/${rowData.id}`} passHref>
+              <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+            </Link>
+          )} />
+          <Column header="Delete" body={(rowData) => (
+            <div className='flex justify-content-center'>
+              <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                setSelectedRow(rowData);
+                setVisible(true);
+              }} />
+              <Dialog header={`Hapus Data ${selectedRow.NomorRekening}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
+                <div className='flex justify-content-end mt-3'>
+                  <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+                  <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.id); setVisible(false); }} />
+                </div>
+              </Dialog>
+            </div>
+          )} />
         </DataTable>
         <Paginator
           first={first}

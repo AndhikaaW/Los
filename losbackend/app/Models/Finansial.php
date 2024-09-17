@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Finansial extends Model
 {
     use HasFactory;
+    protected $table = 'trx_finansials';
     public $timestamps = false;
     protected $fillable = [
+        'NomorRekening',
         'oms_ramai',
         'oms_normal',
         'oms_sepi',
@@ -54,4 +56,5 @@ class Finansial extends Model
         'sub_jumlah_modal',
         'jumlah_passiva'
     ];
+    
 }

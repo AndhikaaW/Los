@@ -10,6 +10,7 @@ class FinansialController extends Controller
     function finansial(Request $req)
     {
         $financial = new Finansial;
+        $financial->NomorRekening = $req->input('NomorRekening');
         $financial->oms_ramai = $req->input('oms_ramai');
         $financial->oms_normal = $req->input('oms_normal');
         $financial->oms_sepi = $req->input('oms_sepi');
@@ -56,4 +57,77 @@ class FinansialController extends Controller
         $financial->save();
         return $financial;
     }
+    public function getAllFinansial()
+    {
+        $finansial = Finansial::all();
+        return response()->json($finansial);
+    }
+    public function getFinansialById(string $id)
+    {
+        $finansial = Finansial::findOrFail($id);
+        return response()->json($finansial);
+    }
+    public function update(Request $request, string $id)
+    {
+        $financial = Finansial::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'NomorRekening' => 'required|string',
+            'oms_ramai' => 'required|numeric',
+            'oms_normal' => 'required|numeric',
+            'oms_sepi' => 'required|numeric',
+            'hrg_pokok_jual' => 'required|numeric',
+            'btk_tdklangsung' => 'required|numeric',
+            'ohc' => 'required|numeric',
+            'b_usahalainnya' => 'required|numeric',
+            'b_rumahtangga' => 'required|numeric',
+            'b_sekolah' => 'required|numeric',
+            'b_pln_pdam' => 'required|numeric',
+            'b_transport_komunikasi' => 'required|numeric',
+            'b_lain_lain' => 'required|numeric',
+            'p_lainnya' => 'required|numeric',
+            'b_Lainnya' => 'required|numeric',
+            'bukti_pendapatan' => 'required|string',
+            'bukti_biaya' => 'required|string',
+            'bank_nonbank' => 'required|numeric',
+            'koperasi' => 'required|numeric',
+            'lainLain' => 'required|numeric',
+            'angsuran_baru' => 'required|numeric',
+            'kas' => 'required|numeric',
+            'bank' => 'required|numeric',
+            'piutang' => 'required|numeric',
+            'persediaan_barang' => 'required|numeric',
+            'atv_lancar_lainnya' => 'required|numeric',
+            'sub_atv_lancar' => 'required|numeric',
+            'tanah_bangunan' => 'required|numeric',
+            'peralatan_usaha' => 'required|numeric',
+            'kendaraan' => 'required|numeric',
+            'atv_tetap_lainnya' => 'required|numeric',
+            'sub_atv_tetap' => 'required|numeric',
+            'jumlah_atv' => 'required|numeric',
+            'tot_bdp_jangka_pendek' => 'required|numeric',
+            'idr_jangka_pendek' => 'required|numeric',
+            'jangka_pendek' => 'required|numeric',
+            'tot_bdp_jangka_panjang' => 'required|numeric',
+            'idr_jangka_panjang' => 'required|numeric',
+            'jangka_panjang' => 'required|numeric',
+            'sub_jumlah_hutang' => 'required|numeric',
+            'modal_sendiri' => 'required|numeric',
+            'laba' => 'required|numeric',
+            'sub_jumlah_modal' => 'required|numeric',
+            'jumlah_passiva' => 'required|numeric',
+        ]);
+
+        $financial->update($validatedData);
+
+        return response()->json($financial);
+    }
+    public function destroy(string $id)
+    {
+        $financial = Finansial::findOrFail($id);
+        $financial->delete();
+
+        return response()->json(null, 204);
+    }
+
 }

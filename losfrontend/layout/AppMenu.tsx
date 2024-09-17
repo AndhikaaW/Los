@@ -30,7 +30,7 @@ const AppMenu = () => {
                     const user = JSON.parse(storedUser);
                     setStatus(user.status)
                     const userId = user.id
-                    const response = await axios.get(`http://192.168.1.35:8000/api/user/${userId}/sidebars`);
+                    const response = await axios.get(API_ENDPOINTS.SIDEBAR(userId));
                     setSidebar(response.data.sidebars);
                 } else {
                     console.error('User info not found in localStorage');

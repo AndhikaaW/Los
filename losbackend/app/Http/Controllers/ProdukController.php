@@ -16,9 +16,10 @@ class ProdukController extends Controller
     function produk(Request $req)
     {
         $produk = new Produk;
-        $produk->produk = $req->input('produk');
+        $produk->Cif = $req->input('Cif');
+        $produk->pengajuan = $req->input('pengajuan');
         $produk->bidang_usaha = $req->input('bidang_usaha');
-        $produk->nomor_aplikasi = $req->input('nomor_aplikasi');
+        $produk->NomorRekening = $req->input('NomorRekening');
         $produk->tanggal_aplikasi = $req->input('tanggal_aplikasi');
         $produk->tanggal_permohonan = $req->input('tanggal_permohonan');
         $produk->plafon_kredit = $req->input('plafon_kredit');
@@ -37,5 +38,44 @@ class ProdukController extends Controller
     {
         $data = SifatKredit::all();
         return response()->json($data);
+    }
+    public function getProdukById(string $id)
+    {
+        $produk = Produk::findOrFail($id);
+        return response()->json($produk);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $produk = Produk::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'Cif' => 'required|numeric',
+            'pengajuan' => 'required|string',
+            'bidang_usaha' => 'required|string',
+            'NomorRekening' => 'required|string',
+            'plafon_kredit' => 'required|numeric',
+            'tanggal_aplikasi' => 'required|string',
+            'suku_bunga' => 'required|numeric',
+            'tanggal_permohonan' => 'required|string',
+            'jangka_waktu' => 'required|numeric',
+            'sifat_kredit' => 'required|string',
+            'jenis_permohonan' => 'required|string',
+            'jenis_angsuran' => 'required|string',
+            'no_aplikasi_sebelumnya' => 'required|string',
+            'tujuan_penggunaan' => 'required|string',
+            'detail_tujuan_penggunaan' => 'required|string',
+        ]);
+
+        $produk->update($validatedData);
+
+        return response()->json($produk);
+    }
+    public function destroy(string $id)
+    {
+        $produk = Produk::findOrFail($id);
+        $produk->delete();
+
+        return response()->json(null, 204);
     }
 }

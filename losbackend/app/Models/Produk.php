@@ -11,9 +11,10 @@ class Produk extends Model
     protected $table = 'produk';
     public $timestamps = false;
     protected $fillable = [
-        'produk',
+        'Cif',
+        'pengajuan',
         'bidang_usaha',
-        'nomor_aplikasi',
+        'NomorRekening',
         'plafon_kredit',
         'tanggal_aplikasi',
         'suku_bunga',
@@ -31,4 +32,28 @@ class Produk extends Model
         'tanggal_aplikasi' => 'date',
         'tanggal_permohonan' => 'date',
     ];
+    public function financial()
+    {
+        return $this->hasOne(Finansial::class, 'NomorRekening', 'NomorRekening');
+    }
+
+    public function survey()
+    {
+        return $this->hasMany(OutSurvey::class, 'NomorRekening', 'NomorRekening');
+    }
+    public function LimaC()
+    {
+        return $this->hasOne(LimaC::class, 'NomorRekening', 'NomorRekening');
+    }
+
+    public function aspekForm()
+    {
+        return $this->hasMany(OutAspekForm::class, 'NomorRekening', 'NomorRekening');
+    }
+
+    public function jaminan()
+    {
+        return $this->hasOne(Jaminan::class, 'NomorRekening', 'NomorRekening');
+    }
+
 }

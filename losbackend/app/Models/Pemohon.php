@@ -63,4 +63,8 @@ class Pemohon extends Model
         'kota_usaha',
         'kelurahan_usaha'
     ];
+    public function Produk()
+    {
+        return $this->hasMany(Produk::class, 'Cif', 'Cif');
+    }
 }

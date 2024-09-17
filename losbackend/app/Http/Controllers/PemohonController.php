@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pemohon;
+use App\Models\Produk;
 use App\Models\RegisterNasabah;
 use App\Models\SektorEkonomi;
 use Illuminate\Http\Request;
@@ -12,20 +13,6 @@ class PemohonController extends Controller
     function pemohon(Request $req)
     {
         $pemohon = new Pemohon;
-        // $pemohon->produk = $req->input('produk');
-        // $pemohon->bidang_usaha = $req->input('bidang_usaha');
-        // $pemohon->nomor_aplikasi = $req->input('nomor_aplikasi');
-        // $pemohon->tanggal_aplikasi = $req->input('tanggal_aplikasi');
-        // $pemohon->tanggal_permohonan = $req->input('tanggal_permohonan');
-        // $pemohon->plafon_kredit = $req->input('plafon_kredit');
-        // $pemohon->suku_bunga = $req->input('suku_bunga');
-        // $pemohon->jangka_waktu = $req->input('jangka_waktu');
-        // $pemohon->sifat_kredit = $req->input('sifat_kredit');
-        // $pemohon->jenis_permohonan = $req->input('jenis_permohonan');
-        // $pemohon->jenis_angsuran = $req->input('jenis_angsuran');
-        // $pemohon->no_aplikasi_sebelumnya = $req->input('no_aplikasi_sebelumnya');
-        // $pemohon->tujuan_penggunaan = $req->input('tujuan_penggunaan');
-        // $pemohon->detail_tujuan_penggunaan = $req->input('detail_tujuan_penggunaan');
         $pemohon->Cif = $req->input('Cif');
         $pemohon->TempatLahir = $req->input('TempatLahir');
         $pemohon->Kelamin = $req->input('Kelamin');
@@ -78,7 +65,8 @@ class PemohonController extends Controller
     }
     public function index()
     {
-        $data = Pemohon::all();
+        $data = Pemohon::with(["Produk.LimaC","Produk.Financial","Produk.aspekForm","Produk.jaminan","Produk.survey"])
+        ->get();
         return response()->json($data);
     }
     public function getSektorEkonomi()
@@ -87,4 +75,74 @@ class PemohonController extends Controller
         return response()->json($data);
     }
 
+    public function getPemohonById(string $id)
+    {
+        $pemohon = Pemohon::findOrFail($id);
+        return response()->json($pemohon);
+    }
+    public function update(Request $request, string $id)
+    {
+        $pemohon = Pemohon::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'Cif' => 'required|numeric',
+            'TempatLahir' => 'required|string',
+            'Kelamin' => 'required|string',
+            'StatusPerkawinan' => 'required|string',
+            'KTP' => 'required|string',
+            'profesi_sampingan' => 'required|string',
+            'Nama' => 'required|string',
+            'TglLahir' => 'required|date',
+            'nama_ibu_kandung' => 'required|string',
+            'jumlah_tanggungan' => 'required|numeric',
+            'ktp_berlaku' => 'required|date',
+            'no_hp' => 'required|string',
+            'Alamat' => 'required|string',
+            'kode_pos' => 'required|numeric',
+            'provinsi' => 'required|string',
+            'kecamatan' => 'required|string',
+            'telepon' => 'required|string',
+            'status_tempat_tinggal' => 'required|string',
+            'kota' => 'required|string',
+            'kelurahan' => 'required|string',
+            'fax' => 'required|string',
+            'lama_tinggal' => 'required|numeric',
+            'nama_usaha' => 'required|string',
+            'tanggal_mulai_usaha' => 'required|date',
+            'status_tempat_usaha' => 'required|string',
+            'surat_keterangan_usaha' => 'required|string',
+            'sektor_ekonomi' => 'required|string',
+            'jumlah_karyawan' => 'required|numeric',
+            'jarak_lokasi_usaha' => 'required|string',
+            'masa_laku' => 'required|date',
+            'alamat_usaha' => 'required|string',
+            'kode_pos_usaha' => 'required|numeric',
+            'provinsi_usaha' => 'required|string',
+            'kecamatan_usaha' => 'required|string',
+            'kota_usaha' => 'required|string',
+            'kelurahan_usaha' => 'required|string',
+        ]);
+
+        $pemohon->update($validatedData);
+
+        return response()->json($pemohon);
+    }
+    public function destroy(string $id)
+    {
+        $pemohon = Pemohon::findOrFail($id);
+        $pemohon->delete();
+
+        return response()->json(null, 204);
+    }
+
+    public function getProdukByCif(string $cif)
+    {
+        $produk = Produk::where('Cif', $cif)->get();
+
+        if (!$produk) {
+            return response()->json(['message' => 'Produk not found'], 404);
+        }
+
+        return response()->json($produk);
+    }
 }

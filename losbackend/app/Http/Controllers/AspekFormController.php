@@ -3,30 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\AspekForm;
+use App\Models\OutAspekForm;
 use Illuminate\Http\Request;
 
 class AspekFormController extends Controller
 {
-    // function aspekform(Request $req)
-    // {
-    //     $aspek = new AspekForm;
-    //     $aspek->aspek_hukum = $req->input('aspek_hukum');
-    //     $aspek->aspek_organisasi = $req->input('aspek_organisasi');
-    //     $aspek->aspek_pasar = $req->input('aspek_pasar');
-    //     $aspek->aspek_jaminan = $req->input('aspek_jaminan');
-    //     $aspek->aspek_keuangan = $req->input('aspek_keuangan');
-    //     $aspek->aspek_teknis = $req->input('aspek_teknis');
-    //     $aspek->aspek_amdal = $req->input('aspek_amdal');
-    //     $aspek->risiko = $req->input('risiko');
-    //     $aspek->mitigasi = $req->input('mitigasi');
-    //     $aspek->save();
-    //     return $aspek;
-    // }
 
-    public function gettitleaspek()
+    public function getTitleAspek()
     {
         $aspek = AspekForm::all();
         return response()->json($aspek);
     }
 
+    // public function getAllAspek()
+    // {
+    //     // Perform the left join
+    //     $results = AspekForm::leftJoin('trx_aspek_form', 'aspek_form.id', '=', 'trx_aspek_form.aspek_id')
+    //         ->select('aspek_form.*', 'trx_aspek_form.jawaban')
+    //         ->get();
+    //     return $results;
+    // }
+    public function getAllAspek()
+    {
+        $aspek = OutAspekForm::leftJoin('aspek_form', 'trx_aspek_form.aspek_id', '=', 'aspek_form.id')
+            ->select('aspek_form.*', 'trx_aspek_form.*')
+            ->get();
+        return response()->json($aspek);
+    }
+    public function addAspek(Request $request)
+    {
+        $formAspekData = $request->all();
+        $nomorRekening = $request->input('NomorRekening');
+        foreach ($formAspekData as $key => $value) {
+            if ($key === 'risiko' || $key === 'mitigasi' || $key === 'NomorRekening') {
+                continue;
+            }else {
+                $aspek = AspekForm::firstOrCreate([
+                    'title_aspek' => $key,
+                ]);
+                OutAspekForm::create([
+                    'aspek_id' => $aspek->id,
+                    'jawaban' => $value,
+                    'NomorRekening' => $nomorRekening
+                ]);
+            }
+        }
+        return response()->json($formAspekData);
+    }
 }

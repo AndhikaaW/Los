@@ -1,0 +1,89 @@
+"use client"
+import { API_ENDPOINTS } from '@/app/api/losbackend/api';
+import axios from 'axios';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { Button } from 'primereact/button';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { Paginator } from 'primereact/paginator';
+import React, { useEffect, useState } from 'react'
+
+const Pengajuandebitur = () => {
+    const [data, setData] = useState([])
+    const params = useParams();
+    const cif = params?.Cif;
+
+    useEffect(() => {
+        const fetchCif = async () => {
+            try {
+                const response = await axios.get(`http://192.168.1.35:8000/api/getprodukbycif/${cif}`);
+                setData(response.data);
+                console.log(response.data)
+            } catch (error) {
+                console.error("Error fetching CIF data:", error);
+            }
+        };
+        fetchCif();
+    }, [cif]);
+    return (
+        <div>
+            {/* <h3>Data yang dipilih:</h3>
+      <pre>{JSON.stringify(data, null, 2)}</pre> */}
+            <div className="card">
+                <DataTable value={data} tableStyle={{ minWidth: '30rem' }}>
+                    <Column field="id" header="ID" />
+                    <Column field="Cif" header="CIF" />
+                    <Column field="pengajuan" header="Pengajuan" />
+                    <Column field="bidang_usaha" header="Bidang Usaha" />
+                    <Column field="NomorRekening" header="Nomor Rekening" />
+                    {/* <Column field="plafon_kredit" header="Plafon Kredit" />
+                    <Column field="tanggal_aplikasi" header="Tanggal Aplikasi" />
+                    <Column field="suku_bunga" header="Suku Bunga" />
+                    <Column field="tanggal_permohonan" header="Tanggal Permohonan" />
+                    <Column field="jangka_waktu" header="Jangka Waktu" /> */}
+                    <Column field="sifat_kredit" header="Sifat Kredit" />
+                    <Column field="jenis_permohonan" header="Jenis Permohonan" />
+                    {/* <Column field="jenis_angsuran" header="Jenis Angsuran" /> */}
+                    {/* <Column field="no_aplikasi_sebelumnya" header="No Aplikasi Sebelumnya" /> */}
+                    <Column field="tujuan_penggunaan" header="Tujuan Penggunaan" />
+                    <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" />
+                    <Column header="Edit" body={(rowData) => (
+                        <Link href={`/pengajuan/formpengajuan/${rowData.id}`} passHref>
+                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                        </Link>
+                    )} />
+                    {/* <Column header="Delete" body={(rowData) => (
+                        <div className='flex justify-content-center'>
+                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                                setSelectedRow(rowData);
+                                setVisible(true);
+                            }} />
+                            <Dialog header={`Hapus Data ${selectedRow.NomorRekening}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
+                                <div className='flex justify-content-end mt-3'>
+                                    <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.id); setVisible(false); }} />
+                                </div>
+                            </Dialog>
+                        </div>
+                    )} /> */}
+                    {/* <Column header="Pengajuan" body={(rowData) => (
+                        <Link href={`/pengajuan/formpengajuan/${rowData.id}`} passHref>
+                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                        </Link>
+                    )} /> */}
+                </DataTable>
+                {/* <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={allpemohon.length}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    onPageChange={onPageChange}
+                /> */}
+            </div>
+        </div>
+    )
+}
+
+export default Pengajuandebitur

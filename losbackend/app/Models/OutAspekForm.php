@@ -5,18 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AspekForm extends Model
+class OutAspekForm extends Model
 {
     use HasFactory;
+    protected $table = 'trx_aspek_form';
     public $timestamps = false;
-    protected $table = 'aspek_form';
     protected $fillable = [
         'id',
-        'title_aspek'
+        'aspek_id',
+        'jawaban',
+        'NomorRekening',
     ];
-
-    public function jawabanAspek()
-    {
-        return $this->hasMany(OutAspekForm::class, 'aspek_id', 'id');
-    }
 }

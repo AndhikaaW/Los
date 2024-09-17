@@ -13,12 +13,13 @@ import axios from 'axios';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
+import { useParams } from 'next/navigation';
 
 interface Sektor {
     Kode: number;
     Keterangan: string;
 }
-const FormPemohon = () => {
+const EditFormPemohon = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [pemohon, setPemohon] = useState<any>([]);
     const [sektorEkonomi, setSektorEkonomi] = useState<Sektor[]>([]);
@@ -28,6 +29,25 @@ const FormPemohon = () => {
     const [filteredPemohon, setFilteredPemohon] = useState(pemohon);
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(5);
+
+    const params = useParams();
+    const id = params?.id;
+    useEffect(() => {
+        if (id) {
+            fetchPemohon(id);
+        }
+    }, [id]);
+    
+    const fetchPemohon = async (id: any) => {
+        try {
+            const response = await axios.get(API_ENDPOINTS.GETPEMOHONBYID(id));
+            setFormData(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching pemohon data:', error);
+        }
+    };
+
     const [formData, setFormData] = useState({
         // //form produk
         // produk: '', bidang_usaha: '', nomor_aplikasi: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: '',
@@ -137,19 +157,35 @@ const FormPemohon = () => {
         return true;
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     console.log(formData)
+    //     setIsLoading(true);
+    //     try {
+    //         const response = await axios.post(API_ENDPOINTS.PEMOHON, formData);
+    //         console.log('Response from API:', response.data);
+    //         setIsLoading(false);
+    //         setVisible(true);
+    //         resetForm()
+    //     } catch (error) {
+    //         console.error('Error submitting form:', error);
+    //         setIsLoading(false);
+    //     }
+    // };
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
-        // if (!validateForm()) {
-        //   return;
-        // }
-        console.log(formData)
         setIsLoading(true);
         try {
-            const response = await axios.post(API_ENDPOINTS.PEMOHON, formData);
+            let response;
+            if (id) {
+                response = await axios.put(API_ENDPOINTS.UPDATEPEMOHONBYID(id), formData);
+            } else {
+                response = await axios.post(API_ENDPOINTS.PEMOHON, formData);
+            }
             console.log('Response from API:', response.data);
             setIsLoading(false);
             setVisible(true);
-            resetForm()
+            if (!id) resetForm();
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false);
@@ -484,4 +520,4 @@ const FormPemohon = () => {
     )
 }
 
-export default FormPemohon
+export default EditFormPemohon
