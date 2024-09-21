@@ -29,6 +29,11 @@ class LimaC_Controller extends Controller
         $limaC = LimaC::findOrFail($id);
         return response()->json($limaC);
     }
+    public function getLimaCByNomorRekening(string $nomorRekening)
+    {
+        $limaC = LimaC::where('NomorRekening', $nomorRekening)->get();
+        return response()->json($limaC);
+    }
     
     public function update(Request $request, string $id)
     {

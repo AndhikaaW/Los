@@ -36,13 +36,13 @@ const EditFormPengajuan = () => {
 
     const fetchPengajuanData = async (id: any) => {
         try {
-            const response = await axios.get(`http://192.168.1.35:8000/api/getprodukbyid/${id}`);
+            const response = await axios.get(API_ENDPOINTS.GETPRODUKBYID(id));
             const formattedData = {
                 ...response.data,
                 tanggal_aplikasi: formatDate(response.data.tanggal_aplikasi),
                 tanggal_permohonan: formatDate(response.data.tanggal_permohonan)
             };
-            console.log(formattedData);
+            console.log(response.data);
             setFormData(formattedData);
         } catch (error) {
             console.error('Error fetching pengajuan data:', error);

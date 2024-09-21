@@ -62,9 +62,9 @@ class FinansialController extends Controller
         $finansial = Finansial::all();
         return response()->json($finansial);
     }
-    public function getFinansialById(string $id)
+    public function getFinansialByNomorRekening(string $nomorRekening)
     {
-        $finansial = Finansial::findOrFail($id);
+        $finansial = Finansial::where('NomorRekening', $nomorRekening)->get();
         return response()->json($finansial);
     }
     public function update(Request $request, string $id)

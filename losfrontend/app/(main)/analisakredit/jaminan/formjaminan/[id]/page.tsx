@@ -105,6 +105,7 @@ const EditFormJaminan = () => {
             console.log('Response from API:', response.data);
             setIsLoading(false);
             setVisible(true);
+            resetForm();
             if (!id) resetForm();
         } catch (error) {
             console.error('Error submitting form:', error);

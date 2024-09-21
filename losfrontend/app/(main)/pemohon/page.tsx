@@ -260,7 +260,7 @@ const pemohon = () => {
                 setSelectedRow(rowData);
                 setVisible(true);
               }} />
-              <Dialog header={`Hapus Data ${selectedRow.NomorRekening}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+              <Dialog header={`Hapus Data ${selectedRow.id}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                 <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
                 <div className='flex justify-content-end mt-3'>
                   <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />

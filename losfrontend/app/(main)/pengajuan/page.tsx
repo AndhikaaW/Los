@@ -52,10 +52,10 @@ const produk = () => {
         setPaginatedData(allproduk.slice(event.first, event.first + event.rows));
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (NomorRekening: string) => {
         try {
-            await axios.delete(API_ENDPOINTS.DELETEPRODUKBYID(id));
-            setAllProduk(allproduk.filter((item: any) => item.id !== id));
+            await axios.delete(API_ENDPOINTS.DELETEPRODUKBYID(NomorRekening));
+            setAllProduk(allproduk.filter((item: any) => item.NomorRekening !== NomorRekening));
             const response = await axios.get(API_ENDPOINTS.GETALLPRODUK);
             setAllProduk(response.data);
             setPaginatedData(response.data.slice(first, first + rows));
@@ -105,7 +105,7 @@ const produk = () => {
                                 <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
                                 <div className='flex justify-content-end mt-3'>
                                     <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => {handleDelete(selectedRow.id); setVisible(false); }} /> 
+                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => {handleDelete(selectedRow.NomorRekening); setVisible(false); }} /> 
                                 </div>
                             </Dialog>
                         </div>

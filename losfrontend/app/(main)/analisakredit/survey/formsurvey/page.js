@@ -39,8 +39,9 @@ const SurveyPage = () => {
     console.log('Response from API:', response.data);
     setIsLoading(false)
     setVisible(true)
+    resetForm()
   }
-  const handleReset = () => {
+  const resetForm = () => {
     setFormData({
       NomorRekening: "",
     })
@@ -105,7 +106,7 @@ const SurveyPage = () => {
         {/* <Button label="Save" icon="pi pi-check" onClick={handleSave} /> */}
         <div className='flex justify-content-end mt-4'>
           <div className='flex gap-4'> {/*Button*/}
-            <Button onClick={handleReset} className=''>Reset</Button>
+            <Button onClick={resetForm} className=''>Reset</Button>
             <Button onClick={handleSave} className='text-white bg-[#61AB5B] w-auto' disabled={isLoading}>
               {isLoading ? (
                 <div className="flex align-items-center">

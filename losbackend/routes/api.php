@@ -30,61 +30,90 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/finansial', [FinansialController::class, 'finansial']);
-Route::get('/getallfinansial', [FinansialController::class, 'getAllFinansial']);
-Route::get('/getfinansialbyid/{id}', [FinansialController::class, 'getFinansialById']);
-Route::put('/updatefinansialbyid/{id}', [FinansialController::class, 'update']);
-Route::delete('/deletefinansialbyid/{id}', [FinansialController::class, 'destroy']);
+//finansial
+Route::post('/finansial', [FinansialController::class, 'finansial']); //tambah data
+Route::get('/getallfinansial', [FinansialController::class, 'getAllFinansial']); //get all data
+Route::get('/getfinansialbyid/{id}', [FinansialController::class, 'getFinansialById']); //gaguna
+Route::put('/updatefinansialbyid/{id}', [FinansialController::class, 'update']); //update data
+Route::delete('/deletefinansialbyid/{id}', [FinansialController::class, 'destroy']); //delete data
+Route::get('/getfinansialbynomorrekening/{nomorRekening}', [FinansialController::class, 'getFinansialByNomorRekening']); //get data by nomor rekening
 
-Route::get('/gettitleaspek', [AspekFormController::class, 'getTitleAspek']);
-Route::post('/aspek', [AspekFormController::class, 'addAspek']);
-Route::get('/getallaspek', [AspekFormController::class, 'getAllAspek']);
-Route::get('/getaspekbyid', [AspekFormController::class, 'getAspekById']);
+//aspek
+Route::post('/tambahTitleAspek', [AspekFormController::class, 'tambahTitleAspek']); //tambah title aspek
+Route::get('/gettitleaspek', [AspekFormController::class, 'getTitleAspek']); //get title aspek
+Route::put('/updatetitleaspekbyid/{id}', [AspekFormController::class, 'updateTitleAspek']); //update title aspek
+Route::delete('/deletetitleaspekbyid/{id}', [AspekFormController::class, 'deleteTitleAspek']); //delete title aspek
 
-Route::get('/getjenisagunan', [JaminanController::class, 'getjenisagunan']);
-Route::post('/jaminan', [JaminanController::class, 'jaminan']);
-Route::get('/getalljaminan', [JaminanController::class, 'getalljaminan']);
-Route::get('/getjaminanbyid/{id}', [JaminanController::class, 'getJaminanById']);
-Route::put('/updatejaminanbyid/{id}', [JaminanController::class, 'update']);
-Route::delete('/deletejaminanbyid/{id}', [JaminanController::class, 'destroy']);
+Route::post('/aspek', [AspekFormController::class, 'aspek']); //tambah data
+Route::get('/getallaspek', [AspekFormController::class, 'getAllAspek']); //get all data
+Route::get('/getaspekbynomorrekening/{nomorRekening}', [AspekFormController::class, 'getAspekByNomorRekening']); //get data by nomor rekening
 
-Route::get('/getgolongankredit', [PengajuanKreditController::class, 'getGolonganKredit']);
+//jaminan
+Route::post('/tambahjenisagunan', [JaminanController::class, 'tambahjenisagunan']); //tambah jenis agunan
+Route::delete('/deletejenisagunanbyid/{id}', [JaminanController::class, 'deleteJenisAgunan']); //delete jenis agunan
+Route::get('/getjenisagunan', [JaminanController::class, 'getjenisagunan']); //get jenis agunan
+Route::post('/tambahhakmilik', [JaminanController::class, 'tambahhakmilik']); //tambah hak milik
+Route::get('/gethakmilik', [JaminanController::class, 'gethakmilik']); //get all hak milik
+Route::delete('/deletehakmilikbyid/{id}', [JaminanController::class, 'deleteHakMilik']); //delete hak milik
+Route::post('/tambahtipe', [JaminanController::class, 'tambahtipe']); //tambah tipe
+Route::get('/gettipe', [JaminanController::class, 'gettipe']); //get all tipe
+Route::delete('/deletetipebyid/{id}', [JaminanController::class, 'deleteTipe']); //delete tipe
 
-Route::post('/limac', [LimaC_Controller::class, 'limac']);
-Route::get('/getalllimac', [LimaC_Controller::class, 'getAllLimaC']);
-Route::get('/getlimacbyid/{id}', [LimaC_Controller::class, 'getLimaCById']);
-Route::put('/updatelimacbyid/{id}', [LimaC_Controller::class, 'update']);
-Route::delete('/deletelimacbyid/{id}', [LimaC_Controller::class, 'destroy']);
 
-Route::post('/pemohon', [PemohonController::class, 'pemohon']);
-Route::get('/getallpemohon', [PemohonController::class, 'index']);
-Route::get('/pemohon/{cif}', [PemohonController::class, 'show']);
-Route::get('/getprodukbycif/{cif}', [PemohonController::class, 'getProdukByCif']);
-Route::get('/getsektorekonomi', [PemohonController::class, 'getSektorEkonomi']);
-Route::get('/getpemohonbyid/{id}', [PemohonController::class, 'getPemohonById']);
-Route::put('/updatepemohonbyid/{id}', [PemohonController::class, 'update']);
-Route::delete('/deletepemohonbyid/{id}', [PemohonController::class, 'destroy']);
+Route::post('/jaminan', [JaminanController::class, 'jaminan']); //tambah data   
+Route::get('/getalljaminan', [JaminanController::class, 'getalljaminan']); //get all data
+Route::get('/getjaminanbyid/{id}', [JaminanController::class, 'getJaminanById']); //gaguna
+Route::put('/updatejaminanbyid/{id}', [JaminanController::class, 'update']); //update data
+Route::delete('/deletejaminanbyid/{id}', [JaminanController::class, 'destroy']); //delete data
+Route::get('/getjaminanbynomorrekening/{nomorRekening}', [JaminanController::class, 'getJaminanByNomorRekening']); //get data by nomor rekening
 
-Route::get('/getSurvey', [SurveyController::class, 'getSurvey']);
-Route::post('/addSurvey', [SurveyController::class, 'addSurvey']);
-Route::get('/getallsurvey', [SurveyController::class, 'getAllSurvey']);
+//pengajuan kredit
+Route::get('/getgolongankredit', [PengajuanKreditController::class, 'getGolonganKredit']); //get golongan kredit
 
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
+//limac
+Route::post('/limac', [LimaC_Controller::class, 'limac']); //tambah data
+Route::get('/getalllimac', [LimaC_Controller::class, 'getAllLimaC']); //get all data
+Route::get('/getlimacbyid/{id}', [LimaC_Controller::class, 'getLimaCById']); //gaguna
+Route::get('/getlimacbynomorrekening/{nomorRekening}', [LimaC_Controller::class, 'getLimaCByNomorRekening']); //get data by nomor rekening
+Route::put('/updatelimacbyid/{id}', [LimaC_Controller::class, 'update']); //update data
+Route::delete('/deletelimacbyid/{id}', [LimaC_Controller::class, 'destroy']); //delete data
 
-Route::get('/user/{userId}/sidebars', [UserController::class, 'getUserWithSidebars']);
-Route::get('/getallusersidebar', [UserController::class, 'getAllUsers']);
-Route::post('/sidebars/update-status', [UserController::class, 'updateSidebarStatus']);
-Route::put('/sync-user-sidebars', [UserController::class, 'syncUserSidebars']);
+//pemohon
+Route::post('/pemohon', [PemohonController::class, 'pemohon']); //tambah data
+Route::get('/getallpemohon', [PemohonController::class, 'index']); //get all data
+Route::get('/pemohon/{cif}', [PemohonController::class, 'show']); //get data by cif
+Route::get('/getsektorekonomi', [PemohonController::class, 'getSektorEkonomi']); //get sektor ekonomi
+Route::get('/getpemohonbyid/{id}', [PemohonController::class, 'getPemohonById']); //get data by id
+Route::put('/updatepemohonbyid/{id}', [PemohonController::class, 'update']); //update data
+Route::delete('/deletepemohonbyid/{Cif}', [PemohonController::class, 'destroy']); //delete data
 
-Route::get('/getregisternasabah', [RegisterNasabahController::class, 'index']);
+//survey
+Route::get('/getSurvey', [SurveyController::class, 'getSurvey']); //get data
+Route::post('/addSurvey', [SurveyController::class, 'addSurvey']); //tambah data
+Route::get('/getallsurvey', [SurveyController::class, 'getAllSurvey']); //get all data
+Route::get('/getallsurveybynomorrekening/{nomorRekening}', [SurveyController::class, 'getAllSurveyByNomorRekening']); //get data by nomor rekening  
 
-Route::post('/produk', [ProdukController::class, 'produk']);
-Route::get('/getallproduk', [ProdukController::class, 'index']);
-Route::get('/getsifatkredit', [ProdukController::class, 'getSifatKredit']);
-Route::get('/getprodukbyid/{id}', [ProdukController::class, 'getProdukById']);
-Route::put('/updatepengajuanbyid/{id}', [ProdukController::class, 'update']);
-Route::delete('/deleteprodukbyid/{id}', [ProdukController::class, 'destroy']);
+//user
+Route::post('/register', [UserController::class, 'register']); //tambah data
+Route::post('/login', [UserController::class, 'login']); //login
+
+//sidebar
+Route::get('/user/{userId}/sidebars', [UserController::class, 'getUserWithSidebars']); //get data with sidebar
+Route::get('/getallusersidebar', [UserController::class, 'getAllUsers']); //get all data
+Route::post('/sidebars/update-status', [UserController::class, 'updateSidebarStatus']); //update status
+Route::put('/sync-user-sidebars', [UserController::class, 'syncUserSidebars']); //sync user sidebar
+
+//register nasabah
+Route::get('/getregisternasabah', [RegisterNasabahController::class, 'index']); //get register nasabah
+
+//produk
+Route::post('/produk', [ProdukController::class, 'produk']); //tambah data
+Route::get('/getallproduk', [ProdukController::class, 'index']); //get all data
+Route::get('/getsifatkredit', [ProdukController::class, 'getSifatKredit']); //get sifat kredit
+Route::get('/getprodukbyid/{id}', [ProdukController::class, 'getProdukById']); //get data by id
+Route::get('/getprodukbycif/{cif}', [ProdukController::class, 'getProdukByCif']); //get data by cif
+Route::put('/updatepengajuanbyid/{id}', [ProdukController::class, 'update']); //update data
+Route::delete('/deleteprodukbyid/{NomorRekening}', [ProdukController::class, 'destroy']); //delete data
 
 
 

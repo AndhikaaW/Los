@@ -126,7 +126,8 @@ const FormFinancial = () => {
             const response = await axios.post(API_ENDPOINTS.FINANCIAL, formFinancial);
             console.log('Response from API:', response.data);
             setIsLoading(false)
-            // Reset form atau tampilkan pesan sukses di sini
+            setVisible(true);
+            resetForm();
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false)

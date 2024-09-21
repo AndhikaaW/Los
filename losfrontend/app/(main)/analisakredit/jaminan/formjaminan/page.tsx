@@ -11,38 +11,49 @@ import axios from 'axios';
 import SearchRekening from '@/app/(full-page)/component/searchRekening/page';
 import { Dialog } from 'primereact/dialog';
 
-interface JenisAgunan {
-    id: number,
-    Kode: string,
-    Keterangan: string
-}
+
 const FormJaminan = () => {
     const [visible, setVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [jenisAgunan, setjenisAgunan] = useState<JenisAgunan[]>([]);
+    const [jenisAgunan, setjenisAgunan] = useState<any>([]);
+    const [hakMilik, setHakMilik] = useState<any>([]);
     const [formJaminan, setformJaminan] = useState<{
         [key: string]: string;
     }>({
         NomorRekening: '',
-        jenisAgunan: 'tanah',
-        merek: 'tanah',
-        buktiHakMilik: 'tanah',
-        namaPemilikJaminan: 'tanah',
-        lokasiAgunan: 'tanah',
-        nilaiTransaksi: 'tanah',
-        jenisPengikatan: 'tanah',
-        tipe: 'tanah',
-        tahunPembuatan: 'tanah',
-        noAgunan: 'tanah',
-        hubunganDenganPemilik: 'tanah',
-        informasiTambahan: 'tanah',
-        asuransi: 'tanah'
+        jenisAgunan: '',
+        merek: '',
+        buktiHakMilik: '',
+        namaPemilikJaminan: '',
+        lokasiAgunan: '',
+        nilaiTransaksi: '',
+        jenisPengikatan: '',
+        tipe: '',
+        tahunPembuatan: '',
+        noAgunan: '',
+        hubunganDenganPemilik: '',
+        informasiTambahan: '',
+        asuransi: ''
     });
     useEffect(() => {
         const fetchSifatKredit = async () => {
             try {
                 const response = await axios.get(API_ENDPOINTS.GETJENISAGUNAN);
                 setjenisAgunan(response.data);
+            } catch (error) {
+                console.error('There was an error fetching the users!', error);
+            } finally {
+                // setIsLoading(false);
+            }
+        };
+        fetchSifatKredit();
+    }, []);
+
+    useEffect(() => {
+        const fetchSifatKredit = async () => {
+            try {
+                const response = await axios.get(API_ENDPOINTS.GETHAKMILIK);
+                setHakMilik(response.data);
             } catch (error) {
                 console.error('There was an error fetching the users!', error);
             } finally {
@@ -75,14 +86,13 @@ const FormJaminan = () => {
             console.log('Response from API:', response.data);
             setIsLoading(false)
             setVisible(true)
+            resetForm();
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false)
         }
     };
-
- 
-    const handleReset = () => {
+    const resetForm = () => {
         setformJaminan({
             NomorRekening: '',
             jenisAgunan: '',
@@ -117,7 +127,11 @@ const FormJaminan = () => {
         { label: 'Informasi Tambahan', type: 'input', name: 'informasiTambahan' },
         { label: 'Asuransi', type: 'input', name: 'asuransi' }
     ];
-    const JenisAgunanOptions = jenisAgunan.map((item, index) => ({
+    const JenisAgunanOptions = jenisAgunan.map((item: any, index: any) => ({
+        label: item.Keterangan,
+        value: item.Keterangan
+    }));
+    const HakMilikOptions = hakMilik.map((item: any, index: any) => ({
         label: item.Keterangan,
         value: item.Keterangan
     }));
@@ -134,7 +148,7 @@ const FormJaminan = () => {
             NomorRekening: e.target.value
         }));
     };
-
+    console.log(HakMilikOptions)
     return (
         <div className="jaminan-page">
             <div className="surface-card p-4 shadow-2 border-round">
@@ -152,7 +166,8 @@ const FormJaminan = () => {
                                     <div className="my-2" key={index}>
                                         <label className="block text-900 font-medium mb-2">{field.label}</label>
                                         {/* {field.type === 'dropdown' && <Dropdown name={field.name} value={formJaminan[field.name]} options={field.options} onChange={handleInputChange} className="w-full" />} */}
-                                        {field.type === 'dropdown' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={JenisAgunanOptions} placeholder="" className="w-full md:w-full" />}
+                                        {field.type === 'dropdown' && field.name === 'jenisAgunan' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={JenisAgunanOptions} placeholder="Pilih Jenis Agunan" className="w-full md:w-full" />}
+                                        {field.type === 'dropdown' && field.name === 'buktiHakMilik' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={HakMilikOptions} placeholder="Pilih Bukti Hak Milik" className="w-full md:w-full" />}
                                         {field.type === 'input' && <InputText required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} className="w-full" />}
                                         {field.type === 'calendar' && <InputText required type='date' name={field.name} onChange={handleInputChange} className="w-full" />}
                                     </div>
@@ -172,7 +187,7 @@ const FormJaminan = () => {
                     </fieldset>
                     <div className='flex justify-content-end'>
                         <div className='flex gap-4'> {/*Button*/}
-                            <Button onClick={handleReset} className=''>Reset</Button>
+                            <Button onClick={resetForm} className=''>Reset</Button>
                             {/* <Button type='submit' onClick={() => setVisible(true)} className=''>Submit</Button> */}
                             {/* <Button label="Submit" type='submit'/> */}
                             <Button type="submit" className='text-white bg-[#61AB5B] w-auto' disabled={isLoading}>

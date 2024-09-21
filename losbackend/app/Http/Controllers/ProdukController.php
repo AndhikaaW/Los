@@ -39,9 +39,9 @@ class ProdukController extends Controller
         $data = SifatKredit::all();
         return response()->json($data);
     }
-    public function getProdukById(string $id)
+    public function getProdukById(string $cif)
     {
-        $produk = Produk::findOrFail($id);
+        $produk = Produk::findOrFail($cif);
         return response()->json($produk);
     }
 
@@ -71,11 +71,22 @@ class ProdukController extends Controller
 
         return response()->json($produk);
     }
-    public function destroy(string $id)
+    public function destroy(string $NomorRekening)
     {
-        $produk = Produk::findOrFail($id);
+        $produk = Produk::where('NomorRekening', $NomorRekening)->firstOrFail();
         $produk->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function getProdukByCif(string $cif)
+    {
+        $produk = Produk::where('Cif', $cif)->get();
+
+        if (!$produk) {
+            return response()->json(['message' => 'Produk not found'], 404);
+        }
+
+        return response()->json($produk);
     }
 }

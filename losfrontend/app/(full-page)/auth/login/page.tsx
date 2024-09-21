@@ -52,7 +52,7 @@ const LoginPage = () => {
                 router.push('/');
             } else {
                 localStorage.setItem('user-info', JSON.stringify(response.data));
-                router.push("/admin");
+                router.push("/admin/debitur");
             }
             // if (response.data) {
             // }

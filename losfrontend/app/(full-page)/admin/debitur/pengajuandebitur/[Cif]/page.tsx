@@ -6,18 +6,21 @@ import { useParams } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
+import { Dialog } from 'primereact/dialog';
 import { Paginator } from 'primereact/paginator';
 import React, { useEffect, useState } from 'react'
 
 const Pengajuandebitur = () => {
     const [data, setData] = useState([])
+    const [selectedRow, setSelectedRow] = useState<any>({});
+    const [visible, setVisible] = useState(false);
     const params = useParams();
     const cif = params?.Cif;
 
     useEffect(() => {
         const fetchCif = async () => {
             try {
-                const response = await axios.get(`http://192.168.1.35:8000/api/getprodukbycif/${cif}`);
+                const response = await axios.get(API_ENDPOINTS.GETPRODUKBYCIF(cif));
                 setData(response.data);
                 console.log(response.data)
             } catch (error) {
@@ -26,6 +29,17 @@ const Pengajuandebitur = () => {
         };
         fetchCif();
     }, [cif]);
+    const handleDelete = async (id: string) => {
+        try {
+            await axios.delete(API_ENDPOINTS.DELETEPRODUKBYID(id));
+            setData(data.filter((item: any) => item.id !== id));
+            const response = await axios.get(API_ENDPOINTS.GETPRODUKBYCIF(cif));
+            setData(response.data);
+            // setPaginatedData(response.data.slice(first, first + rows));
+        } catch (error) {
+            console.error('Error deleting form pengajuan:', error);
+        }
+    };
     return (
         <div>
             {/* <h3>Data yang dipilih:</h3>
@@ -48,12 +62,17 @@ const Pengajuandebitur = () => {
                     {/* <Column field="no_aplikasi_sebelumnya" header="No Aplikasi Sebelumnya" /> */}
                     <Column field="tujuan_penggunaan" header="Tujuan Penggunaan" />
                     <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" />
+                    <Column header="Analisa Kredit" body={(rowData) => (
+                        <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}/analisakredit/${rowData.NomorRekening}`} passHref>
+                            <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                        </Link>
+                    )} />
                     <Column header="Edit" body={(rowData) => (
                         <Link href={`/pengajuan/formpengajuan/${rowData.id}`} passHref>
                             <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
                         </Link>
                     )} />
-                    {/* <Column header="Delete" body={(rowData) => (
+                    <Column header="Delete" body={(rowData) => (
                         <div className='flex justify-content-center'>
                             <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
                                 setSelectedRow(rowData);
@@ -63,16 +82,11 @@ const Pengajuandebitur = () => {
                                 <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
                                 <div className='flex justify-content-end mt-3'>
                                     <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.id); setVisible(false); }} />
+                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.NomorRekening); setVisible(false); }} />
                                 </div>
                             </Dialog>
                         </div>
-                    )} /> */}
-                    {/* <Column header="Pengajuan" body={(rowData) => (
-                        <Link href={`/pengajuan/formpengajuan/${rowData.id}`} passHref>
-                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-                        </Link>
-                    )} /> */}
+                    )} />
                 </DataTable>
                 {/* <Paginator
                     first={first}

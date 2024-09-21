@@ -220,7 +220,7 @@ const FormPemohon = () => {
                                                     <span className="p-inputgroup-addon"><i className="pi pi-search"></i></span>
                                                     <InputText placeholder="Search" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className="w-full" />
                                                 </div>
-                                                <DataTable value={paginatedPemohon} tableStyle={{ minWidth: '50rem' }} onRowClick={onRowClick} className='cursor-pointer'>
+                                                <DataTable value={paginatedPemohon} tableStyle={{ minWidth: '50rem' }} onRowClick={onRowClick} className='cursor-pointer' rowClassName={(data) => `hover:bg-gray-100`}>
                                                     <Column field="ID" header="ID" />
                                                     <Column field="Cif" header="CIF" />
                                                     <Column field="Nama" header="Nama Lengkap" />

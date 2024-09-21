@@ -22,6 +22,14 @@ class SurveyController extends Controller
             ->get();
         return response()->json($survey);
     }
+    public function getAllSurveyByNomorRekening($nomorRekening)
+    {
+        $survey = OutSurvey::where('NomorRekening', $nomorRekening)
+            ->leftJoin('survey', 'trx_survey.SurveyId', '=', 'survey.id')
+            ->select('survey.*', 'trx_survey.*')
+            ->get();
+        return response()->json($survey);
+    }
     public function addSurvey(Request $request)
     {
         $surveyData = $request->all();

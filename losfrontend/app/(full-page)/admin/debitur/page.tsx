@@ -5,11 +5,14 @@ import Link from 'next/link';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
+import { Dialog } from 'primereact/dialog';
 import { Paginator } from 'primereact/paginator';
 import React, { useEffect, useState } from 'react'
 
 const Debiturpage = () => {
   const [data, setData] = useState([])
+  const [selectedRow, setSelectedRow] = useState<any>({});
+  const [visible, setVisible] = useState(false);
   // const [first, setFirst] = useState(0);
   // const [rows, setRows] = useState(2);
   // const onPageChange = (event: any) => {
@@ -28,6 +31,18 @@ const Debiturpage = () => {
     };
     fetchCif();
   }, []);
+
+  const handleDelete = async (Cif: string) => {
+    try {
+      await axios.delete(API_ENDPOINTS.DELETEPEMOHONBYID(Cif));
+      setData(data.filter((item: any) => item.Cif !== Cif));
+      const response = await axios.get(API_ENDPOINTS.GETALLPEMOHON);
+      setData(response.data);
+      // setPaginatedData(response.data.slice(first, first + rows));
+    } catch (error) {
+      console.error('Error deleting form pemohon:', error);
+    }
+  };
   return (
     <div>
       {/* <h3>Data yang dipilih:</h3>
@@ -48,7 +63,21 @@ const Debiturpage = () => {
               <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
             </Link>
           )} />
-
+          <Column header="Delete" body={(rowData) => (
+            <div className='flex justify-content-center'>
+              <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                setSelectedRow(rowData);
+                setVisible(true);
+              }} />
+              <Dialog header={`Hapus Data ${selectedRow.Cif}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
+                <div className='flex justify-content-end mt-3'>
+                  <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+                  <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.Cif); setVisible(false); }} />
+                </div>
+              </Dialog>
+            </div>
+          )} />
         </DataTable>
         {/* <Paginator
           first={first}

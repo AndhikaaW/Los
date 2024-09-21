@@ -127,22 +127,13 @@ class PemohonController extends Controller
 
         return response()->json($pemohon);
     }
-    public function destroy(string $id)
+    public function destroy(string $Cif)
     {
-        $pemohon = Pemohon::findOrFail($id);
+        $pemohon = Pemohon::where('Cif', $Cif)->firstOrFail();
         $pemohon->delete();
 
         return response()->json(null, 204);
     }
 
-    public function getProdukByCif(string $cif)
-    {
-        $produk = Produk::where('Cif', $cif)->get();
-
-        if (!$produk) {
-            return response()->json(['message' => 'Produk not found'], 404);
-        }
-
-        return response()->json($produk);
-    }
+    
 }
