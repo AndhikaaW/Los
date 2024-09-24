@@ -17,16 +17,16 @@ class SurveyController extends Controller
     }
     public function getAllSurvey()
     {
-        $survey = OutSurvey::leftJoin('survey', 'trx_survey.SurveyId', '=', 'survey.id')
-            ->select('survey.*', 'trx_survey.*')
+        $survey = OutSurvey::leftJoin('ref_survey', 'trx_survey.Kode', '=', 'ref_survey.Kode')
+            ->select('ref_survey.*', 'trx_survey.*')
             ->get();
         return response()->json($survey);
     }
     public function getAllSurveyByNomorRekening($nomorRekening)
     {
         $survey = OutSurvey::where('NomorRekening', $nomorRekening)
-            ->leftJoin('survey', 'trx_survey.SurveyId', '=', 'survey.id')
-            ->select('survey.*', 'trx_survey.*')
+            ->leftJoin('ref_survey', 'trx_survey.Kode', '=', 'ref_survey.Kode')
+            ->select('ref_survey.*', 'trx_survey.*')
             ->get();
         return response()->json($survey);
     }
@@ -39,10 +39,10 @@ class SurveyController extends Controller
                 continue;
             }else {
                 $aspek = Survey::firstOrCreate([
-                    'title' => $key,
+                    'Keterangan' => $key,
                 ]);
                 OutSurvey::create([
-                    'SurveyId' => $aspek->id,
+                    'Kode' => $aspek->Kode,
                     'Pilihan' => $value,
                     'NomorRekening' => $nomorRekening
                 ]);

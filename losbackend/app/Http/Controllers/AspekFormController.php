@@ -11,7 +11,10 @@ class AspekFormController extends Controller
     function tambahTitleAspek(Request $req)
     {
         $aspekForm = new AspekForm;
-        $aspekForm->title_aspek = $req->input('title_aspek');
+        $kodeTerakhir = AspekForm::max('Kode');
+        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
+        $aspekForm->Kode = sprintf('A%02d', $nomorBaru);
+        $aspekForm->Keterangan = $req->input('Keterangan');
         $aspekForm->save();
         return response()->json($aspekForm, 201);
     }
@@ -20,23 +23,23 @@ class AspekFormController extends Controller
         $aspek = AspekForm::all();
         return response()->json($aspek);
     }
-    public function updateTitleAspek($id, Request $req)
+    public function updateTitleAspek($Kode, Request $req)
     {
-        $aspekForm = AspekForm::find($id);
+        $aspekForm = AspekForm::find($Kode);
         if (!$aspekForm) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
-        $titleAspek = $req->input('title_aspek');
-        if (empty($titleAspek)) {
+        $Keterangan = $req->input('Keterangan');
+        if (empty($Keterangan)) {
             return response()->json(['message' => 'Judul aspek harus diisi'], 400);
         }
-        $aspekForm->title_aspek = $titleAspek;
+        $aspekForm->Keterangan = $Keterangan;
         $aspekForm->save();
         return response()->json($aspekForm);
     }
-    public function deleteTitleAspek($id)
+    public function deleteTitleAspek($Kode)
     {
-        $aspekForm = AspekForm::find($id);
+        $aspekForm = AspekForm::find($Kode);
         if (!$aspekForm) {
             return response()->json(['message' => 'Data not found'], 404);
         }
@@ -46,7 +49,7 @@ class AspekFormController extends Controller
 
     public function getAllAspek()
     {
-        $aspek = OutAspekForm::leftJoin('aspek_form', 'trx_aspek_form.aspek_id', '=', 'aspek_form.id')
+        $aspek = OutAspekForm::leftJoin('aspek_form', 'trx_aspek_form.Kode', '=', 'aspek_form.Kode')
             ->select('aspek_form.*', 'trx_aspek_form.*')
             ->get();
         return response()->json($aspek);
@@ -54,7 +57,7 @@ class AspekFormController extends Controller
 
     public function getAspekByNomorRekening($nomorRekening)
     {
-        $aspek = OutAspekForm::leftJoin('aspek_form', 'trx_aspek_form.aspek_id', '=', 'aspek_form.id')
+        $aspek = OutAspekForm::leftJoin('aspek_form', 'trx_aspek_form.Kode', '=', 'aspek_form.Kode')
             ->select('aspek_form.*', 'trx_aspek_form.*')
             ->where('trx_aspek_form.NomorRekening', $nomorRekening)
             ->get();
@@ -69,10 +72,10 @@ class AspekFormController extends Controller
                 continue;
             } else {
                 $aspek = AspekForm::firstOrCreate([
-                    'title_aspek' => $key,
+                    'Keterangan' => $key,
                 ]);
                 OutAspekForm::create([
-                    'aspek_id' => $aspek->id,
+                    'Kode' => $aspek->Kode,
                     'jawaban' => $value,
                     'NomorRekening' => $nomorRekening
                 ]);

@@ -37,6 +37,7 @@ const SurveyPage = () => {
   const handleSave = async () => {
     const response = await axios.post(API_ENDPOINTS.ADDSURVEY, formData);
     console.log('Response from API:', response.data);
+    // console.log(formData)
     setIsLoading(false)
     setVisible(true)
     resetForm()
@@ -69,7 +70,7 @@ const SurveyPage = () => {
         />
         {survey.map((question, index) => (
           <Fieldset
-            legend={question.title}
+            legend={question.Keterangan}
             key={index}
             style={{ marginTop: "20px" }}
           >
@@ -80,13 +81,13 @@ const SurveyPage = () => {
                 key={indexpilihan}
               >
                 <RadioButton
-                  name={`question_${question.title}`}
+                  name={`question_${question.Keterangan}`}
                   value={pilihan.pertanyaan}
                   onChange={e =>
-                    handleRadioChange(e, `${question.title}`)
+                    handleRadioChange(e, `${question.Keterangan}`)
                   }
                   checked={
-                    formData[`${question.title}`] ===
+                    formData[`${question.Keterangan}`] ===
                     pilihan.pertanyaan
                   }
                 />

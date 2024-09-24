@@ -16,7 +16,10 @@ const FormJaminan = () => {
     const [visible, setVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [jenisAgunan, setjenisAgunan] = useState<any>([]);
+    const [tipe, setTipe] = useState<any>([]);
+    const [hubunganPemilik, setHubunganPemilik] = useState<any>([]);
     const [hakMilik, setHakMilik] = useState<any>([]);
+    const [jenisPengikatan, setJenisPengikatan] = useState<any>([]);
     const [formJaminan, setformJaminan] = useState<{
         [key: string]: string;
     }>({
@@ -36,7 +39,7 @@ const FormJaminan = () => {
         asuransi: ''
     });
     useEffect(() => {
-        const fetchSifatKredit = async () => {
+        const fetchJenisAgunan = async () => {
             try {
                 const response = await axios.get(API_ENDPOINTS.GETJENISAGUNAN);
                 setjenisAgunan(response.data);
@@ -46,11 +49,21 @@ const FormJaminan = () => {
                 // setIsLoading(false);
             }
         };
-        fetchSifatKredit();
+        fetchJenisAgunan();
     }, []);
-
     useEffect(() => {
-        const fetchSifatKredit = async () => {
+        const fetchTipe = async () => {
+            try {
+                const response = await axios.get(API_ENDPOINTS.GETTIPE);
+                setTipe(response.data);
+            } catch (error) {
+                console.error('There was an error fetching the tipe!', error);
+            }
+        };
+        fetchTipe();
+    }, []);
+    useEffect(() => {
+        const fetchHakMilik = async () => {
             try {
                 const response = await axios.get(API_ENDPOINTS.GETHAKMILIK);
                 setHakMilik(response.data);
@@ -60,8 +73,31 @@ const FormJaminan = () => {
                 // setIsLoading(false);
             }
         };
-        fetchSifatKredit();
+        fetchHakMilik();
     }, []);
+    useEffect(() => {
+        const fetchJenisPengikatan = async () => {
+            try {
+                const response = await axios.get(API_ENDPOINTS.GETJENISPENGIKATAN);
+                setJenisPengikatan(response.data);
+            } catch (error) {
+                console.error('There was an error fetching the users!', error);
+            }
+        };
+        fetchJenisPengikatan();
+    }, []);
+    useEffect(() => {
+        const fetchHubunganPemilik = async () => {
+            try {
+                const response = await axios.get(API_ENDPOINTS.GETHUBUNGANPEMILIK);
+                setHubunganPemilik(response.data);
+            } catch (error) {
+                console.error('There was an error fetching the users!', error);
+            }
+        };
+        fetchHubunganPemilik();
+    }, []);
+
 
     const handleInputChange = (e: any) => {
         const { name, value } = e.target;
@@ -131,7 +167,19 @@ const FormJaminan = () => {
         label: item.Keterangan,
         value: item.Keterangan
     }));
+    const TipeOptions = tipe.map((item: any, index: any) => ({
+        label: item.Keterangan,
+        value: item.Keterangan
+    }));
     const HakMilikOptions = hakMilik.map((item: any, index: any) => ({
+        label: item.Keterangan,
+        value: item.Keterangan
+    }));
+    const HubunganPemilikOptions = hubunganPemilik.map((item: any, index: any) => ({
+        label: item.Keterangan,
+        value: item.Keterangan
+    }));
+    const JenisPengikatanOptions = jenisPengikatan.map((item: any, index: any) => ({
         label: item.Keterangan,
         value: item.Keterangan
     }));
@@ -165,9 +213,9 @@ const FormJaminan = () => {
                                 {jaminanFields.slice(0, 7).map((field, index) => (
                                     <div className="my-2" key={index}>
                                         <label className="block text-900 font-medium mb-2">{field.label}</label>
-                                        {/* {field.type === 'dropdown' && <Dropdown name={field.name} value={formJaminan[field.name]} options={field.options} onChange={handleInputChange} className="w-full" />} */}
                                         {field.type === 'dropdown' && field.name === 'jenisAgunan' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={JenisAgunanOptions} placeholder="Pilih Jenis Agunan" className="w-full md:w-full" />}
                                         {field.type === 'dropdown' && field.name === 'buktiHakMilik' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={HakMilikOptions} placeholder="Pilih Bukti Hak Milik" className="w-full md:w-full" />}
+                                        {field.type === 'dropdown' && field.name === 'jenisPengikatan' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={JenisPengikatanOptions} placeholder="Pilih Jenis Pengikatan" className="w-full md:w-full" />}
                                         {field.type === 'input' && <InputText required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} className="w-full" />}
                                         {field.type === 'calendar' && <InputText required type='date' name={field.name} onChange={handleInputChange} className="w-full" />}
                                     </div>
@@ -177,7 +225,8 @@ const FormJaminan = () => {
                                 {jaminanFields.slice(7).map((field, index) => (
                                     <div className="my-2" key={index}>
                                         <label className="block text-900 font-medium mb-2">{field.label}</label>
-                                        {field.type === 'dropdown' && <Dropdown required name={field.name} value={formJaminan[field.name]} options={field.options} onChange={handleInputChange} placeholder="" className="w-full" />}
+                                        {field.type === 'dropdown' && field.name === 'tipe' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={TipeOptions} placeholder="Pilih Tipe" className="w-full md:w-full" />}
+                                        {field.type === 'dropdown' && field.name === 'hubunganDenganPemilik' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={HubunganPemilikOptions} placeholder="Pilih Hubungan dengan Pemilik" className="w-full md:w-full" />}
                                         {field.type === 'input' && <InputText required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} className="w-full" />}
                                         {field.type === 'calendar' && <InputText required type='date' name={field.name} onChange={handleInputChange} className="w-full" />}
                                     </div>

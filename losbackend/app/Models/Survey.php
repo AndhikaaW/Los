@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Survey extends Model
 {
     use HasFactory;
-    protected $table = 'survey';
+    protected $table = 'ref_survey';
     public $timestamps = false;
     protected $fillable = [
-        'title',
+        'id',
+        'Kode',
+        'Keterangan',
     ];
     public function pilihanSurvey()
     {
-        return $this->hasMany(PilihanSurvey::class, 'survey_id', 'id');
+        return $this->hasMany(PilihanSurvey::class, 'Kode', 'Kode');
     }
 }

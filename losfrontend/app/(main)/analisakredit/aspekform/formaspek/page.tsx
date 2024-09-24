@@ -9,7 +9,7 @@ import SearchRekening from '@/app/(full-page)/component/searchRekening/page';
 
 interface TitleAspek {
     id: number;
-    title_aspek: string;
+    Keterangan: string;
 }
 const FormAspek = () => {
     const [titleAspek, settitleAspek] = useState<TitleAspek[]>([])
@@ -95,8 +95,8 @@ const FormAspek = () => {
                         <legend className="text-xl font-bold">Formulir Aspek</legend>
                         {titleAspek.map((aspect, index) => (
                             <div key={index} className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">{aspect.title_aspek}</label>
-                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.title_aspek]} onChange={(e) => handleInputChange(e, aspect.title_aspek)} />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{aspect.Keterangan}</label>
+                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.Keterangan]} onChange={(e) => handleInputChange(e, aspect.Keterangan)} />
                             </div>
                         ))}
 

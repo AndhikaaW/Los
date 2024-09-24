@@ -1,412 +1,226 @@
 "use client"
+import React, { useState, useEffect, useRef } from 'react';
 import { TabView, TabPanel } from 'primereact/tabview';
-import { API_ENDPOINTS } from '@/app/api/losbackend/api';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Dialog } from 'primereact/dialog';
+import axios from 'axios';
+import { API_ENDPOINTS } from '@/app/api/losbackend/api';
+import DataTableWithCRUD from '@/app/(full-page)/component/datatable/page'; // Pastikan path ini benar
 
-const tambahanalisakredit = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const toast = React.useRef<Toast>(null);
-    const [refTitleAspek, setRefTitleAspek] = useState<any>([])
-    const [refJenisAgunan, setRefJenisAgunan] = useState<any>([])
-    const [refHakMilik, setRefHakMilik] = useState<any>([])
-    const [refTipe, setRefTipe] = useState<any>([])
+const TambahanAnalisaKredit = () => {
+    const [refTitleAspek, setRefTitleAspek] = useState([]);
+    const [refJenisAgunan, setRefJenisAgunan] = useState([]);
+    const [refHakMilik, setRefHakMilik] = useState([]);
+    const [refTipe, setRefTipe] = useState([]);
+    const [refJenisPengikatan, setRefJenisPengikatan] = useState([]);
+    const [refHubunganPemilik, setRefHubunganPemilik] = useState([]);
+    const [refSurvey, setRefSurvey] = useState([]);
 
-    const [titleAspek, setTitleAspek] = useState('');
-    const [titleAspekEdit, setTitleAspekEdit] = useState('');
-    const [titleSurvey, setTitleSurvey] = useState('');
-    const [pilihanSurvey, setPilihanSurvey] = useState('');
-    const [jenisAgunan, setJenisAgunan] = useState('');
-    const [hakMilik, setHakMilik] = useState('');
-    const [tipe, setTipe] = useState('');
-    
+    const [refBidangUsaha, setRefBidangUsaha] = useState([]);
+    const [refSifatKredit, setRefSifatKredit] = useState([]);
+    const [refJenisAngsuran, setRefJenisAngsuran] = useState([]);
+    const toast = useRef<Toast>(null);
 
-    const [selectedRowAspek, setSelectedRowAspek] = useState<any>({});
-    const [visibleDeleteAspek, setVisibleDeleteAspek] = useState(false);
-    const [visibleEditAspek, setVisibleEditAspek] = useState(false);
-
-    const [selectedRowJenisAgunan, setSelectedRowJenisAgunan] = useState<any>({});
-    const [visibleJenisAgunan, setVisibleJenisAgunan] = useState(false);
-    const [selectedRowHakMilik, setSelectedRowHakMilik] = useState<any>({});
-    const [visibleHakMilik, setVisibleHakMilik] = useState(false);
-    const [selectedRowTipe, setSelectedRowTipe] = useState<any>({});
-    const [visibleTipe, setVisibleTipe] = useState(false);
-
-    //Aspek 
     useEffect(() => {
-        const fetchAspekForm = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETTITLEASPEK)
-                setRefTitleAspek(response.data)
-            } catch (error) {
-                console.error("There was an error fetching the survey!", error)
-            }
-        }
-        fetchAspekForm()
-    }, [])
-    const handleSubmitAspek = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            await axios.post(API_ENDPOINTS.TAMBAHTITLEASPEK, { title_aspek: titleAspek });
-            toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Aspek berhasil ditambahkan', life: 3000 });
-            setTitleAspek('');
-            const response = await axios.get(API_ENDPOINTS.GETTITLEASPEK);
-            setRefTitleAspek(response.data);
-        } catch (error) {
-            console.error('Error adding aspek:', error);
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal menambahkan aspek', life: 3000 });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    const handleUpdateAspek = async () => {
-        setIsLoading(true);
-        try {
-            await axios.put(API_ENDPOINTS.UPDATETITLEASPEKBYID(selectedRowAspek.id), { title_aspek: titleAspekEdit });
-            toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Aspek berhasil diupdate', life: 3000 });
-            setTitleAspekEdit('');
-            const response = await axios.get(API_ENDPOINTS.GETTITLEASPEK);
-            setRefTitleAspek(response.data);
-            setVisibleEditAspek(false);
-        } catch (error) {
-            console.error('Error updating aspek:', error);
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengupdate aspek', life: 3000 });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    const handleDelete = async (id: string) => {
-        try {
-            await axios.delete(API_ENDPOINTS.DELETETITLEASPEKBYID(id));
-            setRefTitleAspek(refTitleAspek.filter((item: any) => item.id !== id));
-            const response = await axios.get(API_ENDPOINTS.GETTITLEASPEK);
-            setRefTitleAspek(response.data);
-        } catch (error) {
-            console.error('Error deleting title aspek:', error);
-        }
-    };
-
-    //Survey
-    // const handleSubmitSurvey = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     setIsLoading(true);
-    //     try {
-    //         console.log(titleSurvey);
-    //         console.log(pilihanSurvey);
-    //         // const response = await axios.post('', {});
-    //         toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Survey berhasil ditambahkan', life: 3000 });
-    //         // setTitleAspek('');
-    //     } catch (error) {
-    //         console.error('Error adding survey:', error);
-    //         toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal menambahkan survey', life: 3000 });
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
-
-    //Jenis Agunan
-    useEffect(() => {
-        const fetchJenisAgunan = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETJENISAGUNAN);
-                setRefJenisAgunan(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the jenis agunan!', error);
-            }
-        };
-        fetchJenisAgunan();
+        fetchData();
     }, []);
-    const handleSubmitJenisAgunan = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
+
+    const fetchData = async () => {
         try {
-            console.log(jenisAgunan);
-            await axios.post(API_ENDPOINTS.TAMBAHJENISAGUNAN, { Keterangan: jenisAgunan });
-            toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Jenis Agunan berhasil ditambahkan', life: 3000 });
-            setJenisAgunan('');
-            const response = await axios.get(API_ENDPOINTS.GETJENISAGUNAN);
-            setRefJenisAgunan(response.data);
+            const [
+                // aspekResponse, 
+                // agunanResponse,
+                // hakMilikResponse, 
+                // tipeResponse, 
+                // pengikatanResponse, 
+                // hubunganPemilikResponse, 
+                // surveyResponse, 
+                bidangUsahaResponse, 
+                sifatKreditResponse] = await Promise.all([
+                // axios.get(API_ENDPOINTS.GETTITLEASPEK),
+                // axios.get(API_ENDPOINTS.GETJENISAGUNAN),
+                // axios.get(API_ENDPOINTS.GETHAKMILIK),
+                // axios.get(API_ENDPOINTS.GETTIPE),
+                // axios.get(API_ENDPOINTS.GETJENISPENGIKATAN),
+                // axios.get(API_ENDPOINTS.GETHUBUNGANPEMILIK),
+                // axios.get(API_ENDPOINTS.GETSURVEY),
+                axios.get(API_ENDPOINTS.GETBIDANGUSAHA),
+                axios.get(API_ENDPOINTS.GETSIFATKREDIT)
+            ]);
+            // setRefTitleAspek(aspekResponse.data);
+            // setRefJenisAgunan(agunanResponse.data);
+            // setRefHakMilik(hakMilikResponse.data);
+            // setRefTipe(tipeResponse.data);
+            // setRefJenisPengikatan(pengikatanResponse.data);
+            // setRefHubunganPemilik(hubunganPemilikResponse.data);
+            // setRefSurvey(surveyResponse.data);
+            setRefBidangUsaha(bidangUsahaResponse.data);
+            setRefSifatKredit(sifatKreditResponse.data);
         } catch (error) {
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal menambahkan jenis agunan', life: 3000 });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    const handleDeleteJenisAgunan = async (id: string) => {
-        try {
-            await axios.delete(API_ENDPOINTS.DELETEJENISAGUNANBYID(id));
-            setRefJenisAgunan(refJenisAgunan.filter((item: any) => item.id !== id));
-            const response = await axios.get(API_ENDPOINTS.GETJENISAGUNAN);
-            setRefJenisAgunan(response.data);
-        } catch (error) {
-            console.error('Error deleting jenis agunan:', error);
+            console.error("Error fetching data:", error);
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengambil data', life: 3000 });
         }
     };
 
-    //Hak Milik
-    useEffect(() => {
-        const fetchHakMilik = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETHAKMILIK);
-                setRefHakMilik(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the hak milik!', error);
-            }
-        };
-        fetchHakMilik();
-    }, []);
-    const handleSubmitHakMilik = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
+    const handleAdd = async (endpoint: string, data: any, setterFunction: any, successMessage: string) => {
         try {
-            await axios.post(API_ENDPOINTS.TAMBAHHAKMILIK, { Keterangan: hakMilik });
-            toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Hak Milik berhasil ditambahkan', life: 3000 });
-            setHakMilik('');
-            const response = await axios.get(API_ENDPOINTS.GETHAKMILIK);
-            setRefHakMilik(response.data);
+            await axios.post(endpoint, data);
+            toast.current?.show({ severity: 'success', summary: 'Success', detail: successMessage, life: 3000 });
+            fetchData();
         } catch (error) {
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal menambahkan hak milik', life: 3000 });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    const handleDeleteHakMilik = async (id: string) => {
-        try {
-            await axios.delete(API_ENDPOINTS.DELETEHAKMILIKBYID(id));
-            setRefHakMilik(refHakMilik.filter((item: any) => item.id !== id));
-            const response = await axios.get(API_ENDPOINTS.GETHAKMILIK);
-            setRefHakMilik(response.data);
-        } catch (error) {
-            console.error('Error deleting hak milik:', error);
+            console.error('Error adding data:', error);
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal menambahkan data', life: 3000 });
         }
     };
 
-    //Tipe
-    useEffect(() => {
-        const fetchTipe = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETTIPE);
-                setRefTipe(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the tipe!', error);
-            }
-        };
-        fetchTipe();
-    }, []);
-    const handleSubmitTipe = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
+    const handleUpdate = async (endpoint: (id: string) => string, Kode: string, data: any, successMessage: string) => {
         try {
-            console.log(tipe);
-            await axios.post(API_ENDPOINTS.TAMBAHTIPE, { Keterangan: tipe });
-            toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Tipe Agunan berhasil ditambahkan', life: 3000 });
-            setTipe('');
-            const response = await axios.get(API_ENDPOINTS.GETTIPE);
-            setRefTipe(response.data);
+            await axios.put(endpoint(Kode), data);
+            toast.current?.show({ severity: 'success', summary: 'Success', detail: successMessage, life: 3000 });
+            fetchData();
         } catch (error) {
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal menambahkan tipe agunan', life: 3000 });
-        } finally {
-            setIsLoading(false);
+            console.error('Error updating data:', error);
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengupdate data', life: 3000 });
         }
     };
-    const handleDeleteTipe = async (id: string) => {
+
+    const handleDelete = async (endpoint: (id: string) => string, Kode: string, successMessage: string) => {
         try {
-            await axios.delete(API_ENDPOINTS.DELETETIPEBYID(id));
-            setRefTipe(refTipe.filter((item: any) => item.id !== id));
-            const response = await axios.get(API_ENDPOINTS.GETTIPE);
-            setRefTipe(response.data);
+            await axios.delete(endpoint(Kode));
+            toast.current?.show({ severity: 'success', summary: 'Success', detail: successMessage, life: 3000 });
+            fetchData();
         } catch (error) {
-            console.error('Error deleting tipe:', error);
+            console.error('Error deleting data:', error);
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal menghapus data', life: 3000 });
         }
     };
+
     return (
-        <TabView>
+        <TabView activeIndex={1}>
+            <Toast ref={toast} />
             <TabPanel header="Tambah Aspek">
-                <div className="p-fluid mb-5">
-                    <Toast ref={toast} />
-                    <div className="card w-full">
-                        <h5>Tambah/Ubah Aspek</h5>
-                        <form onSubmit={handleSubmitAspek}>
-                            <label htmlFor="titleAspek" className='font-bold'>Judul Aspek</label>
-                            <div className='flex gap-3 align-items-center'>
-                                <InputText id="titleAspek" value={titleAspek} onChange={(e) => setTitleAspek(e.target.value)} required />
-                                <Button className='w-3' type="submit" label="Tambah" icon="pi pi-check" loading={isLoading} />
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <DataTable value={refTitleAspek} style={{ minWidth: '50rem' }} paginator rows={5} rowsPerPageOptions={[5, 10]}>
-                    <Column field="id" header="Id"></Column>
-                    <Column field="title_aspek" header="Judul Aspek"></Column>
-                    <Column header="Update" body={(rowData) => (
-                        <div>
-                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' onClick={() => {
-                                setSelectedRowAspek(rowData);
-                                setTitleAspekEdit(rowData.title_aspek);
-                                setVisibleEditAspek(true);
-                            }} />
-                        </div>
-                    )} />
-                    <Column header="Delete" body={(rowData) => (
-                        <div>
-                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                setSelectedRowAspek(rowData);
-                                setVisibleDeleteAspek(true);
-                            }} />
-                        </div>
-                    )} />
-                </DataTable>
-                <Dialog header={`Hapus Data ${selectedRowAspek.title_aspek}`} visible={visibleDeleteAspek} style={{ width: '50vw' }} onHide={() => { if (!visibleDeleteAspek) return; setVisibleDeleteAspek(false); }}>
-                    <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                    <div className='flex justify-content-end mt-3'>
-                        <Button label="No" icon="pi pi-times" onClick={() => setVisibleDeleteAspek(false)} className="p-button-text" />
-                        <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRowAspek.id); setVisibleDeleteAspek(false); }} />
-                    </div>
-                </Dialog>
-                <Dialog header={`Edit Aspek: ${selectedRowAspek.title_aspek}`} visible={visibleEditAspek} style={{ width: '50vw' }} onHide={() => setVisibleEditAspek(false)}>
-                    <div className="p-fluid">
-                        <div className="field">
-                            <label htmlFor="titleAspekEdit" className='font-bold'>Judul Aspek</label>
-                            <InputText id="titleAspekEdit" value={titleAspekEdit} onChange={(e) => setTitleAspekEdit(e.target.value)} required />
-                        </div>
-                        <div className='flex justify-content-end mt-3'>
-                            <Button label="Cancel" icon="pi pi-times" onClick={() => setVisibleEditAspek(false)} className="p-button-text w-3" />
-                            <Button label="Update" icon="pi pi-check" onClick={handleUpdateAspek} autoFocus className="w-3" />
-                        </div>
-                    </div>
-                </Dialog>
-            </TabPanel>
-            <TabPanel header="Tambah Survey">
-                <div className="p-fluid">
-                    <Toast ref={toast} />
-                    <div className="card w-full">
-                        <h5>Tambah Survey</h5>
-                        {/* <form onSubmit={handleSubmitSurvey}>
-                            <div className='flex flex-row gap-3'>
-                                <div className="field w-4">
-                                    <label htmlFor="titleSurvey">Judul Survey</label>
-                                    <InputText id="titleSurvey" value={titleSurvey} onChange={(e) => setTitleSurvey(e.target.value)} required />
-                                </div>
-                                <div className="field w-8">
-                                    <label htmlFor="pilihanSurvey">Pilihan Survey</label>
-                                    <InputText id="pilihanSurvey" value={pilihanSurvey} onChange={(e) => setPilihanSurvey(e.target.value)} required />
-                                </div>
-                            </div>
-                            <Button type="submit" label="Tambah" icon="pi pi-check" loading={isLoading} />
-                        </form> */}
-                    </div>
-                </div>
+                <DataTableWithCRUD
+                    data={refTitleAspek}
+                    columns={[
+                        // { field: 'id', header: 'Id' },
+                        { field: 'Keterangan', header: 'Judul Aspek' }
+                    ]}
+                    onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHTITLEASPEK, { Keterangan }, setRefTitleAspek, 'Aspek berhasil ditambahkan')}
+                    onUpdate={(Kode: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATETITLEASPEKBYID, Kode, { Keterangan }, 'Aspek berhasil diupdate')}
+                    onDelete={(Kode: string) => handleDelete(API_ENDPOINTS.DELETETITLEASPEKBYID, Kode, 'Aspek berhasil dihapus')}
+                    nameField="Keterangan"
+                    inputLabel="Judul Aspek"
+                />
             </TabPanel>
             <TabPanel header="Tambah Jaminan">
-                <div className="p-fluid">
-                    <Toast ref={toast} />
-                    <div className="card">
-                        <h5>Tambah Jaminan</h5>
-                        <div className='mb-5'>
-                            <form onSubmit={handleSubmitJenisAgunan}>
-                                <div className="field ">
-                                    <label htmlFor="jenisAgunan" className='font-bold'>Jenis Agunan</label>
-                                    <div className='flex gap-3 align-items-center'>
-                                        <InputText id="jenisAgunan" value={jenisAgunan} onChange={(e) => setJenisAgunan(e.target.value)} required />
-                                        <Button className='w-3' type="submit" label="Tambah" icon="pi pi-check" loading={isLoading} />
-                                    </div>
-                                </div>
-                            </form>
-                            <DataTable value={refJenisAgunan} style={{ minWidth: '50rem' }} paginator rows={3} rowsPerPageOptions={[3, 5, 10]}>
-                                <Column field="id" header="Id"></Column>
-                                <Column field="Kode" header="Kode"></Column>
-                                <Column field="Keterangan" header="Jenis Agunan"></Column>
-                                <Column header="Delete" body={(rowData) => (
-                                    <div>
-                                        <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                            setSelectedRowJenisAgunan(rowData);
-                                            setVisibleJenisAgunan(true);
-                                        }} />
-                                    </div>
-                                )} />
-                            </DataTable>
-                            <Dialog header={`Hapus Data ${selectedRowJenisAgunan.Keterangan}`} visible={visibleJenisAgunan} style={{ width: '50vw' }} onHide={() => { if (!visibleJenisAgunan) return; setVisibleJenisAgunan(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisibleJenisAgunan(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteJenisAgunan(selectedRowJenisAgunan.id); setVisibleJenisAgunan(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                        <div className='mb-5'>
-                            <form onSubmit={handleSubmitHakMilik}>
-                                <div className="field ">
-                                    <label htmlFor="hakMilik" className='font-bold'>Hak Milik</label>
-                                    <div className='flex gap-3 align-items-center'>
-                                        <InputText id="hakMilik" value={hakMilik} onChange={(e) => setHakMilik(e.target.value)} required />
-                                        <Button className='w-3' type="submit" label="Tambah" icon="pi pi-check" loading={isLoading} />
-                                    </div>
-                                </div>
-                            </form>
-                            <DataTable value={refHakMilik} style={{ minWidth: '50rem' }} paginator rows={3} rowsPerPageOptions={[3, 5, 10]}>
-                                <Column field="id" header="Id"></Column>
-                                <Column field="Kode" header="Kode"></Column>
-                                <Column field="Keterangan" header="Hak Milik"></Column>
-                                <Column header="Delete" body={(rowData) => (
-                                    <div>
-                                        <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                            setSelectedRowHakMilik(rowData);
-                                            setVisibleHakMilik(true);
-                                        }} />
-                                    </div>
-                                )} />
-                            </DataTable>
-                            <Dialog header={`Hapus Data ${selectedRowHakMilik.Keterangan}`} visible={visibleHakMilik} style={{ width: '50vw' }} onHide={() => { if (!visibleHakMilik) return; setVisibleHakMilik(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisibleHakMilik(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteHakMilik(selectedRowHakMilik.id); setVisibleHakMilik(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                        <div>
-                            <form onSubmit={handleSubmitTipe}>
-                                <div className="field ">
-                                    <label htmlFor="Tipe" className='font-bold'>Tipe</label>
-                                    <div className='flex gap-3 align-items-center'>
-                                        <InputText id="Tipe" value={tipe} onChange={(e) => setTipe(e.target.value)} required />
-                                        <Button className='w-3' type="submit" label="Tambah" icon="pi pi-check" loading={isLoading} />
-                                    </div>
-                                </div>
-                            </form>
-                            <DataTable value={refTipe} style={{ minWidth: '50rem' }} paginator rows={3} rowsPerPageOptions={[3, 5, 10]}>
-                                <Column field="id" header="Id"></Column>
-                                <Column field="Kode" header="Kode"></Column>
-                                <Column field="Keterangan" header="Tipe"></Column>
-                                <Column header="Delete" body={(rowData) => (
-                                    <div>
-                                        <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                            setSelectedRowTipe(rowData);
-                                            setVisibleTipe(true);
-                                        }} />
-                                    </div>
-                                )} />
-                            </DataTable>
-                            <Dialog header={`Hapus Data ${selectedRowTipe.Keterangan}`} visible={visibleTipe} style={{ width: '50vw' }} onHide={() => { if (!visibleTipe) return; setVisibleTipe(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisibleTipe(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteTipe(selectedRowTipe.id); setVisibleTipe(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                    </div>
-                </div>
+                <DataTableWithCRUD
+                    data={refJenisAgunan}
+                    columns={[
+                        // { field: 'Kode', header: 'Kode' },
+                        { field: 'Keterangan', header: 'Jenis Agunan' }
+                    ]}
+                    onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHJENISAGUNAN, { Keterangan }, setRefJenisAgunan, 'Jenis Agunan berhasil ditambahkan')}
+                    onUpdate={(Kode: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATEJENISAGUNANBYID, Kode, { Keterangan }, 'Jenis Agunan berhasil diupdate')}
+                    onDelete={(Kode: string) => handleDelete(API_ENDPOINTS.DELETEJENISAGUNANBYID, Kode, 'Jenis Agunan berhasil dihapus')}
+                    idField="Kode"
+                    nameField="Keterangan"
+                    inputLabel="Jenis Agunan"
+                />
+                <DataTableWithCRUD
+                    data={refHakMilik}
+                    columns={[
+                        // { field: 'Kode', header: 'Kode' },
+                        { field: 'Keterangan', header: 'Hak Milik' }
+                    ]}
+                    onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHHAKMILIK, { Keterangan }, setRefHakMilik, 'Hak Milik berhasil ditambahkan')}
+                    onUpdate={(Kode: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATEHAKMILIKBYID, Kode, { Keterangan }, 'Hak Milik berhasil diupdate')}
+                    onDelete={(Kode: string) => handleDelete(API_ENDPOINTS.DELETEHAKMILIKBYID, Kode, 'Hak Milik berhasil dihapus')}
+                    idField="Kode"
+                    nameField="Keterangan"
+                    inputLabel="Hak Milik"
+                />
+                <DataTableWithCRUD
+                    data={refTipe}
+                    columns={[
+                        // { field: 'Kode', header: 'Kode' },
+                        { field: 'Keterangan', header: 'Tipe' }
+                    ]}
+                    onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHTIPE, { Keterangan }, setRefTipe, 'Tipe berhasil ditambahkan')}
+                    onUpdate={(Kode: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATETIPEBYID, Kode, { Keterangan }, 'Tipe berhasil diupdate')}
+                    onDelete={(Kode: string) => handleDelete(API_ENDPOINTS.DELETETIPEBYID, Kode, 'Tipe berhasil dihapus')}
+                    idField="Kode"
+                    nameField="Keterangan"
+                    inputLabel="Tipe"
+                />
+                <DataTableWithCRUD
+                    data={refJenisPengikatan}
+                    columns={[
+                        // { field: 'Kode', header: 'Kode' },
+                        { field: 'Keterangan', header: 'Jenis Pengikatan' }
+                    ]}
+                    onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHJENISPENGIKATAN, { Keterangan }, setRefJenisPengikatan, 'Jenis Pengikatan berhasil ditambahkan')}
+                    onUpdate={(Kode: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATEJENISPENGIKATANBYID, Kode, { Keterangan }, 'Jenis Pengikatan berhasil diupdate')}
+                    onDelete={(Kode: string) => handleDelete(API_ENDPOINTS.DELETEJENISPENGIKATANBYID, Kode, 'Jenis Pengikatan berhasil dihapus')}
+                    idField="Kode"
+                    nameField="Keterangan"
+                    inputLabel="Jenis Pengikatan"
+                />
+                <DataTableWithCRUD
+                    data={refHubunganPemilik}
+                    columns={[
+                        // { field: 'Kode', header: 'Kode' },
+                        { field: 'Keterangan', header: 'Hubungan Pemilik' }
+                    ]}
+                    onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHHUBUNGANPEMILIK, { Keterangan }, setRefHubunganPemilik, 'Hubungan Pemilik berhasil ditambahkan')}
+                    onUpdate={(Kode: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATEHUBUNGANPEMILIKBYID, Kode, { Keterangan }, 'Hubungan Pemilik berhasil diupdate')}
+                    onDelete={(Kode: string) => handleDelete(API_ENDPOINTS.DELETEHUBUNGANPEMILIKBYID, Kode, 'Hubungan Pemilik berhasil dihapus')}
+                    idField="Kode"
+                    nameField="Keterangan"
+                    inputLabel="Jenis Pengikatan"
+                />
+            </TabPanel>
+            <TabPanel header="Tambah Survey">
+                <DataTableWithCRUD
+                    data={refSurvey}
+                    columns={[
+                        { field: 'Keterangan', header: 'Judul Survey' },
+                        // { field: 'pilihan_survey', header: 'Pilihan Survey', body: (rowData:any) => rowData.pilihan_survey.map((pilihan:any) => `[object]`).join(', ') }
+                    ]}
+                // onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHTITLEASPEK, { Keterangan }, setRefTitleAspek, 'Aspek berhasil ditambahkan')}
+                // onUpdate={(id: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATETITLEASPEKBYID, id, { Keterangan }, 'Aspek berhasil diupdate')}
+                // onDelete={(id: string) => handleDelete(API_ENDPOINTS.DELETETITLEASPEKBYID, id, 'Aspek berhasil dihapus')}
+                // idField="Kode"
+                // nameField="title_aspek"
+                // inputLabel="Judul Aspek"
+                />
+            </TabPanel>
+            <TabPanel header="Tambah Pengajuan">
+                <DataTableWithCRUD
+                    data={refBidangUsaha}
+                    columns={[
+                        { field: 'Keterangan', header: 'Bidang Usaha' },
+                    ]}
+                    onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHBIDANGUSAHA, { Keterangan }, setRefBidangUsaha, 'Bidang Usaha berhasil ditambahkan')}
+                    onUpdate={(Kode: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATEBIDANGUSAHA, Kode, { Keterangan }, 'Bidang Usaha berhasil diupdate')}
+                    onDelete={(Kode: string) => handleDelete(API_ENDPOINTS.DELETEBIDANGUSAHA, Kode, 'Bidang Usaha berhasil dihapus')}
+                    idField="Kode"
+                    nameField="Keterangan"
+                    inputLabel="Bidang Usaha"
+                />
+                <DataTableWithCRUD
+                    data={refSifatKredit}
+                    columns={[
+                        { field: 'Keterangan', header: 'Sifat Kredit' },
+                    ]}
+                    onAdd={(Keterangan: any) => handleAdd(API_ENDPOINTS.TAMBAHSIFATKREDIT, { Keterangan }, setRefSifatKredit, 'Sifat Kredit berhasil ditambahkan')}
+                    onUpdate={(Kode: string, Keterangan: string) => handleUpdate(API_ENDPOINTS.UPDATESIFATKREDIT, Kode, { Keterangan }, 'Sifat Kredit berhasil diupdate')}
+                    onDelete={(Kode: string) => handleDelete(API_ENDPOINTS.DELETESIFATKREDIT, Kode, 'Sifat Kredit berhasil dihapus')}
+                    idField="Kode"
+                    nameField="Keterangan"
+                    inputLabel="Sifat Kredit"
+                />
             </TabPanel>
         </TabView>
-    )
-}
+    );
+};
 
-export default tambahanalisakredit
+export default TambahanAnalisaKredit;

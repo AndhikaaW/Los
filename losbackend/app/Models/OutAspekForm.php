@@ -12,7 +12,7 @@ class OutAspekForm extends Model
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'aspek_id',
+        'Kode',
         'jawaban',
         'NomorRekening',
     ];

@@ -12,7 +12,7 @@ class OutSurvey extends Model
     public $timestamps = false;
     protected $fillable = [
         'NomorRekening',
-        'SurveyId',
+        'Kode',
         'Pilihan',
     ];
 }

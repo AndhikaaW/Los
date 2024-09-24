@@ -12,11 +12,12 @@ class AspekForm extends Model
     protected $table = 'aspek_form';
     protected $fillable = [
         'id',
-        'title_aspek'
+        'Kode',
+        'Keterangan'
     ];
 
     public function jawabanAspek()
     {
-        return $this->hasMany(OutAspekForm::class, 'aspek_id', 'id');
+        return $this->hasMany(OutAspekForm::class, 'Kode', 'Kode');
     }
 }

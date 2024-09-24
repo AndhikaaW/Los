@@ -14,7 +14,7 @@ const Survey = () => {
     interface PaginatedData {
         NomorRekening: string;
         survey: {
-            title: string;
+            Keterangan: string;
             Pilihan: string;
         }[];
     }
@@ -22,7 +22,7 @@ const Survey = () => {
     interface GroupedSurvey {
         NomorRekening: string;
         survey: {
-            title: string;
+            Keterangan: string;
             Pilihan: string;
         }[];
     }
@@ -51,7 +51,7 @@ const Survey = () => {
                 acc[curr.NomorRekening] = { NomorRekening: curr.NomorRekening, survey: [] };
             }
             acc[curr.NomorRekening].survey.push({
-                title: curr.title,
+                Keterangan: curr.Keterangan,
                 Pilihan: curr.Pilihan
             });
             return acc;
@@ -70,7 +70,7 @@ const Survey = () => {
                 {rowData.survey.map((survey, index) => (
                     <li key={index}>
                         <div className='flex flex-column gap-2 mb-2'>
-                            <label className='text-900 font-bold'>{survey.title}</label>
+                            <label className='text-900 font-bold'>{survey.Keterangan}</label>
                             <label className='text-900'>{survey.Pilihan}</label>
                         </div>
                     </li>

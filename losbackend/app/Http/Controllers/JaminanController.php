@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Jaminan;
 use App\Models\RefHakMilik;
+use App\Models\RefHubPemilik;
 use App\Models\RefJenisAgunan;
+use App\Models\RefJenisPengikatan;
 use App\Models\RefTipe;
 use Illuminate\Http\Request;
 
@@ -26,9 +28,15 @@ class JaminanController extends Controller
         $jenisAgunan = RefJenisAgunan::all();
         return response()->json($jenisAgunan);
     }
+    public function updateJenisAgunan(Request $request, string $id)
+    {
+        $jenisAgunan = RefJenisAgunan::where('Kode', $id)->firstOrFail();
+        $jenisAgunan->update($request->all());
+        return response()->json($jenisAgunan);
+    }
     public function deleteJenisAgunan($id)
     {
-        $jenisAgunan = RefJenisAgunan::find($id);
+        $jenisAgunan = RefJenisAgunan::where('Kode', $id)->first();
         if (!$jenisAgunan) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -51,16 +59,22 @@ class JaminanController extends Controller
         $hakmilik = RefHakMilik::all();
         return response()->json($hakmilik);
     }
+    public function updateHakMilik(Request $request, string $id)
+    {
+        $hakMilik = RefHakMilik::where('Kode', $id)->firstOrFail();
+        $hakMilik->update($request->all());
+        return response()->json($hakMilik);
+    }
     public function deleteHakMilik($id)
     {
-        $hakMilik = RefHakMilik::find($id);
+        $hakMilik = RefHakMilik::where('Kode', $id)->first();
         if (!$hakMilik) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
         $hakMilik->delete();
         return response()->json(['message' => 'Data berhasil dihapus']);
     }
-    public function tambahtipe(Request $request)
+    public function tambahTipe(Request $request)
     {
         $tipe = new RefTipe;
         $kodeTerakhir = RefTipe::max('Kode');
@@ -71,20 +85,92 @@ class JaminanController extends Controller
         
         return response()->json($tipe);
     }
-    public function gettipe()
+    public function getTipe()
     {
         $tipe = RefTipe::all();
         return response()->json($tipe);
     }
+    public function updateTipe(Request $request, string $id)
+    {
+        $tipe = RefTipe::where('Kode', $id)->firstOrFail();
+        $tipe->update($request->all());
+        return response()->json($tipe);
+    }
     public function deleteTipe($id)
     {
-        $tipe = RefTipe::find($id);
+        $tipe = RefTipe::where('Kode', $id)->first();
         if (!$tipe) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
         $tipe->delete();
         return response()->json(['message' => 'Data berhasil dihapus']);
     }
+    public function tambahJenisPengikatan(Request $request)
+    {
+        $jenisPengikatan = new RefJenisPengikatan;
+        $kodeTerakhir = RefJenisPengikatan::max('Kode');
+        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
+        $jenisPengikatan->Kode = sprintf('P%02d', $nomorBaru);
+        $jenisPengikatan->Keterangan = $request->input('Keterangan');
+        $jenisPengikatan->save();
+        
+        return response()->json($jenisPengikatan);
+    }
+    public function getJenisPengikatan()
+    {
+        $jenisPengikatan = RefJenisPengikatan::all();
+        return response()->json($jenisPengikatan);
+    }
+    public function updateJenisPengikatan(Request $request, string $id)
+    {
+        $jenisPengikatan = RefJenisPengikatan::where('Kode', $id)->firstOrFail();
+        $jenisPengikatan->update($request->all());
+        return response()->json($jenisPengikatan);
+    }
+    public function deleteJenisPengikatan($id)
+    {
+        $jenisPengikatan = RefJenisPengikatan::where('Kode', $id)->first();
+        if (!$jenisPengikatan) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        $jenisPengikatan->delete();
+        return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+    public function tambahHubunganPemilik(Request $request)
+    {
+        $hubunganPemilik = new RefHubPemilik;
+        $kodeTerakhir = RefHubPemilik::max('Kode');
+        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 2) + 1 : 1;
+        $hubunganPemilik->Kode = sprintf('HP%02d', $nomorBaru);
+        $hubunganPemilik->Keterangan = $request->input('Keterangan');
+        $hubunganPemilik->save();
+        
+        return response()->json($hubunganPemilik);
+    }
+
+    public function getHubunganPemilik()
+    {
+        $hubunganPemilik = RefHubPemilik::all();
+        return response()->json($hubunganPemilik);
+    }
+
+    public function updateHubunganPemilik(Request $request, string $id)
+    {
+        $hubunganPemilik = RefHubPemilik::where('Kode', $id)->firstOrFail();
+        $hubunganPemilik->update($request->all());
+        return response()->json($hubunganPemilik);
+    }
+
+    public function deleteHubunganPemilik($id)
+    {
+        $hubunganPemilik = RefHubPemilik::where('Kode', $id)->first();
+        if (!$hubunganPemilik) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        $hubunganPemilik->delete();
+        return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+
 
 
     public function getalljaminan()

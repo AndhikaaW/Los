@@ -12,7 +12,7 @@ class SifatKredit extends Model
     protected $connection = 'los'; 
     public $timestamps = false;
     protected $fillable = [
-        'Id',
+        'id',
         'Kode',
         'Keterangan'
     ];

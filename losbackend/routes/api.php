@@ -41,8 +41,8 @@ Route::get('/getfinansialbynomorrekening/{nomorRekening}', [FinansialController:
 //aspek
 Route::post('/tambahTitleAspek', [AspekFormController::class, 'tambahTitleAspek']); //tambah title aspek
 Route::get('/gettitleaspek', [AspekFormController::class, 'getTitleAspek']); //get title aspek
-Route::put('/updatetitleaspekbyid/{id}', [AspekFormController::class, 'updateTitleAspek']); //update title aspek
-Route::delete('/deletetitleaspekbyid/{id}', [AspekFormController::class, 'deleteTitleAspek']); //delete title aspek
+Route::put('/updatetitleaspekbyid/{Kode}', [AspekFormController::class, 'updateTitleAspek']); //update title aspek
+Route::delete('/deletetitleaspekbyid/{Kode}', [AspekFormController::class, 'deleteTitleAspek']); //delete title aspek
 
 Route::post('/aspek', [AspekFormController::class, 'aspek']); //tambah data
 Route::get('/getallaspek', [AspekFormController::class, 'getAllAspek']); //get all data
@@ -50,15 +50,25 @@ Route::get('/getaspekbynomorrekening/{nomorRekening}', [AspekFormController::cla
 
 //jaminan
 Route::post('/tambahjenisagunan', [JaminanController::class, 'tambahjenisagunan']); //tambah jenis agunan
-Route::delete('/deletejenisagunanbyid/{id}', [JaminanController::class, 'deleteJenisAgunan']); //delete jenis agunan
 Route::get('/getjenisagunan', [JaminanController::class, 'getjenisagunan']); //get jenis agunan
-Route::post('/tambahhakmilik', [JaminanController::class, 'tambahhakmilik']); //tambah hak milik
-Route::get('/gethakmilik', [JaminanController::class, 'gethakmilik']); //get all hak milik
-Route::delete('/deletehakmilikbyid/{id}', [JaminanController::class, 'deleteHakMilik']); //delete hak milik
-Route::post('/tambahtipe', [JaminanController::class, 'tambahtipe']); //tambah tipe
-Route::get('/gettipe', [JaminanController::class, 'gettipe']); //get all tipe
-Route::delete('/deletetipebyid/{id}', [JaminanController::class, 'deleteTipe']); //delete tipe
-
+Route::put('/updatejenisagunanbyid/{Kode}', [JaminanController::class, 'updateJenisAgunan']); //update jenis agunan
+Route::delete('/deletejenisagunanbyid/{Kode}', [JaminanController::class, 'deleteJenisAgunan']); //delete jenis agunan
+Route::post('/tambahHakMilik', [JaminanController::class, 'tambahHakMilik']); //tambah hak milik
+Route::get('/getHakMilik', [JaminanController::class, 'getHakMilik']); //get all hak milik
+Route::put('/updateHakMilikbyid/{Kode}', [JaminanController::class, 'updateHakMilik']); //update hak milik
+Route::delete('/deleteHakMilikbyid/{Kode}', [JaminanController::class, 'deleteHakMilik']); //delete hak milik
+Route::post('/tambahTipe', [JaminanController::class, 'tambahTipe']); //tambah tipe
+Route::get('/getTipe', [JaminanController::class, 'getTipe']); //get all tipe
+Route::put('/updateTipebyid/{Kode}', [JaminanController::class, 'updateTipe']); //update tipe
+Route::delete('/deleteTipebyid/{Kode}', [JaminanController::class, 'deleteTipe']); //delete tipe
+Route::post('/tambahJenisPengikatan', [JaminanController::class, 'tambahJenisPengikatan']); //tambah jenis pengikatan
+Route::get('/getJenisPengikatan', [JaminanController::class, 'getJenisPengikatan']); //get all jenis pengikatan
+Route::put('/updateJenisPengikatanbyid/{Kode}', [JaminanController::class, 'updateJenisPengikatan']); //update jenis pengikatan
+Route::delete('/deleteJenisPengikatanbyid/{Kode}', [JaminanController::class, 'deleteJenisPengikatan']); //delete jenis pengikatan
+Route::post('/tambahHubunganPemilik', [JaminanController::class, 'tambahHubunganPemilik']); //tambah hubungan pemilik
+Route::get('/getHubunganPemilik', [JaminanController::class, 'getHubunganPemilik']); //get all hubungan pemilik
+Route::put('/updateHubunganPemilikbyid/{Kode}', [JaminanController::class, 'updateHubunganPemilik']); //update hubungan pemilik
+Route::delete('/deleteHubunganPemilikbyid/{Kode}', [JaminanController::class, 'deleteHubunganPemilik']); //delete hubungan pemilik
 
 Route::post('/jaminan', [JaminanController::class, 'jaminan']); //tambah data   
 Route::get('/getalljaminan', [JaminanController::class, 'getalljaminan']); //get all data
@@ -69,6 +79,16 @@ Route::get('/getjaminanbynomorrekening/{nomorRekening}', [JaminanController::cla
 
 //pengajuan kredit
 Route::get('/getgolongankredit', [PengajuanKreditController::class, 'getGolonganKredit']); //get golongan kredit
+
+Route::post('/tambahBidangUsaha', [PengajuanKreditController::class, 'tambahBidangUsaha']); //tambah bidang usaha
+Route::get('/getbidangusaha', [PengajuanKreditController::class, 'getBidangUsaha']); //get bidang usaha
+Route::put('/updatebidangusahabyid/{Kode}', [PengajuanKreditController::class, 'updateBidangUsaha']); //update bidang usaha
+Route::delete('/deletebidangusahabyid/{Kode}', [PengajuanKreditController::class, 'deleteBidangUsaha']); //delete bidang usaha
+
+Route::get('/getsifatkredit', [PengajuanKreditController::class, 'getSifatKredit']); //get sifat kredit
+Route::post('/tambahSifatKredit', [PengajuanKreditController::class, 'tambahSifatKredit']); //tambah sifat kredit
+Route::put('/updateSifatKreditbyid/{Kode}', [PengajuanKreditController::class, 'updateSifatKredit']); //update sifat kredit
+Route::delete('/deleteSifatKreditbyid/{Kode}', [PengajuanKreditController::class, 'deleteSifatKredit']); //delete sifat kredit
 
 //limac
 Route::post('/limac', [LimaC_Controller::class, 'limac']); //tambah data
@@ -109,13 +129,10 @@ Route::get('/getregisternasabah', [RegisterNasabahController::class, 'index']); 
 //produk
 Route::post('/produk', [ProdukController::class, 'produk']); //tambah data
 Route::get('/getallproduk', [ProdukController::class, 'index']); //get all data
-Route::get('/getsifatkredit', [ProdukController::class, 'getSifatKredit']); //get sifat kredit
 Route::get('/getprodukbyid/{id}', [ProdukController::class, 'getProdukById']); //get data by id
 Route::get('/getprodukbycif/{cif}', [ProdukController::class, 'getProdukByCif']); //get data by cif
 Route::put('/updatepengajuanbyid/{id}', [ProdukController::class, 'update']); //update data
 Route::delete('/deleteprodukbyid/{NomorRekening}', [ProdukController::class, 'destroy']); //delete data
-
-
 
 
 // Route::post('/users/{userId}/sidebars/delete', [UserController::class, 'deleteSidebar']);

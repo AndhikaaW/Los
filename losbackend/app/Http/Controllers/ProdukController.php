@@ -34,11 +34,6 @@ class ProdukController extends Controller
         $produk->save();
         return $produk;
     }
-    public function getSifatKredit()
-    {
-        $data = SifatKredit::all();
-        return response()->json($data);
-    }
     public function getProdukById(string $cif)
     {
         $produk = Produk::findOrFail($cif);

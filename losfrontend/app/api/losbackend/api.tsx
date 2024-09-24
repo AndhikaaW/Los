@@ -1,4 +1,4 @@
-export const api_url = 'http://192.168.200.100:8000/api';
+export const api_url = 'http://192.168.1.35:8000/api';
 
 export const API_ENDPOINTS = {
   //user
@@ -56,7 +56,7 @@ export const API_ENDPOINTS = {
   DELETEPRODUKBYID: (NomorRekening: string) => `${api_url}/deleteprodukbyid/${NomorRekening}`,
 
   //sifat kredit
-  GETSIFATKREDIT: `${api_url}/getsifatkredit`,
+  
   ADDPRODUK: `${api_url}/produk`,
   UPDATEPENGAJUANBYID: (id: string) => `${api_url}/updatepengajuanbyid/${id}`,
 
@@ -71,24 +71,47 @@ export const API_ENDPOINTS = {
   DELETEJAMINANBYID: (id: string) => `${api_url}/deletejaminanbyid/${id}`,
   GETJAMINANBYNOMORREKENING: (nomorRekening: string) => `${api_url}/getjaminanbynomorrekening/${nomorRekening}`,
 
+  //Master Jaminan
   //tambah title aspek
   TAMBAHTITLEASPEK: `${api_url}/tambahTitleAspek`,
   GETTITLEASPEK: `${api_url}/gettitleaspek`,
-  UPDATETITLEASPEKBYID: (id: string) => `${api_url}/updatetitleaspekbyid/${id}`,
-  DELETETITLEASPEKBYID: (id: string) => `${api_url}/deletetitleaspekbyid/${id}`,
-
+  UPDATETITLEASPEKBYID: (Kode: string) => `${api_url}/updatetitleaspekbyid/${Kode}`,
+  DELETETITLEASPEKBYID: (Kode: string) => `${api_url}/deletetitleaspekbyid/${Kode}`,
   //tambah jenis agunan
   TAMBAHJENISAGUNAN: `${api_url}/tambahjenisagunan`,
   GETJENISAGUNAN: `${api_url}/getjenisagunan`,
-  DELETEJENISAGUNANBYID: (id: string) => `${api_url}/deletejenisagunanbyid/${id}`,
-
+  UPDATEJENISAGUNANBYID: (Kode: string) => `${api_url}/updatejenisagunanbyid/${Kode}`,
+  DELETEJENISAGUNANBYID: (Kode: string) => `${api_url}/deletejenisagunanbyid/${Kode}`,
   //tambah hak milik
-  TAMBAHHAKMILIK: `${api_url}/tambahhakmilik`,
-  GETHAKMILIK: `${api_url}/gethakmilik`,
-  DELETEHAKMILIKBYID: (id: string) => `${api_url}/deletehakmilikbyid/${id}`,
-
+  TAMBAHHAKMILIK: `${api_url}/tambahHakMilik`,
+  GETHAKMILIK: `${api_url}/getHakMilik`,
+  UPDATEHAKMILIKBYID: (Kode: string) => `${api_url}/updateHakMilikbyid/${Kode}`,
+  DELETEHAKMILIKBYID: (Kode: string) => `${api_url}/deleteHakMilikbyid/${Kode}`,
   //tambah tipe
-  TAMBAHTIPE: `${api_url}/tambahtipe`,
-  GETTIPE: `${api_url}/gettipe`,
-  DELETETIPEBYID: (id: string) => `${api_url}/deletetipebyid/${id}`,
+  TAMBAHTIPE: `${api_url}/tambahTipe`,
+  GETTIPE: `${api_url}/getTipe`,
+  UPDATETIPEBYID: (Kode: string) => `${api_url}/updateTipebyid/${Kode}`,
+  DELETETIPEBYID: (Kode: string) => `${api_url}/deleteTipebyid/${Kode}`,
+  //tambah jenis pengikatan
+  TAMBAHJENISPENGIKATAN: `${api_url}/tambahJenisPengikatan`,
+  GETJENISPENGIKATAN: `${api_url}/getJenisPengikatan`,
+  UPDATEJENISPENGIKATANBYID: (Kode: string) => `${api_url}/updateJenisPengikatanbyid/${Kode}`,
+  DELETEJENISPENGIKATANBYID: (Kode: string) => `${api_url}/deleteJenisPengikatanbyid/${Kode}`,
+  //tambah hubungan pemilik
+  TAMBAHHUBUNGANPEMILIK: `${api_url}/tambahHubunganPemilik`,
+  GETHUBUNGANPEMILIK: `${api_url}/getHubunganPemilik`,
+  UPDATEHUBUNGANPEMILIKBYID: (Kode: string) => `${api_url}/updateHubunganPemilikbyid/${Kode}`,
+  DELETEHUBUNGANPEMILIKBYID: (Kode: string) => `${api_url}/deleteHubunganPemilikbyid/${Kode}`,
+
+  //MasterPengajuan Kredit
+  //tambah bidang usaha
+  GETBIDANGUSAHA: `${api_url}/getbidangusaha`,
+  TAMBAHBIDANGUSAHA: `${api_url}/tambahBidangUsaha`,
+  UPDATEBIDANGUSAHA: (Kode: string) => `${api_url}/updatebidangusahabyid/${Kode}`,
+  DELETEBIDANGUSAHA: (Kode: string) => `${api_url}/deletebidangusahabyid/${Kode}`,
+
+  GETSIFATKREDIT: `${api_url}/getsifatkredit`,
+  TAMBAHSIFATKREDIT: `${api_url}/tambahSifatKredit`,
+  UPDATESIFATKREDIT: (Kode: string) => `${api_url}/updateSifatKreditbyid/${Kode}`,
+  DELETESIFATKREDIT: (Kode: string) => `${api_url}/deleteSifatKreditbyid/${Kode}`,
 };
