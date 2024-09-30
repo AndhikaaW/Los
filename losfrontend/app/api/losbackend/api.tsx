@@ -24,6 +24,7 @@ export const API_ENDPOINTS = {
   ASPEKFORM: `${api_url}/aspek`, 
   GETALLASPEK: `${api_url}/getallaspek`,
   GETASPEKBYNOMORREKENING: (nomorRekening: string) => `${api_url}/getaspekbynomorrekening/${nomorRekening}`,
+  DELETEASPEKBYID: (id: string) => `${api_url}/deleteaspekbyid/${id}`,
 
   //limac
   LIMAC: `${api_url}/limac`,
@@ -47,6 +48,10 @@ export const API_ENDPOINTS = {
   ADDSURVEY: `${api_url}/addSurvey`,
   GETALLSURVEY: `${api_url}/getallsurvey`,
   GETALLSURVEYBYNOMORREKENING: (nomorRekening: string) => `${api_url}/getallsurveybynomorrekening/${nomorRekening}`,
+  //tambah judul survey
+  ADDTITLESURVEY: `${api_url}/addTitleSurvey`,
+  UPDATETITLESURVEYBYID: (Kode: string) => `${api_url}/updateTitleSurveybyid/${Kode}`,
+  DELETEREFSURVEYBYID: (Kode: string) => `${api_url}/deleterRefSurveybyid/${Kode}`,
   
   //produk
   GETSEKTOREKONOMI: `${api_url}/getsektorekonomi`,
@@ -59,7 +64,6 @@ export const API_ENDPOINTS = {
   
   ADDPRODUK: `${api_url}/produk`,
   UPDATEPENGAJUANBYID: (id: string) => `${api_url}/updatepengajuanbyid/${id}`,
-
 
   //pengajuan kredit
   GETGOLONGANKREDIT: `${api_url}/getgolongankredit`,
@@ -114,4 +118,14 @@ export const API_ENDPOINTS = {
   TAMBAHSIFATKREDIT: `${api_url}/tambahSifatKredit`,
   UPDATESIFATKREDIT: (Kode: string) => `${api_url}/updateSifatKreditbyid/${Kode}`,
   DELETESIFATKREDIT: (Kode: string) => `${api_url}/deleteSifatKreditbyid/${Kode}`,
+
+  GETJENISANGURAN: `${api_url}/getjenisanguran`,
+  TAMBAHJENISANGURAN: `${api_url}/tambahJenisAnguran`,
+  UPDATEJENISANGURAN: (Kode: string) => `${api_url}/updateJenisAnguranbyid/${Kode}`,
+  DELETEJENISANGURAN: (Kode: string) => `${api_url}/deleteJenisAnguranbyid/${Kode}`,
+
+  GETJENISPERMOHONAN: `${api_url}/getjenispermohonan`,
+  TAMBAHJENISPERMOHONAN: `${api_url}/tambahJenisPermohonan`,
+  UPDATEJENISPERMOHONAN: (Kode: string) => `${api_url}/updateJenisPermohonanbyid/${Kode}`,
+  DELETEJENISPERMOHONAN: (Kode: string) => `${api_url}/deleteJenisPermohonanbyid/${Kode}`,
 };

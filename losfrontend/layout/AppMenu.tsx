@@ -88,16 +88,16 @@ const AppMenu = () => {
                     to: item.to_path
                 }))
         },
-        {
-            label: 'Analisa Kredit',
-            items: sidebar
-                .filter(item => item.status === 2 && item.sidebar_id !== 7 && item.sidebar_id !== 1)
-                .map(item => ({
-                    label: item.label,
-                    icon: 'pi pi-fw pi-file',
-                    to: item.to_path
-                }))
-        },
+        // {
+        //     label: 'Analisa Kredit',
+        //     items: sidebar
+        //         .filter(item => item.status === 2 && item.sidebar_id !== 7 && item.sidebar_id !== 1)
+        //         .map(item => ({
+        //             label: item.label,
+        //             icon: 'pi pi-fw pi-file',
+        //             to: item.to_path
+        //         }))
+        // },
     ];
     const modelAdmin: AppMenuItem[] = [
         {
@@ -145,16 +145,16 @@ const AppMenu = () => {
                     to: item.to_path
                 }))
         },
-        {
-            label: 'Analisa Kredit',
-            items: sidebar
-                .filter(item => item.status === 2 && item.sidebar_id >= 2  && item.sidebar_id <= 6)
-                .map(item => ({
-                    label: item.label,
-                    icon: 'pi pi-fw pi-file',
-                    to: item.to_path
-                }))
-        },
+        // {
+        //     label: 'Analisa Kredit',
+        //     items: sidebar
+        //         .filter(item => item.status === 2 && item.sidebar_id >= 2  && item.sidebar_id <= 6)
+        //         .map(item => ({
+        //             label: item.label,
+        //             icon: 'pi pi-fw pi-file',
+        //             to: item.to_path
+        //         }))
+        // },
     ];
 
     return (

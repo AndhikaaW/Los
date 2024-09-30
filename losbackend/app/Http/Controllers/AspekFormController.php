@@ -25,7 +25,7 @@ class AspekFormController extends Controller
     }
     public function updateTitleAspek($Kode, Request $req)
     {
-        $aspekForm = AspekForm::find($Kode);
+        $aspekForm = AspekForm::where('Kode', $Kode)->firstOrFail();
         if (!$aspekForm) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -39,12 +39,13 @@ class AspekFormController extends Controller
     }
     public function deleteTitleAspek($Kode)
     {
-        $aspekForm = AspekForm::find($Kode);
+        $aspekForm = AspekForm::where('Kode', $Kode)->firstOrFail();
         if (!$aspekForm) {
-            return response()->json(['message' => 'Data not found'], 404);
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
+        OutAspekForm::where('Kode', $Kode)->delete();
         $aspekForm->delete();
-        return response()->json(['message' => 'Data deleted successfully']);
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 
     public function getAllAspek()
@@ -82,5 +83,10 @@ class AspekFormController extends Controller
             }
         }
         return response()->json($formAspekData);
+    }
+    public function destroy($NomorRekening)
+    {
+        $aspek = OutAspekForm::where('NomorRekening', $NomorRekening)->delete();
+        return response()->json($aspek);
     }
 }

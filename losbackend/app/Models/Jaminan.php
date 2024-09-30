@@ -26,4 +26,25 @@ class Jaminan extends Model
         'asuransi',
     ];
     public $timestamps = false;
+
+    public function RefJenisAgunan()
+    {
+        return $this->belongsTo(RefJenisAgunan::class, 'jenisAgunan', 'Kode');
+    }
+    public function RefHakMilik()
+    {
+        return $this->belongsTo(RefHakMilik::class, 'buktiHakMilik', 'Kode');
+    }
+    public function RefTipe()
+    {
+        return $this->belongsTo(RefTipe::class, 'tipe', 'Kode');
+    }   
+    public function RefHubPemilik()
+    {
+        return $this->belongsTo(RefHubPemilik::class, 'hubunganDenganPemilik', 'Kode');
+    }
+    public function RefJenisPengikatan()
+    {
+        return $this->belongsTo(RefJenisPengikatan::class, 'jenisPengikatan', 'Kode');
+    }
 }

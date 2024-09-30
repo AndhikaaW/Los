@@ -172,10 +172,9 @@ class JaminanController extends Controller
     }
 
 
-
     public function getalljaminan()
     {
-        $jaminan = Jaminan::all();
+        $jaminan = Jaminan::with(['RefJenisAgunan', 'RefHakMilik', 'RefTipe', 'RefJenisPengikatan', 'RefHubPemilik'])->get();
         return response()->json($jaminan);
     }
     public function jaminan(Request $request)
@@ -198,14 +197,16 @@ class JaminanController extends Controller
         $jaminan->save();
         return response()->json($jaminan);
     }
+    
     public function getJaminanById(string $id)
     {
         $jaminan = Jaminan::findOrFail($id);
         return response()->json($jaminan);
     }
+    
     public function getJaminanByNomorRekening(string $nomorRekening)
     {
-        $jaminan = Jaminan::where('NomorRekening', $nomorRekening)->get();
+        $jaminan = Jaminan::with(['RefJenisAgunan', 'RefHakMilik', 'RefTipe', 'RefJenisPengikatan', 'RefHubPemilik'])->where('NomorRekening', $nomorRekening)->get();
         return response()->json($jaminan);
     }
     

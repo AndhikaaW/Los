@@ -9,13 +9,20 @@ import { API_ENDPOINTS } from "@/app/api/losbackend/api"
 import SearchRekening from "@/app/(full-page)/component/searchRekening/page"
 import { Dialog } from "primereact/dialog"
 
-const SurveyPage = () => {
+const FormSurvey = ({pengajuan}) => {
+  const [formPengajuan] = useState(pengajuan);
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [survey, setSurvey] = useState([])
   const [formData, setFormData] = useState({
-    NomorRekening: "",
+    NomorRekening: formPengajuan.NomorRekening || ''
+
   })
+  const resetForm = () => {
+    setFormData({
+      NomorRekening: formPengajuan.NomorRekening || ''
+    })
+  }
 
   const handleRadioChange = (e, fieldName) => {
     setFormData(prev => ({ ...prev, [fieldName]: e.value }))
@@ -35,39 +42,19 @@ const SurveyPage = () => {
   }, [])
 
   const handleSave = async () => {
+    if(formData.NomorRekening===''){
+      alert('Nomor Rekening tidak boleh kosong')
+      return
+    }
     const response = await axios.post(API_ENDPOINTS.ADDSURVEY, formData);
     console.log('Response from API:', response.data);
-    // console.log(formData)
     setIsLoading(false)
     setVisible(true)
     resetForm()
   }
-  const resetForm = () => {
-    setFormData({
-      NomorRekening: "",
-    })
-  }
-  const handleAccountSelect = (account) => {
-    setFormData(prevData => ({
-      ...prevData,
-      NomorRekening: account.NomorRekening
-    }));
-  };
-
-  const handleSearchChange = (e) => {
-    setFormData(prevData => ({
-      ...prevData,
-      NomorRekening: e.target.value
-    }));
-  };
   return (
     <div className="p-4">
       <Panel header="Survey Form">
-        <SearchRekening
-          onAccountSelect={handleAccountSelect}
-          value={formData.NomorRekening}
-          onChange={handleSearchChange}
-        />
         {survey.map((question, index) => (
           <Fieldset
             legend={question.Keterangan}
@@ -129,4 +116,4 @@ const SurveyPage = () => {
   )
 }
 
-export default SurveyPage
+export default FormSurvey

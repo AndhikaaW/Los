@@ -11,11 +11,12 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Paginator } from 'primereact/paginator';
 import React, { useEffect, useState } from 'react';
 
-const FormLimaC = () => {
+const FormLimaC = ({pengajuan}:{pengajuan:any}) => {
     const [visible, setVisible] = useState(false);
+    const [formPengajuan] = useState<any>(pengajuan);
     const [Isloading, setIsLoading] = useState(false);
     const [formLimac, setformLimac] = useState({
-        NomorRekening: '',
+        NomorRekening: formPengajuan.NomorRekening || '',
         characters: '',
         capacity: '',
         capital: '',
@@ -82,11 +83,6 @@ const FormLimaC = () => {
     console.log(formLimac)
     return (
         <div className="surface-card border-round p-4">
-             <SearchRekening 
-                onAccountSelect={handleAccountSelect}
-                value={formLimac.NomorRekening}
-                onChange={handleSearchChange}
-            />
             <form onSubmit={handleSubmit}>
                 <fieldset className="p-6 border-round">
                     <legend className="text-xl font-bold">Analisa 5C</legend>

@@ -12,7 +12,7 @@ import SearchRekening from '@/app/(full-page)/component/searchRekening/page';
 import { Dialog } from 'primereact/dialog';
 
 
-const FormJaminan = () => {
+const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
     const [visible, setVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [jenisAgunan, setjenisAgunan] = useState<any>([]);
@@ -20,10 +20,9 @@ const FormJaminan = () => {
     const [hubunganPemilik, setHubunganPemilik] = useState<any>([]);
     const [hakMilik, setHakMilik] = useState<any>([]);
     const [jenisPengikatan, setJenisPengikatan] = useState<any>([]);
-    const [formJaminan, setformJaminan] = useState<{
-        [key: string]: string;
-    }>({
-        NomorRekening: '',
+    const [formPengajuan] = useState<any>(pengajuan);
+    const [formJaminan, setformJaminan] = useState<any>({
+        NomorRekening: formPengajuan?.NomorRekening || '',
         jenisAgunan: '',
         merek: '',
         buktiHakMilik: '',
@@ -38,99 +37,9 @@ const FormJaminan = () => {
         informasiTambahan: '',
         asuransi: ''
     });
-    useEffect(() => {
-        const fetchJenisAgunan = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETJENISAGUNAN);
-                setjenisAgunan(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the users!', error);
-            } finally {
-                // setIsLoading(false);
-            }
-        };
-        fetchJenisAgunan();
-    }, []);
-    useEffect(() => {
-        const fetchTipe = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETTIPE);
-                setTipe(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the tipe!', error);
-            }
-        };
-        fetchTipe();
-    }, []);
-    useEffect(() => {
-        const fetchHakMilik = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETHAKMILIK);
-                setHakMilik(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the users!', error);
-            } finally {
-                // setIsLoading(false);
-            }
-        };
-        fetchHakMilik();
-    }, []);
-    useEffect(() => {
-        const fetchJenisPengikatan = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETJENISPENGIKATAN);
-                setJenisPengikatan(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the users!', error);
-            }
-        };
-        fetchJenisPengikatan();
-    }, []);
-    useEffect(() => {
-        const fetchHubunganPemilik = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETHUBUNGANPEMILIK);
-                setHubunganPemilik(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the users!', error);
-            }
-        };
-        fetchHubunganPemilik();
-    }, []);
-
-
-    const handleInputChange = (e: any) => {
-        const { name, value } = e.target;
-        setformJaminan({ ...formJaminan, [name]: value });
-    };
-
-    const validateForm = () => {
-        for (const [key, value] of Object.entries(formJaminan)) {
-            if (!value) {
-                window.alert(`${key.charAt(0).toUpperCase() + key.slice(1)} tidak boleh kosong!`);
-                return false;
-            }
-        }
-        return true;
-    };
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setIsLoading(true)
-        try {
-            const response = await axios.post(API_ENDPOINTS.ADDJAMINAN, formJaminan);
-            console.log('Response from API:', response.data);
-            setIsLoading(false)
-            setVisible(true)
-            resetForm();
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            setIsLoading(false)
-        }
-    };
-    const resetForm = () => {
+    const resetForm = () => { 
         setformJaminan({
-            NomorRekening: '',
+            NomorRekening: formPengajuan?.NomorRekening || '',
             jenisAgunan: '',
             merek: '',
             buktiHakMilik: '',
@@ -147,7 +56,58 @@ const FormJaminan = () => {
         });
     };
 
+    useEffect(() => {
+        const fetchOptions = async (endpoint: any, setter: any) => {
+            try {
+                const response = await axios.get(endpoint);
+                setter(response.data);
+            } catch (error) {
+                console.error(`There was an error fetching the ${endpoint}!`, error);
+            }
+        };
+        fetchOptions(API_ENDPOINTS.GETJENISAGUNAN, setjenisAgunan);
+        fetchOptions(API_ENDPOINTS.GETTIPE, setTipe);
+        fetchOptions(API_ENDPOINTS.GETHAKMILIK, setHakMilik);
+        fetchOptions(API_ENDPOINTS.GETJENISPENGIKATAN, setJenisPengikatan);
+        fetchOptions(API_ENDPOINTS.GETHUBUNGANPEMILIK, setHubunganPemilik);
+    },
+        []);
+    const options = (data: any) => data.map((item: any, index: any) => ({
+        label: item.Keterangan,
+        value: item.Kode
+    }));
+    const JenisAgunanOptions = options(jenisAgunan);
+    const TipeOptions = options(tipe);
+    const HakMilikOptions = options(hakMilik);
+    const HubunganPemilikOptions = options(hubunganPemilik);
+    const JenisPengikatanOptions = options(jenisPengikatan);
 
+
+    const handleInputChange = async (e: any) => {
+        setformJaminan((prevData: any) => ({
+            ...prevData,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (formJaminan.NomorRekening === "") {
+            alert("Nomor Rekening harus diisi!");
+            return;
+        }
+        setIsLoading(true)
+        try {
+            const response = await axios.post(API_ENDPOINTS.ADDJAMINAN, formJaminan);
+            console.log('Response from API:', response.data);
+            setIsLoading(false)
+            setVisible(true)
+            // resetForm();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setIsLoading(false)
+        }
+    };
     const jaminanFields = [
         { label: 'Jenis Agunan', type: 'dropdown', options: ['1', '2'], name: 'jenisAgunan' },
         { label: 'Merek', type: 'input', name: 'merek' },
@@ -163,48 +123,28 @@ const FormJaminan = () => {
         { label: 'Informasi Tambahan', type: 'input', name: 'informasiTambahan' },
         { label: 'Asuransi', type: 'input', name: 'asuransi' }
     ];
-    const JenisAgunanOptions = jenisAgunan.map((item: any, index: any) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
-    const TipeOptions = tipe.map((item: any, index: any) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
-    const HakMilikOptions = hakMilik.map((item: any, index: any) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
-    const HubunganPemilikOptions = hubunganPemilik.map((item: any, index: any) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
-    const JenisPengikatanOptions = jenisPengikatan.map((item: any, index: any) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
+
     const handleAccountSelect = (account: any) => {
-        setformJaminan(prevData => ({
+        setformJaminan((prevData: any) => ({
             ...prevData,
             NomorRekening: account.NomorRekening
         }));
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setformJaminan(prevData => ({
+        setformJaminan((prevData: any) => ({
             ...prevData,
             NomorRekening: e.target.value
         }));
     };
-    console.log(HakMilikOptions)
     return (
         <div className="jaminan-page">
-            <div className="surface-card p-4 shadow-2 border-round">
-                <SearchRekening
-                    onAccountSelect={handleAccountSelect}
-                    value={formJaminan.NomorRekening}
-                    onChange={handleSearchChange}
-                />
+             {/* <SearchRekening 
+                onAccountSelect={handleAccountSelect}
+                value={formJaminan.NomorRekening}
+                onChange={handleSearchChange}
+            /> */}
+            <div className="surface-card p-4 border-round">
                 <form onSubmit={handleSubmit}>
                     <fieldset className="mb-4 p-4 border-round">
                         <legend className="text-xl font-bold">Jaminan</legend>
@@ -237,8 +177,6 @@ const FormJaminan = () => {
                     <div className='flex justify-content-end'>
                         <div className='flex gap-4'> {/*Button*/}
                             <Button onClick={resetForm} className=''>Reset</Button>
-                            {/* <Button type='submit' onClick={() => setVisible(true)} className=''>Submit</Button> */}
-                            {/* <Button label="Submit" type='submit'/> */}
                             <Button type="submit" className='text-white bg-[#61AB5B] w-auto' disabled={isLoading}>
                                 {isLoading ? (
                                     <div className="flex align-items-center">
@@ -256,14 +194,6 @@ const FormJaminan = () => {
                         </div>
                     </div>
                 </form>
-                {/* <h3>Daftar Data Jaminan</h3>
-                <DataTable value={tableData} className="p-datatable-sm">
-                    <Column field="jenisAgunan" header="Jenis Agunan" />
-                    <Column field="buktiHakMilik" header="Bukti Hak Milik" />
-                    <Column field="nilaiTransaksi" header="Nilai Transaksi" />
-                    <Column field="jenisPengikatan" header="Jenis Pengikatan" />
-                    <Column field="asuransi" header="Asuransi" />
-                </DataTable> */}
             </div>
         </div>
     );

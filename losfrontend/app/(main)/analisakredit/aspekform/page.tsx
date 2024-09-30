@@ -12,7 +12,7 @@ interface AspekData {
     id: number;
     NomorRekening: string;
     aspek_id: number;
-    title_aspek: string;
+    Keterangan: string;
     jawaban: string;
 }
 
@@ -20,7 +20,7 @@ interface GroupedAspekData {
     NomorRekening: string;
     aspeks: {
         aspek_id: number;
-        title_aspek: string;
+        Keterangan: string;
         jawaban: string;
     }[];
 }
@@ -52,7 +52,7 @@ const AspekForm = () => {
             }
             acc[curr.NomorRekening].aspeks.push({
                 aspek_id: curr.aspek_id,
-                title_aspek: curr.title_aspek,
+                Keterangan: curr.Keterangan,
                 jawaban: curr.jawaban
             });
             return acc;
@@ -72,7 +72,7 @@ const AspekForm = () => {
                 {rowData.aspeks.map((aspek, index) => (
                     <li key={index}>
                         <div className='flex flex-column gap-2 mb-2'>
-                            <label className='text-900 font-bold'>{aspek.title_aspek}</label>
+                            <label className='text-900 font-bold'>{aspek.Keterangan}</label>
                             <label className='text-900'>{aspek.jawaban}</label>
                         </div>
                     </li>

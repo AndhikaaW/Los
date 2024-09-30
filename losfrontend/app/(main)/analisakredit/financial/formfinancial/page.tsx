@@ -13,81 +13,19 @@ import { RadioButton } from 'primereact/radiobutton';
 import { TabView, TabPanel } from 'primereact/tabview';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
-const FormFinancial = () => {
+const FormFinancial = ({pengajuan}:{pengajuan:any}) => {
+    const [formPengajuan] = useState<any>(pengajuan);
     const [activeIndex, setActiveIndex] = useState(0);
     const [visible, setVisible] = useState(false);
     const [Isloading, setIsLoading] = useState(false);
-    const [formFinancial, setFormFinancial] = useState<{ [key: string]: string; }>({
-        NomorRekening:'',
-        // Info Keuangan
-        oms_ramai: '',
-        oms_normal: '',
-        oms_sepi: '',
-        // Komponen Biaya Usaha
-        hrg_pokok_jual: '',
-        btk_tdklangsung: '',
-        ohc: '',
-        b_usahalainnya: '',
-        // // Komponen Biaya Hidup
-        b_rumahtangga: '',
-        b_sekolah: '',
-        b_pln_pdam: '',
-        b_transport_komunikasi: '',
-        b_lain_lain: '',
-        // Pendapatan dan Biaya Lainnya
-        p_lainnya: '',
-        b_Lainnya: '',
-        bukti_pendapatan: '',
-        bukti_biaya: '',
-        // Kewajiban - Kewajiban
-        bank_nonbank: '',
-        koperasi: '',
-        lainLain: '',
-        angsuran_baru: '',
-        // // Aktiva
-        kas: '',
-        bank: '',
-        piutang: '',
-        persediaan_barang: '',
-        atv_lancar_lainnya: '',
-        sub_atv_lancar: '',
-        tanah_bangunan: '',
-        peralatan_usaha: '',
-        kendaraan: '',
-        atv_tetap_lainnya: '',
-        sub_atv_tetap: '',
-        jumlah_atv: '',
-        // // Passiva
-        tot_bdp_jangka_pendek: '',
-        idr_jangka_pendek: '',
-        jangka_pendek: '',
-        tot_bdp_jangka_panjang: '',
-        idr_jangka_panjang: '',
-        jangka_panjang: '',
-        sub_jumlah_hutang: '',
-        modal_sendiri: '',
-        laba: '',
-        sub_jumlah_modal: '',
-        jumlah_passiva: ''
-    });
+    const [formFinancial, setFormFinancial] = useState<any>(
+        {
+            NomorRekening: formPengajuan.NomorRekening || ''
+        });
 
     const resetForm = () => {
         setFormFinancial({
-            NomorRekening:'',
-            // Info Keuangan
-            oms_ramai: '', oms_normal: '', oms_sepi: '',
-            // Komponen Biaya Usaha
-            hrg_pokok_jual: '', btk_tdklangsung: '', ohc: '', b_usahalainnya: '',
-            // Komponen Biaya Hidup
-            b_rumahtangga: '', b_sekolah: '', b_pln_pdam: '', b_transport_komunikasi: '', b_lain_lain: '',
-            // Pendapatan dan Biaya Lainnya
-            p_lainnya: '', b_Lainnya: '', bukti_pendapatan: '', bukti_biaya: '',
-            // Kewajiban - Kewajiban
-            bank_nonbank: '', koperasi: '', lainLain: '', angsuran_baru: '',
-            // Aktiva
-            kas: '', bank: '', piutang: '', persediaan_barang: '', atv_lancar_lainnya: '', sub_atv_lancar: '', tanah_bangunan: '', peralatan_usaha: '', kendaraan: '', atv_tetap_lainnya: '', sub_atv_tetap: '', jumlah_atv: '',
-            // Passiva
-            tot_bdp_jangka_pendek: '', idr_jangka_pendek: '', jangka_pendek: '', tot_bdp_jangka_panjang: '', idr_jangka_panjang: '', jangka_panjang: '', sub_jumlah_hutang: '', modal_sendiri: '', laba: '', sub_jumlah_modal: '', jumlah_passiva: ''
+            NomorRekening: formPengajuan.NomorRekening || ''
         });
     };
 
@@ -105,7 +43,7 @@ const FormFinancial = () => {
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
-        setFormFinancial((prevData) => ({
+        setFormFinancial((prevData: any) => ({
             ...prevData,
             [name]: value,
         }));
@@ -122,6 +60,10 @@ const FormFinancial = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true)
+        if(formFinancial.NomorRekening===''){
+            alert('Nomor Rekening tidak boleh kosong')
+            return
+          }
         try {
             const response = await axios.post(API_ENDPOINTS.FINANCIAL, formFinancial);
             console.log('Response from API:', response.data);
@@ -184,25 +126,25 @@ const FormFinancial = () => {
         { label: "Jumlah Passiva", field: "jumlah_passiva" }
     ];
     const handleAccountSelect = (account: any) => {
-        setFormFinancial(prevData => ({
+        setFormFinancial((prevData: any) => ({
             ...prevData,
             NomorRekening: account.NomorRekening
         }));
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormFinancial(prevData => ({
+        setFormFinancial((prevData: any) => ({
             ...prevData,
             NomorRekening: e.target.value
         }));
     };
     return (
         <div className="surface-card p-4 shadow-2 border-round">
-             <SearchRekening 
+             {/* <SearchRekening 
                 onAccountSelect={handleAccountSelect}
                 value={formFinancial.NomorRekening}
                 onChange={handleSearchChange}
-            />
+            /> */}
             <form onSubmit={handleSubmit}>
                 <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                     <TabPanel header="info keuangan">
@@ -216,7 +158,7 @@ const FormFinancial = () => {
                                             required name={item.field}
                                             type={item.type} placeholder='0'
                                             className="p-inputtext p-component w-full"
-                                            value={formFinancial[item.field]}
+                                            value={formFinancial[item.field]||''}
                                             onChange={handleChange} />
                                     </div>
                                 ))}
@@ -240,7 +182,7 @@ const FormFinancial = () => {
                                                 type="number"
                                                 placeholder='0'
                                                 className="p-inputtext p-component w-full"
-                                                value={formFinancial[item.field]}
+                                                value={formFinancial[item.field]||''}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -259,7 +201,7 @@ const FormFinancial = () => {
                                                 type="number"
                                                 placeholder='0'
                                                 className="p-inputtext p-component w-full"
-                                                value={formFinancial[item.field]}
+                                                value={formFinancial[item.field]||''}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -279,31 +221,31 @@ const FormFinancial = () => {
                                     <legend className="text-xl font-bold">Pendapatan dan Biaya Lainnya</legend>
                                     <div className="mb-2">
                                         <label className="block text-900 font-medium mb-2">Pendapatan Lainnya</label>
-                                        <InputText required name='p_lainnya' type="number" placeholder='0' className="p-inputtext p-component w-full" value={formFinancial.p_lainnya} onChange={handleChange} />
+                                        <InputText required name='p_lainnya' type="number" placeholder='0' className="p-inputtext p-component w-full" value={formFinancial.p_lainnya||''} onChange={handleChange} />
                                     </div>
                                     <div className="mb-2">
                                         <label className="block text-900 font-medium mb-2">Biaya Lainnya</label>
-                                        <InputText required name='b_Lainnya' type="number" placeholder='0' className="p-inputtext p-component w-full" value={formFinancial.b_Lainnya} onChange={handleChange} />
+                                        <InputText required name='b_Lainnya' type="number" placeholder='0' className="p-inputtext p-component w-full" value={formFinancial.b_Lainnya||''} onChange={handleChange} />
                                     </div>
                                     <label className="block text-900 font-medium mb-2">Bukti Kwitansi/Slip Pendapatan Lainnya</label>
                                     <div className='flex gap-3'>
                                         <div className='mb-2'>
-                                            <RadioButton name="bukti_pendapatan" value="ada" onChange={handleChange} checked={formFinancial.bukti_pendapatan === 'ada'} />
+                                            <RadioButton name="bukti_pendapatan" value="ada" onChange={handleChange} checked={formFinancial.bukti_pendapatan === 'ada' || false} />
                                             <label htmlFor="" className="ml-2">ada</label>
                                         </div>
                                         <div className='mb-2'>
-                                            <RadioButton name="bukti_pendapatan" value="tidak ada" onChange={handleChange} checked={formFinancial.bukti_pendapatan === 'tidak ada'} />
+                                            <RadioButton name="bukti_pendapatan" value="tidak ada" onChange={handleChange} checked={formFinancial.bukti_pendapatan === 'tidak ada' || false} />
                                             <label htmlFor="" className="ml-2">tidak ada</label>
                                         </div>
                                     </div>
                                     <label className="block text-900 font-medium mb-2">Bukti Kwitansi/Slip Biaya Lainnya</label>
                                     <div className='flex gap-3'>
                                         <div className='mb-2'>
-                                            <RadioButton name="bukti_biaya" value="ada" onChange={handleChange} checked={formFinancial.bukti_biaya === 'ada'} />
+                                            <RadioButton name="bukti_biaya" value="ada" onChange={handleChange} checked={formFinancial.bukti_biaya === 'ada' || false} />
                                             <label htmlFor="" className="ml-2">ada</label>
                                         </div>
                                         <div className='mb-2'>
-                                            <RadioButton name="bukti_biaya" value="tidak ada" onChange={handleChange} checked={formFinancial.bukti_biaya === 'tidak ada'} />
+                                            <RadioButton name="bukti_biaya" value="tidak ada" onChange={handleChange} checked={formFinancial.bukti_biaya === 'tidak ada' || false} />
                                             <label htmlFor="" className="ml-2">tidak ada</label>
                                         </div>
                                     </div>
@@ -315,19 +257,19 @@ const FormFinancial = () => {
                                     <legend className="text-xl font-bold">Kewajiban - Kewajiban</legend>
                                     <div className="mb-2">
                                         <label className="block text-900 font-medium mb-2">Bank dan Non Bank (Financial SLIK)</label>
-                                        <InputText required name='bank_nonbank' type="text" className="p-inputtext p-component w-full" value={formFinancial.bank_nonbank} onChange={handleChange} />
+                                        <InputText required name='bank_nonbank' type="text" className="p-inputtext p-component w-full" value={formFinancial.bank_nonbank||''} onChange={handleChange} />
                                     </div>
                                     <div className="mb-2">
                                         <label className="block text-900 font-medium mb-2">Koperasi</label>
-                                        <InputText required name='koperasi' type="number" placeholder='0' className="p-inputtext p-component w-full" value={formFinancial.koperasi} onChange={handleChange} />
+                                        <InputText required name='koperasi' type="number" placeholder='0' className="p-inputtext p-component w-full" value={formFinancial.koperasi||''} onChange={handleChange} />
                                     </div>
                                     <div className="mb-2">
                                         <label className="block text-900 font-medium mb-2">Lain-Lain</label>
-                                        <InputText required name='lainLain' type="number" placeholder='0' className="p-inputtext p-component w-full" value={formFinancial.lainLain} onChange={handleChange} />
+                                        <InputText required name='lainLain' type="number" placeholder='0' className="p-inputtext p-component w-full" value={formFinancial.lainLain||''} onChange={handleChange} />
                                     </div>
                                     <div className="mb-2">
                                         <label className="block text-900 font-medium mb-2">Angsuran Baru</label>
-                                        <InputText required name='angsuran_baru' type="text" className="p-inputtext p-component w-full" value={formFinancial.angsuran_baru} onChange={handleChange} />
+                                        <InputText required name='angsuran_baru' type="text" className="p-inputtext p-component w-full" value={formFinancial.angsuran_baru||''} onChange={handleChange} />
                                     </div>
                                 </fieldset>
                             </div>
@@ -352,7 +294,7 @@ const FormFinancial = () => {
                                                 type="number"
                                                 placeholder='0'
                                                 className="p-inputtext p-component w-full"
-                                                value={formFinancial[item.field]}
+                                                value={formFinancial[item.field]||''}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -367,7 +309,7 @@ const FormFinancial = () => {
                                                 type="number"
                                                 placeholder='0'
                                                 className="p-inputtext p-component w-full"
-                                                value={formFinancial[item.field]}
+                                                value={formFinancial[item.field]||''}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -388,7 +330,7 @@ const FormFinancial = () => {
                                                 type="number"
                                                 placeholder='0'
                                                 className="p-inputtext p-component w-full"
-                                                value={formFinancial[item.field]}
+                                                value={formFinancial[item.field]||''}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -403,7 +345,7 @@ const FormFinancial = () => {
                                                 type="number"
                                                 placeholder='0'
                                                 className="p-inputtext p-component w-full"
-                                                value={formFinancial[item.field]}
+                                                value={formFinancial[item.field]||''}
                                                 onChange={handleChange}
                                             />
                                         </div>

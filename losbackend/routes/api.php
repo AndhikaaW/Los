@@ -47,6 +47,7 @@ Route::delete('/deletetitleaspekbyid/{Kode}', [AspekFormController::class, 'dele
 Route::post('/aspek', [AspekFormController::class, 'aspek']); //tambah data
 Route::get('/getallaspek', [AspekFormController::class, 'getAllAspek']); //get all data
 Route::get('/getaspekbynomorrekening/{nomorRekening}', [AspekFormController::class, 'getAspekByNomorRekening']); //get data by nomor rekening
+Route::delete('/deleteaspekbyid/{NomorRekening}', [AspekFormController::class, 'destroy']); //delete data
 
 //jaminan
 Route::post('/tambahjenisagunan', [JaminanController::class, 'tambahjenisagunan']); //tambah jenis agunan
@@ -90,6 +91,16 @@ Route::post('/tambahSifatKredit', [PengajuanKreditController::class, 'tambahSifa
 Route::put('/updateSifatKreditbyid/{Kode}', [PengajuanKreditController::class, 'updateSifatKredit']); //update sifat kredit
 Route::delete('/deleteSifatKreditbyid/{Kode}', [PengajuanKreditController::class, 'deleteSifatKredit']); //delete sifat kredit
 
+Route::get('/getjenisanguran', [PengajuanKreditController::class, 'getJenisAngsuran']); //get jenis anguran
+Route::post('/tambahJenisAnguran', [PengajuanKreditController::class, 'tambahJenisAngsuran']); //tambah jenis anguran
+Route::put('/updateJenisAnguranbyid/{Kode}', [PengajuanKreditController::class, 'updateJenisAngsuran']); //update jenis anguran
+Route::delete('/deleteJenisAnguranbyid/{Kode}', [PengajuanKreditController::class, 'deleteJenisAngsuran']); //delete jenis anguran
+
+Route::get('/getjenispermohonan', [PengajuanKreditController::class, 'getJenisPermohonan']); //get jenis permohonan
+Route::post('/tambahJenisPermohonan', [PengajuanKreditController::class, 'tambahJenisPermohonan']); //tambah jenis permohonan
+Route::put('/updateJenisPermohonanbyid/{Kode}', [PengajuanKreditController::class, 'updateJenisPermohonan']); //update jenis permohonan
+Route::delete('/deleteJenisPermohonanbyid/{Kode}', [PengajuanKreditController::class, 'deleteJenisPermohonan']); //delete jenis permohonan
+
 //limac
 Route::post('/limac', [LimaC_Controller::class, 'limac']); //tambah data
 Route::get('/getalllimac', [LimaC_Controller::class, 'getAllLimaC']); //get all data
@@ -112,6 +123,9 @@ Route::get('/getSurvey', [SurveyController::class, 'getSurvey']); //get data
 Route::post('/addSurvey', [SurveyController::class, 'addSurvey']); //tambah data
 Route::get('/getallsurvey', [SurveyController::class, 'getAllSurvey']); //get all data
 Route::get('/getallsurveybynomorrekening/{nomorRekening}', [SurveyController::class, 'getAllSurveyByNomorRekening']); //get data by nomor rekening  
+Route::post('/addTitleSurvey', [SurveyController::class, 'addTitleSurvey']); //tambah data
+Route::put('/updateTitleSurveybyid/{Kode}', [SurveyController::class, 'updateTitleSurvey']); //update data
+Route::delete('/deleteRefSurveybyid/{Kode}', [SurveyController::class, 'deleteRefSurvey']); //delete data
 
 //user
 Route::post('/register', [UserController::class, 'register']); //tambah data

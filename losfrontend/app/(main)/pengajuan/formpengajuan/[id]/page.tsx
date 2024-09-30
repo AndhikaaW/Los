@@ -18,6 +18,9 @@ const EditFormPengajuan = () => {
     const params = useParams();
     const id = params?.id;
     const [sifatKredit, setSifatKredit] = useState<any>([]);
+    const [bidangUsaha, setBidangUsaha] = useState<any>([]);
+    const [jenisPermohonan, setJenisPermohonan] = useState<any>([]);
+    const [jenisAngsuran, setJenisAngsuran] = useState<any>([]);
     const [pengajuan, setPengajuan] = useState<any>([]);
     const [visiblesearch, setVisibleSearch] = useState(false);
     const [searchValue, setSearchValue] = useState('');
@@ -93,42 +96,22 @@ const EditFormPengajuan = () => {
         }
     };
     useEffect(() => {
-        const fetchSifatKredit = async () => {
+        const fetchOptions = async (endpoint: any, setter: any) => {
             try {
-                const response = await axios.get(API_ENDPOINTS.GETSIFATKREDIT);
-                setSifatKredit(response.data);
+                const response = await axios.get(endpoint);
+                setter(response.data);
             } catch (error) {
-                console.error('There was an error fetching the users!', error);
+                console.error(`Error fetching ${endpoint}:`, error);
             } finally {
                 setIsLoading(false);
             }
         };
-        fetchSifatKredit();
-    }, []);
-
-    useEffect(() => {
-        const fetchPengajuan = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETGOLONGANKREDIT);
-                setPengajuan(response.data);
-            } catch (error) {
-                console.error('There was an error fetching the users!', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchPengajuan();
-    }, []);
-    useEffect(() => {
-        const fetchCif = async () => {
-            try {
-                const response = await axios.get(API_ENDPOINTS.GETALLPEMOHON);
-                setCif(response.data);
-            } catch (error) {
-                console.error("Error fetching account data:", error);
-            }
-        };
-        fetchCif();
+        fetchOptions(API_ENDPOINTS.GETSIFATKREDIT, setSifatKredit);
+        fetchOptions(API_ENDPOINTS.GETBIDANGUSAHA, setBidangUsaha);
+        fetchOptions(API_ENDPOINTS.GETJENISPERMOHONAN, setJenisPermohonan);
+        fetchOptions(API_ENDPOINTS.GETJENISANGURAN, setJenisAngsuran);
+        fetchOptions(API_ENDPOINTS.GETGOLONGANKREDIT, setPengajuan);
+        fetchOptions(API_ENDPOINTS.GETALLPEMOHON, setCif);
     }, []);
     useEffect(() => {
         setFilteredCif(
@@ -141,14 +124,15 @@ const EditFormPengajuan = () => {
         );
     }, [searchValue, cif]);
 
-    const SifatKreditOptions = sifatKredit.map((item: any, index: any) => ({
+    const mapOptions = (data: any[]) => data.map((item: any) => ({
         label: item.Keterangan,
         value: item.Keterangan
     }));
-    const PengajuanOptions = pengajuan.map((item: any, index: any) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
+    const SifatKreditOptions = mapOptions(sifatKredit);
+    const BidangUsahaOptions = mapOptions(bidangUsaha);
+    const JenisPermohonanOptions = mapOptions(jenisPermohonan);
+    const JenisAngsuranOptions = mapOptions(jenisAngsuran);
+    const PengajuanOptions = mapOptions(pengajuan);
     const onRowClick = (e: any) => {
         setFormData(prevData => ({
             ...prevData,
@@ -203,7 +187,7 @@ const EditFormPengajuan = () => {
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Bidang Usaha</label>
                             {/* <InputText required name='bidang_usaha' type="text" placeholder='Pilih bidang usaha' className="p-inputtext p-component w-full" value={formData.bidang_usaha} onChange={handleChange} /> */}
-                            <Dropdown name='bidang_usaha' value={formData.bidang_usaha} onChange={handleChange} options={SifatKreditOptions} placeholder="Pilih Bidang Usaha" className="w-full md:w-full" />
+                            <Dropdown name='bidang_usaha' value={formData.bidang_usaha} onChange={handleChange} options={BidangUsahaOptions} placeholder="Pilih Bidang Usaha" className="w-full md:w-full" />
                         </div>
                     </div>
                     <div className="col-12 md:col-4">
@@ -251,14 +235,14 @@ const EditFormPengajuan = () => {
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Jenis Permohonan</label>
                             {/* <InputText required name='jenis_permohonan' type="text" placeholder='Pilih jenis permohonan' className="p-inputtext p-component w-full" value={formData.jenis_permohonan} onChange={handleChange} /> */}
-                            <Dropdown name='jenis_permohonan' value={formData.jenis_permohonan} onChange={handleChange} options={SifatKreditOptions} placeholder="Pilih Jenis Permohonan" className="w-full md:w-full" />
+                            <Dropdown name='jenis_permohonan' value={formData.jenis_permohonan} onChange={handleChange} options={JenisPermohonanOptions} placeholder="Pilih Jenis Permohonan" className="w-full md:w-full" />
                         </div>
                     </div>
                     <div className="col-12 md:col-6">
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Jenis Angsuran</label>
                             {/* <InputText required name='jenis_angsuran' type="text" placeholder='Pilih jenis angsuran' className="p-inputtext p-component w-full" value={formData.jenis_angsuran} onChange={handleChange} /> */}
-                            <Dropdown name='jenis_angsuran' value={formData.jenis_angsuran} onChange={handleChange} options={SifatKreditOptions} placeholder="Pilih Jenis Angsuran" className="w-full md:w-full" />
+                            <Dropdown name='jenis_angsuran' value={formData.jenis_angsuran} onChange={handleChange} options={JenisAngsuranOptions} placeholder="Pilih Jenis Angsuran" className="w-full md:w-full" />
                         </div>
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">No Aplikasi Sebelumnya</label>

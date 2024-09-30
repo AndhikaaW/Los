@@ -7,6 +7,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { InputSwitch } from 'primereact/inputswitch';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
+import Debiturpage from './debitur/page';
 
 // interface Sidebar {
 //     sidebar_id: number;
@@ -126,6 +127,7 @@ const Adminpage = () => {
 
     return (
         <div>
+            <Debiturpage/>
             {/* <div className='flex align-items-center justify-content-end '>
                 <label htmlFor="">Refresh</label>
                 <Button icon="pi pi-refresh" rounded text aria-label="Filter" onClick={handleSync} />

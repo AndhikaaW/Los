@@ -28,6 +28,17 @@ const FormPemohon = () => {
     const [filteredPemohon, setFilteredPemohon] = useState(pemohon);
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(5);
+    const [provinces, setProvinces] = useState([]);
+    const [regencies, setRegencies] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [villages, setVillages] = useState([]);
+    const [selectedProvince, setSelectedProvince] = useState(null);
+    const [selectedRegency, setSelectedRegency] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+    const [selectedVillage, setSelectedVillage] = useState(null);
+    const [provinsiId, setProvinsiId] = useState(null);
+    const [regencyId, setRegencyId] = useState(null);
+    const [districtId, setDistrictId] = useState(null);
     const [formData, setFormData] = useState({
         // //form produk
         // produk: '', bidang_usaha: '', nomor_aplikasi: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: '',
@@ -155,6 +166,82 @@ const FormPemohon = () => {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        const fetchProvinces = async () => {
+            try {
+                const response = await fetch('https://andhikaaw.github.io/api-wilayah-indonesia/api/provinces.json');
+                const provinces = await response.json();
+                setProvinces(provinces);
+                return provinces;
+            } catch (error) {
+                console.error('Error fetching provinces:', error);
+                return [];
+            }
+        };
+        const fetchRegencies = async (provinsiId: any) => {
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/regencies/${provinsiId}.json`);
+                const regencies = await response.json();
+                setRegencies(regencies);
+                console.log(regencies)
+            } catch (error) {
+                console.error('Error fetching regencies:', error);
+                setRegencies([]);
+            }
+        };
+        fetchProvinces().then(() => fetchRegencies(provinsiId));
+        const fetchDistricts = async (regencyId: any) => {
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/districts/${regencyId}.json`);
+                const districts = await response.json();
+                setDistricts(districts);
+                console.log(districts)
+            } catch (error) {
+                console.error('Error fetching districts:', error);
+                setDistricts([]);
+            }
+        };
+        fetchProvinces().then(() => fetchRegencies(provinsiId)).then(() => fetchDistricts(regencyId));
+        const fetchVillages = async (districtId: any) => {
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/villages/${districtId}.json`);
+                const villages = await response.json();
+                setVillages(villages);
+                console.log(villages)
+            } catch (error) {
+                console.error('Error fetching villages:', error);
+                setVillages([]);
+            }
+        };
+        fetchProvinces().then(() => fetchRegencies(provinsiId)).then(() => fetchDistricts(regencyId)).then(() => fetchVillages(districtId));
+    }, [formData.provinsi, formData.kota, formData.kecamatan]);
+
+
+    const selectedProvinceTemplate = (option: any, props: any) => {
+        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{props.placeholder}</span>;
+    };
+    const provinceOptionTemplate = (option: any) => {
+        return <div className="flex align-items-center"><div>{option.name}</div></div>;
+    };
+    const selectedRegencyTemplate = (option: any, props: any) => {
+        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{props.placeholder}</span>;
+    };
+    const regencyOptionTemplate = (option: any) => {
+        return <div className="flex align-items-center"><div>{option.name}</div></div>;
+    };
+    const selectedDistrictTemplate = (option: any, props: any) => {
+        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{props.placeholder}</span>;
+    };
+    const districtOptionTemplate = (option: any) => {
+        return <div className="flex align-items-center"><div>{option.name}</div></div>;
+    };
+    const selectedVillageTemplate = (option: any, props: any) => {
+        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{props.placeholder}</span>;
+    };
+    const villageOptionTemplate = (option: any) => {
+        return <div className="flex align-items-center"><div>{option.name}</div></div>;
+    };
     // const pemohonOptions = pemohon.map((item, index) => ({
     //     label: item.Cif,
     //     value: item.Cif
@@ -180,7 +267,7 @@ const FormPemohon = () => {
 
     useEffect(() => {
         setFilteredPemohon(
-            pemohon.filter((item:any) =>
+            pemohon.filter((item: any) =>
                 item.Cif.toString().toLowerCase().includes(searchValue.toLowerCase()) ||
                 item.Nama.toLowerCase().includes(searchValue.toLowerCase()) ||
                 item.KTP.toLowerCase().includes(searchValue.toLowerCase()) ||
@@ -195,8 +282,7 @@ const FormPemohon = () => {
     };
 
     const paginatedPemohon = filteredPemohon.slice(first, first + rows);
-    // console.log(selectedRow)
-    // console.log(formData)
+    console.log(districts)
     return (
         <div className="surface-card shadow-2 p-4 border-round">
             <form onSubmit={handleSubmit}>
@@ -327,11 +413,25 @@ const FormPemohon = () => {
                             <div className="col-12 md:col-6">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Provinsi</label>
-                                    <InputText required name='provinsi' type="text" placeholder='Pilih Provinsi dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.provinsi} onChange={handleChange} />
+                                    <Dropdown value={selectedProvince} onChange={(e) => {
+                                        setSelectedProvince(e.value);
+                                        setProvinsiId(e.value.id);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            provinsi: e.value.name,
+                                        }));
+                                    }} options={provinces} optionLabel="name" placeholder="Pilih Provinsi dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedProvinceTemplate} itemTemplate={provinceOptionTemplate} className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kecamatan</label>
-                                    <InputText required name='kecamatan' type="text" placeholder='Pilih Kecamatan dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kecamatan} onChange={handleChange} />
+                                    <Dropdown value={selectedDistrict} onChange={(e) => {
+                                        setSelectedDistrict(e.value);
+                                        setDistrictId(e.value.id);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            kecamatan: e.value.name,
+                                        }));
+                                    }} options={districts} optionLabel="name" placeholder="Pilih Kecamatan dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedDistrictTemplate} itemTemplate={districtOptionTemplate} className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Telepon</label>
@@ -345,11 +445,24 @@ const FormPemohon = () => {
                             <div className="col-12 md:col-6 mb-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kota/Kabupaten</label>
-                                    <InputText required name='kota' type="text" placeholder='Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kota} onChange={handleChange} />
+                                    <Dropdown value={selectedRegency} onChange={(e) => {
+                                        setSelectedRegency(e.value);
+                                        setRegencyId(e.value.id);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            kota: e.value.name,
+                                        }));
+                                    }} options={regencies} optionLabel="name" placeholder="Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedRegencyTemplate} itemTemplate={regencyOptionTemplate} className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kelurahan</label>
-                                    <InputText required name='kelurahan' type="text" placeholder='Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kelurahan} onChange={handleChange} />
+                                    <Dropdown value={selectedVillage} onChange={(e) => {
+                                        setSelectedVillage(e.value);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            kelurahan: e.value.name,
+                                        }));
+                                    }} options={villages} optionLabel="name" placeholder="Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedVillageTemplate} itemTemplate={villageOptionTemplate} className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Fax</label>

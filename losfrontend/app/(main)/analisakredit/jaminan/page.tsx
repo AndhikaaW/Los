@@ -57,11 +57,12 @@ const Jaminan = () => {
                 <DataTable value={paginatedData} className="p-datatable-sm">
                     <Column field="id" header="ID" />
                     <Column field="NomorRekening" header="Nomor Rekening" />
-                    <Column field="jenisAgunan" header="Jenis Agunan" />
-                    <Column field="buktiHakMilik" header="Bukti Hak Milik" />
+                    <Column field="ref_jenis_agunan.Keterangan" header="Jenis Agunan" />
+                    <Column field="ref_hak_milik.Keterangan" header="Bukti Hak Milik" />
                     <Column field="nilaiTransaksi" header="Nilai Transaksi" />
-                    <Column field="jenisPengikatan" header="Jenis Pengikatan" />
-                    <Column field="asuransi" header="Asuransi" />
+                    <Column field="ref_hub_pemilik.Keterangan" header="Hubungan Pemilik" />
+                    <Column field="ref_jenis_pengikatan.Keterangan" header="Jenis Pengikatan" />
+                    <Column field="ref_tipe.Keterangan" header="Tipe" />
                     <Column field="tahunPembuatan" header="Tahun Pembuatan" />
                     <Column header="Edit" body={(rowData) => (
                         <Link href={`/analisakredit/jaminan/formjaminan/${rowData.id}`} passHref>
