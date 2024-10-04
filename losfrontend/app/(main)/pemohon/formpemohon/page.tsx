@@ -14,14 +14,13 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 
-interface Sektor {
-    Kode: number;
-    Keterangan: string;
-}
 const FormPemohon = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [pemohon, setPemohon] = useState<any>([]);
-    const [sektorEkonomi, setSektorEkonomi] = useState<Sektor[]>([]);
+    const [sektorEkonomi, setSektorEkonomi] = useState<any>([]);
+    const [statusTempatUsaha, setStatusTempatUsaha] = useState<any>([]);
+    const [statusTempatTinggal, setStatusTempatTinggal] = useState<any>([]);
+    const [profesiSampingan, setProfesiSampingan] = useState<any>([]);
     const [visible, setVisible] = useState(false);
     const [Isloading, setIsLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
@@ -86,18 +85,23 @@ const FormPemohon = () => {
         fetchNasabah();
     }, []);
     useEffect(() => {
-        const fetchsektor = async () => {
+        const fetchData = async (url:any, setter:any) => {
             try {
-                const response = await axios.get(API_ENDPOINTS.GETSEKTOREKONOMI);
-                setSektorEkonomi(response.data)
+                const response = await axios.get(url);
+                setter(response.data);
             } catch (error) {
-                console.error('There was an error fetching the users!', error);
+                console.error(`Error fetching data: ${error}`);
             } finally {
                 setIsLoading(false);
             }
         };
-        fetchsektor();
+
+        fetchData(API_ENDPOINTS.GETSEKTOREKONOMI, setSektorEkonomi);
+        fetchData(API_ENDPOINTS.GETSTATUSUSAHA, setStatusTempatUsaha);
+        fetchData(API_ENDPOINTS.GETPROFESISAMPAINGAN, setProfesiSampingan);
+        fetchData(API_ENDPOINTS.GETSTATUSTEMPATTINGGAL, setStatusTempatTinggal);
     }, []);
+    
 
     const handleChange = async (e: any) => {
         const { name, value } = e.target;
@@ -138,28 +142,24 @@ const FormPemohon = () => {
             setActiveIndex(activeIndex - 1);
         }
     };
-    const validateForm = () => {
-        for (const [key, value] of Object.entries(formData)) {
-            if (!value) {
-                window.alert(`${key.charAt(0) + key.slice(1)} tidak boleh kosong!`);
-                return false;
-            }
-        }
-        return true;
-    };
-
+    
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // if (!validateForm()) {
         //   return;
         // }
-        console.log(formData)
+        if (!formData.Cif) {
+            window.alert('Cif tidak boleh kosong!');
+            setIsLoading(false);
+            return;
+        }
         setIsLoading(true);
         try {
             const response = await axios.post(API_ENDPOINTS.PEMOHON, formData);
             console.log('Response from API:', response.data);
             setIsLoading(false);
             setVisible(true);
+            console.log(formData)
             resetForm()
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -184,7 +184,6 @@ const FormPemohon = () => {
                 const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/regencies/${provinsiId}.json`);
                 const regencies = await response.json();
                 setRegencies(regencies);
-                console.log(regencies)
             } catch (error) {
                 console.error('Error fetching regencies:', error);
                 setRegencies([]);
@@ -196,7 +195,6 @@ const FormPemohon = () => {
                 const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/districts/${regencyId}.json`);
                 const districts = await response.json();
                 setDistricts(districts);
-                console.log(districts)
             } catch (error) {
                 console.error('Error fetching districts:', error);
                 setDistricts([]);
@@ -208,7 +206,6 @@ const FormPemohon = () => {
                 const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/villages/${districtId}.json`);
                 const villages = await response.json();
                 setVillages(villages);
-                console.log(villages)
             } catch (error) {
                 console.error('Error fetching villages:', error);
                 setVillages([]);
@@ -218,38 +215,23 @@ const FormPemohon = () => {
     }, [formData.provinsi, formData.kota, formData.kecamatan]);
 
 
-    const selectedProvinceTemplate = (option: any, props: any) => {
-        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{props.placeholder}</span>;
+    const template = (option: any, props: any, placeholder: string) => {
+        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{placeholder}</span>;
     };
-    const provinceOptionTemplate = (option: any) => {
-        return <div className="flex align-items-center"><div>{option.name}</div></div>;
-    };
-    const selectedRegencyTemplate = (option: any, props: any) => {
-        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{props.placeholder}</span>;
-    };
-    const regencyOptionTemplate = (option: any) => {
-        return <div className="flex align-items-center"><div>{option.name}</div></div>;
-    };
-    const selectedDistrictTemplate = (option: any, props: any) => {
-        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{props.placeholder}</span>;
-    };
-    const districtOptionTemplate = (option: any) => {
-        return <div className="flex align-items-center"><div>{option.name}</div></div>;
-    };
-    const selectedVillageTemplate = (option: any, props: any) => {
-        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{props.placeholder}</span>;
-    };
-    const villageOptionTemplate = (option: any) => {
-        return <div className="flex align-items-center"><div>{option.name}</div></div>;
-    };
-    // const pemohonOptions = pemohon.map((item, index) => ({
-    //     label: item.Cif,
-    //     value: item.Cif
-    // }));
-    const sektorEkonomiOptions = sektorEkonomi.map((item) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
+    const selectedProvinceTemplate = (option: any, props: any) => template(option, props, props.placeholder);
+    const provinceOptionTemplate = (option: any) => template(option, {}, '');
+    const selectedRegencyTemplate = (option: any, props: any) => template(option, props, props.placeholder);
+    const regencyOptionTemplate = (option: any) => template(option, {}, '');
+    const selectedDistrictTemplate = (option: any, props: any) => template(option, props, props.placeholder);
+    const districtOptionTemplate = (option: any) => template(option, {}, '');
+    const selectedVillageTemplate = (option: any, props: any) => template(option, props, props.placeholder);
+    const villageOptionTemplate = (option: any) => template(option, {}, '');
+    
+    const sektorEkonomiOptions = sektorEkonomi.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const statusTempatUsahaOptions = statusTempatUsaha.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const profesiSampinganOptions = profesiSampingan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const statusTempatTinggalOptions = statusTempatTinggal.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+
 
     const headerElement = (
         <div className="inline-flex align-items-center justify-content-center gap-2">
@@ -282,7 +264,7 @@ const FormPemohon = () => {
     };
 
     const paginatedPemohon = filteredPemohon.slice(first, first + rows);
-    console.log(districts)
+    console.log(formData)
     return (
         <div className="surface-card shadow-2 p-4 border-round">
             <form onSubmit={handleSubmit}>
@@ -360,7 +342,8 @@ const FormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Profesi Sampingan</label>
-                                    <InputText required name='profesi_sampingan' type="text" placeholder='Pilih profesi sampingan' className="p-inputtext p-component w-full" value={formData.profesi_sampingan} onChange={handleChange} />
+                                    {/* <InputText required name='profesi_sampingan' type="text" placeholder='Pilih profesi sampingan' className="p-inputtext p-component w-full" value={formData.profesi_sampingan} onChange={handleChange} /> */}
+                                    <Dropdown name='profesi_sampingan' value={formData.profesi_sampingan} onChange={handleChange} options={profesiSampinganOptions} placeholder="Pilih profesi sampingan" className="w-full md:w-full"/>
                                 </div>
                             </div>
                             <div className="col-12 md:col-6">
@@ -439,7 +422,8 @@ const FormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Status Tempat Tinggal</label>
-                                    <InputText required name='status_tempat_tinggal' type="text" placeholder='Pilih status tempat tinggal' className="p-inputtext p-component w-full" value={formData.status_tempat_tinggal} onChange={handleChange} />
+                                    {/* <InputText required name='status_tempat_tinggal' type="text" placeholder='Pilih status tempat tinggal' className="p-inputtext p-component w-full" value={formData.status_tempat_tinggal} onChange={handleChange} /> */}
+                                    <Dropdown name='status_tempat_tinggal' value={formData.status_tempat_tinggal} onChange={handleChange} options={statusTempatTinggalOptions} placeholder="Pilih status tempat tinggal" className="w-full md:w-full"/>
                                 </div>
                             </div>
                             <div className="col-12 md:col-6 mb-4">
@@ -496,7 +480,8 @@ const FormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Status Tempat Usaha</label>
-                                    <InputText name='status_tempat_usaha' type="text" placeholder='Pilih Status Tempat Usaha' className="p-inputtext p-component w-full" value={formData.status_tempat_usaha} onChange={handleChange} />
+                                    {/* <InputText name='status_tempat_usaha' type="text" placeholder='Pilih Status Tempat Usaha' className="p-inputtext p-component w-full" value={formData.status_tempat_usaha} onChange={handleChange} /> */}
+                                    <Dropdown name='status_tempat_usaha' value={formData.status_tempat_usaha} onChange={handleChange} options={statusTempatUsahaOptions} placeholder="Pilih Status Tempat Usaha" className="w-full md:w-full"/>
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Surat Keterangan Usaha/SIUP No</label>
@@ -506,15 +491,7 @@ const FormPemohon = () => {
                             <div className="col-12 md:col-6 mb-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Sektor Ekonomi OJK</label>
-                                    {/* <InputText name='sektor_ekonomi' type="text" placeholder='Pilih sektor ekonomi' className="p-inputtext p-component w-full" value={formData.sektor_ekonomi} onChange={handleChange} /> */}
-                                    <Dropdown
-                                        name='sektor_ekonomi'
-                                        value={formData.sektor_ekonomi}
-                                        onChange={handleChange}
-                                        options={sektorEkonomiOptions}
-                                        placeholder="Pilih sektor ekonomi"
-                                        className="w-full md:w-full"
-                                    />
+                                    <Dropdown name='sektor_ekonomi' value={formData.sektor_ekonomi} onChange={handleChange} options={sektorEkonomiOptions} placeholder="Pilih sektor ekonomi" className="w-full md:w-full"/>
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Jumlah Karyawan</label>
@@ -556,6 +533,14 @@ const FormPemohon = () => {
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Provinsi</label>
                                     <InputText name='provinsi_usaha' type="text" placeholder='Pilih Provinsi dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.provinsi_usaha} onChange={handleChange} />
+                                    {/* <Dropdown value={selectedProvinceUsaha} onChange={(e) => {
+                                        setSelectedProvinceUsaha(e.value);
+                                        setProvinsiIdUsaha(e.value.id);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            provinsi_usaha: e.value.name,
+                                        }));
+                                    }} options={provinces} optionLabel="provinsi" placeholder="Pilih Provinsi dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedProvinceTemplate} itemTemplate={provinceOptionTemplate} className="w-full md:w-full" /> */}
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kecamatan</label>

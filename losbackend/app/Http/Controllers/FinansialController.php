@@ -10,7 +10,7 @@ class FinansialController extends Controller
     function finansial(Request $req)
     {
         $financial = new Finansial;
-        $financial->NomorRekening = $req->input('NomorRekening');
+        $financial->no_pengajuan = $req->input('no_pengajuan');
         $financial->oms_ramai = $req->input('oms_ramai');
         $financial->oms_normal = $req->input('oms_normal');
         $financial->oms_sepi = $req->input('oms_sepi');
@@ -62,17 +62,17 @@ class FinansialController extends Controller
         $finansial = Finansial::all();
         return response()->json($finansial);
     }
-    public function getFinansialByNomorRekening(string $nomorRekening)
+    public function getFinansialByNoPengajuan(string $no_pengajuan)
     {
-        $finansial = Finansial::where('NomorRekening', $nomorRekening)->get();
+        $finansial = Finansial::where('no_pengajuan', $no_pengajuan)->get();
         return response()->json($finansial);
     }
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $no_pengajuan)
     {
-        $financial = Finansial::findOrFail($id);
+        $financial = Finansial::where('no_pengajuan', $no_pengajuan)->firstOrFail();
 
         $validatedData = $request->validate([
-            'NomorRekening' => 'required|string',
+            'no_pengajuan' => 'required|string',
             'oms_ramai' => 'required|numeric',
             'oms_normal' => 'required|numeric',
             'oms_sepi' => 'required|numeric',
@@ -122,9 +122,9 @@ class FinansialController extends Controller
 
         return response()->json($financial);
     }
-    public function destroy(string $id)
+    public function destroy(string $no_pengajuan)
     {
-        $financial = Finansial::findOrFail($id);
+        $financial = Finansial::where('no_pengajuan', $no_pengajuan)->firstOrFail();
         $financial->delete();
 
         return response()->json(null, 204);

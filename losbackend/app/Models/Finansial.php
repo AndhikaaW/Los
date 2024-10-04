@@ -11,7 +11,7 @@ class Finansial extends Model
     protected $table = 'trx_finansials';
     public $timestamps = false;
     protected $fillable = [
-        'NomorRekening',
+        'no_pengajuan',
         'oms_ramai',
         'oms_normal',
         'oms_sepi',

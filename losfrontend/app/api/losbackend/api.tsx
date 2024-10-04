@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
   SIDEBAR: (userId: string) => `${api_url}/user/${userId}/sidebars`,
   REGISTER: `${api_url}/register`,
   LOGIN: `${api_url}/login`,
+  UPDATE_USER: (id: string) => `${api_url}/updateuserbyid/${id}`,
 
   //sidebar
   SYNC_SIDEBAR: `${api_url}/sync-user-sidebars`,
@@ -14,31 +15,30 @@ export const API_ENDPOINTS = {
   //finansial
   FINANCIAL: `${api_url}/finansial`,
   GETALLFINANCIAL: `${api_url}/getallfinansial`,
-  GETFINANCIALBYID: (id: string) => `${api_url}/getfinansialbyid/${id}`,
-  GETFINANCIALBYNOMORREKENING: (nomorRekening: string) => `${api_url}/getfinansialbynomorrekening/${nomorRekening}`,
+  GETFINANCIALBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getfinansialbynopengajuan/${no_pengajuan}`,
   GETFINANCIALBYCIF: (cif: string) => `${api_url}/getfinansialbycif/${cif}`,
-  UPDATEFINANCIALBYID: (id: string) => `${api_url}/updatefinansialbyid/${id}`,
-  DELETEFINANCIALBYID: (id: string) => `${api_url}/deletefinansialbyid/${id}`,
+  UPDATEFINANCIALBYID: (no_pengajuan: string) => `${api_url}/updatefinansialbyid/${no_pengajuan}`,
+  DELETEFINANCIALBYID: (no_pengajuan: string) => `${api_url}/deletefinansialbyid/${no_pengajuan}`,
   
   //aspek
   ASPEKFORM: `${api_url}/aspek`, 
   GETALLASPEK: `${api_url}/getallaspek`,
-  GETASPEKBYNOMORREKENING: (nomorRekening: string) => `${api_url}/getaspekbynomorrekening/${nomorRekening}`,
-  DELETEASPEKBYID: (id: string) => `${api_url}/deleteaspekbyid/${id}`,
+  GETASPEKBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getaspekbynopengajuan/${no_pengajuan}`,
+  UPDATEASPEKBYID: (no_pengajuan: string) => `${api_url}/updateaspekbyid/${no_pengajuan}`,
+  DELETEASPEKBYID: (no_pengajuan: string) => `${api_url}/deleteaspekbyid/${no_pengajuan}`,
 
   //limac
   LIMAC: `${api_url}/limac`,
   GETALLLIMAC: `${api_url}/getalllimac`,
-  GETLIMACBYID: (id: string) => `${api_url}/getlimacbyid/${id}`,
-  GETLIMACBYNOMORREKENING: (nomorRekening: string) => `${api_url}/getlimacbynomorrekening/${nomorRekening}`,
-  UPDATELIMACBYID: (id: string) => `${api_url}/updatelimacbyid/${id}`,
-  DELETELIMACBYID: (id: string) => `${api_url}/deletelimacbyid/${id}`,
+  GETLIMACBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getlimacbynopengajuan/${no_pengajuan}`,
+  UPDATELIMACBYID: (no_pengajuan: string) => `${api_url}/updatelimacbyid/${no_pengajuan}`,
+  DELETELIMACBYID: (no_pengajuan: string) => `${api_url}/deletelimacbyid/${no_pengajuan}`,
 
   //pemohon
   PEMOHON: `${api_url}/pemohon`,
   GETPEMOHONBYID: (id: string) => `${api_url}/getpemohonbyid/${id}`,
   UPDATEPEMOHONBYID: (id: string) => `${api_url}/updatepemohonbyid/${id}`,
-  DELETEPEMOHONBYID: (id: string) => `${api_url}/deletepemohonbyid/${id}`,
+  DELETEPEMOHONBYID: (Cif: string) => `${api_url}/deletepemohonbyid/${Cif}`,
   GETALLPEMOHON:`${api_url}/getallpemohon`,
   GETNASABAH: `${api_url}/getregisternasabah`,
   GETNASABAHID:(value : string) => `${api_url}/pemohon/${value}`,
@@ -47,7 +47,9 @@ export const API_ENDPOINTS = {
   GETSURVEY: `${api_url}/getSurvey`,
   ADDSURVEY: `${api_url}/addSurvey`,
   GETALLSURVEY: `${api_url}/getallsurvey`,
-  GETALLSURVEYBYNOMORREKENING: (nomorRekening: string) => `${api_url}/getallsurveybynomorrekening/${nomorRekening}`,
+  GETSURVEYBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getsurveybynopengajuan/${no_pengajuan}`,
+  UPDATESURVEYBYID: (no_pengajuan: string) => `${api_url}/updatesurveybyid/${no_pengajuan}`,
+  DELETESURVEYBYID: (no_pengajuan: string) => `${api_url}/deleteSurveybyid/${no_pengajuan}`,
   //tambah judul survey
   ADDTITLESURVEY: `${api_url}/addTitleSurvey`,
   UPDATETITLESURVEYBYID: (Kode: string) => `${api_url}/updateTitleSurveybyid/${Kode}`,
@@ -61,7 +63,7 @@ export const API_ENDPOINTS = {
   DELETEPRODUKBYID: (NomorRekening: string) => `${api_url}/deleteprodukbyid/${NomorRekening}`,
 
   //sifat kredit
-  
+  GETLASTPENGAJUAN: `${api_url}/getlastpengajuan`,
   ADDPRODUK: `${api_url}/produk`,
   UPDATEPENGAJUANBYID: (id: string) => `${api_url}/updatepengajuanbyid/${id}`,
 
@@ -71,9 +73,9 @@ export const API_ENDPOINTS = {
   ADDJAMINAN: `${api_url}/jaminan`,
   GETALLJAMINAN: `${api_url}/getalljaminan`,
   GETJAMINANBYID: (id: string) => `${api_url}/getjaminanbyid/${id}`,
-  UPDATEJAMINANBYID: (id: string) => `${api_url}/updatejaminanbyid/${id}`,
-  DELETEJAMINANBYID: (id: string) => `${api_url}/deletejaminanbyid/${id}`,
-  GETJAMINANBYNOMORREKENING: (nomorRekening: string) => `${api_url}/getjaminanbynomorrekening/${nomorRekening}`,
+  UPDATEJAMINANBYID: (no_pengajuan: string) => `${api_url}/updatejaminanbyid/${no_pengajuan}`,
+  DELETEJAMINANBYID: (no_pengajuan: string) => `${api_url}/deletejaminanbyid/${no_pengajuan}`,
+  GETJAMINANBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getjaminanbyid/${no_pengajuan}`,
 
   //Master Jaminan
   //tambah title aspek
@@ -107,7 +109,7 @@ export const API_ENDPOINTS = {
   UPDATEHUBUNGANPEMILIKBYID: (Kode: string) => `${api_url}/updateHubunganPemilikbyid/${Kode}`,
   DELETEHUBUNGANPEMILIKBYID: (Kode: string) => `${api_url}/deleteHubunganPemilikbyid/${Kode}`,
 
-  //MasterPengajuan Kredit
+  //Master Pengajuan Kredit
   //tambah bidang usaha
   GETBIDANGUSAHA: `${api_url}/getbidangusaha`,
   TAMBAHBIDANGUSAHA: `${api_url}/tambahBidangUsaha`,
@@ -128,4 +130,22 @@ export const API_ENDPOINTS = {
   TAMBAHJENISPERMOHONAN: `${api_url}/tambahJenisPermohonan`,
   UPDATEJENISPERMOHONAN: (Kode: string) => `${api_url}/updateJenisPermohonanbyid/${Kode}`,
   DELETEJENISPERMOHONAN: (Kode: string) => `${api_url}/deleteJenisPermohonanbyid/${Kode}`,
+
+  //master Pemohon
+  GETSEKTORPEMOHON: `${api_url}/getsektorekonomi`,
+  TAMBAHSEKTORPEMOHON: `${api_url}/tambahSektorEkonomi`,
+  UPDATESEKTORPERMOHON: (Kode: string) => `${api_url}/updatesektorekonomibyid/${Kode}`,
+  DELETESEKTORPERMOHON: (Kode: string) => `${api_url}/deletesektorekonomibyid/${Kode}`,
+  GETSTATUSUSAHA: `${api_url}/getstatususaha`,
+  TAMBAHSTATUSUSAHA: `${api_url}/tambahStatusUsaha`,
+  UPDATESTATUSUSAHA: (Kode: string) => `${api_url}/updatestatususahabyid/${Kode}`,
+  DELETESTATUSUSAHA: (Kode: string) => `${api_url}/deletestatususahabyid/${Kode}`,
+  GETSTATUSTEMPATTINGGAL: `${api_url}/getstatusTempatTinggal`,
+  TAMBAHSTATUSTEMPATTINGGAL: `${api_url}/tambahStatusTempatTinggal`,
+  UPDATESTATUSTEMPATTINGGAL: (Kode: string) => `${api_url}/updatestatusTempatTinggalbyid/${Kode}`,
+  DELETESTATUSTEMPATTINGGAL: (Kode: string) => `${api_url}/deletestatusTempatTinggalbyid/${Kode}`,
+  GETPROFESISAMPAINGAN: `${api_url}/getprofesisampingan`,
+  TAMBAHPROFESISAMPAINGAN: `${api_url}/tambahProfesiSampingan`,
+  UPDATEPROFESISAMPAINGAN: (Kode: string) => `${api_url}/updateprofesisampinganbyid/${Kode}`,
+  DELETEPROFESISAMPAINGAN: (Kode: string) => `${api_url}/deleteprofesisampinganbyid/${Kode}`,
 };

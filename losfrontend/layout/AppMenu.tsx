@@ -44,31 +44,10 @@ const AppMenu = () => {
 
     const model: AppMenuItem[] = [
         {
-            label: 'Home',
+            label: 'Dashboard',
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
-        // {
-        //     label: 'Master',
-        // {
-        //     label: 'Data Pemohon',
-        //     items:
-        //         sidebar
-        //             .filter(item => item.status === 2)
-        //             .map(item => ({
-        //                 label: item.label,
-        //                 icon: 'pi pi-fw pi-file',
-        //                 to: item.to_path
-        //             }))
-        //     // items: [
-        //     //     { label: 'Data Diri Pemohon', icon: 'pi pi-fw pi-id-card', to: '/pemohon' },
-        //     //     { label: 'Financial', icon: 'pi pi-fw pi-chart-line', to: '/financial' },
-        //     //     { label: 'Aspek Form', icon: 'pi pi-fw pi-file', to: '/aspekform' },
-        //     //     { label: 'Jaminan', icon: 'pi pi-fw pi-shield', to: '/jaminan' },
-        //     //     { label: '5c', icon: 'pi pi-fw pi-check-square', to: '/5c' },
-        //     //     { label: 'Survey', icon: 'pi pi-fw pi-chart-bar', to: '/survey' },
-        //     // ]
-        // }
-        {
+        ...(sidebar.some(item => item.status === 2 && item.sidebar_id === 1) ? [{
             label: 'Data Debitur',
             items: sidebar
                 .filter(item => item.status === 2 && item.sidebar_id === 1)
@@ -77,8 +56,8 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-file',
                     to: item.to_path
                 }))
-        },
-        {
+        }] : []),
+        ...(sidebar.some(item => item.status === 2 && item.sidebar_id === 7) ? [{
             label: 'Pengajuan Kredit',
             items: sidebar
                 .filter(item => item.status === 2 && item.sidebar_id === 7)
@@ -87,45 +66,24 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-file',
                     to: item.to_path
                 }))
-        },
-        // {
-        //     label: 'Analisa Kredit',
-        //     items: sidebar
-        //         .filter(item => item.status === 2 && item.sidebar_id !== 7 && item.sidebar_id !== 1)
-        //         .map(item => ({
-        //             label: item.label,
-        //             icon: 'pi pi-fw pi-file',
-        //             to: item.to_path
-        //         }))
-        // },
+        }] : []),
     ];
     const modelAdmin: AppMenuItem[] = [
         {
-            label: 'Admin Dashboard',
+            label: 'Dashboard',
             items: [{ label: 'Admin Dashboard', icon: 'pi pi-fw pi-home', to: '/admin/' }]
         },
-        // {
-        //     label: 'Dashboard User',
-        //     items: [
-        //         { label: 'Status User', icon: 'pi pi-fw pi-home', to: '/admin/statususer' },
-        //         { label: 'Survey User', icon: 'pi pi-fw pi-home', to: '/admin/survey' }
-        //     ]
-        // },
-        {
+        ...(sidebar.some(item => item.status === 2 && item.sidebar_id > 7) ? [{
             label: 'Master',
-            items:
-                sidebar
-                    .filter(item => item.status === 2 && item.sidebar_id > 7)
-                    .map(item => ({
-                        label: item.label,
-                        icon: 'pi pi-fw pi-file',
-                        to: item.to_path
-                    }))
-        },
-
-        //nanti dulu
-
-        {
+            items: sidebar
+                .filter(item => item.status === 2 && item.sidebar_id > 7)
+                .map(item => ({
+                    label: item.label,
+                    icon: 'pi pi-fw pi-file',
+                    to: item.to_path
+                }))
+        }] : []),
+        ...(sidebar.some(item => item.status === 2 && item.sidebar_id === 1) ? [{
             label: 'Data Debitur',
             items: sidebar
                 .filter(item => item.status === 2 && item.sidebar_id === 1)
@@ -134,8 +92,8 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-file',
                     to: item.to_path
                 }))
-        },
-        {
+        }] : []),
+        ...(sidebar.some(item => item.status === 2 && item.sidebar_id === 7) ? [{
             label: 'Pengajuan Kredit',
             items: sidebar
                 .filter(item => item.status === 2 && item.sidebar_id === 7)
@@ -144,22 +102,12 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-file',
                     to: item.to_path
                 }))
-        },
-        // {
-        //     label: 'Analisa Kredit',
-        //     items: sidebar
-        //         .filter(item => item.status === 2 && item.sidebar_id >= 2  && item.sidebar_id <= 6)
-        //         .map(item => ({
-        //             label: item.label,
-        //             icon: 'pi pi-fw pi-file',
-        //             to: item.to_path
-        //         }))
-        // },
+        }] : []),
     ];
 
     return (
         <MenuProvider>
-            {status === 2 ? (
+            {status === 2 || status === 3 ? (
                 <ul className="layout-menu">
                     {model.map((item, i) => {
                         return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;

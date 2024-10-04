@@ -4,12 +4,141 @@ namespace App\Http\Controllers;
 
 use App\Models\Pemohon;
 use App\Models\Produk;
+use App\Models\RefProfesiSampingan;
+use App\Models\RefStatusTempatTinggal;
+use App\Models\RefStatusUsaha;
 use App\Models\RegisterNasabah;
 use App\Models\SektorEkonomi;
 use Illuminate\Http\Request;
 
 class PemohonController extends Controller
 {
+    public function tambahSektorEkonomi(Request $request)
+    {
+        $sektorEkonomi = new SektorEkonomi;
+        $kodeTerakhir = SektorEkonomi::max('Kode');
+        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 2) + 1 : 1;
+        $sektorEkonomi->Kode = sprintf('SE%07d', $nomorBaru);
+        $sektorEkonomi->Keterangan = $request->input('Keterangan');
+        $sektorEkonomi->save();
+        
+        return response()->json($sektorEkonomi);
+    }
+    public function getSektorEkonomi()
+    {
+        $sektorEkonomi = SektorEkonomi::all();
+        return response()->json($sektorEkonomi);
+    }
+    public function updateSektorEkonomi(Request $request, string $Kode)
+    {
+        $sektorEkonomi = SektorEkonomi::where('Kode', $Kode)->firstOrFail();
+        $sektorEkonomi->update($request->all());
+        return response()->json($sektorEkonomi);
+    }
+    public function deleteSektorEkonomi(string $Kode)
+    {
+        $sektorEkonomi = SektorEkonomi::where('Kode', $Kode)->first();
+        if (!$sektorEkonomi) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        $sektorEkonomi->delete();
+        return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+    public function tambahStatusUsaha(Request $request)
+    {
+        $statusUsaha = new RefStatusUsaha;
+        $kodeTerakhir = RefStatusUsaha::max('Kode');
+        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 2) + 1 : 1;
+        $statusUsaha->Kode = sprintf('SU%07d', $nomorBaru);
+        $statusUsaha->Keterangan = $request->input('Keterangan');
+        $statusUsaha->save();
+        
+        return response()->json($statusUsaha);
+    }
+    public function getStatusUsaha()
+    {
+        $statusUsaha = RefStatusUsaha::all();
+        return response()->json($statusUsaha);
+    }
+    public function updateStatusUsaha(Request $request, string $Kode)
+    {
+        $statusUsaha = RefStatusUsaha::where('Kode', $Kode)->firstOrFail();
+        $statusUsaha->update($request->all());
+        return response()->json($statusUsaha);
+    }
+    public function deleteStatusUsaha(string $Kode)
+    {
+        $statusUsaha = RefStatusUsaha::where('Kode', $Kode)->first();
+        if (!$statusUsaha) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        $statusUsaha->delete();
+        return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+    public function tambahStatusTempatTinggal(Request $request)
+    {
+        $statusTempatTinggal = new RefStatusTempatTinggal;
+        $kodeTerakhir = RefStatusTempatTinggal::max('Kode');
+        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 2) + 1 : 1;
+        $statusTempatTinggal->Kode = sprintf('ST%07d', $nomorBaru);
+        $statusTempatTinggal->Keterangan = $request->input('Keterangan');
+        $statusTempatTinggal->save();
+        
+        return response()->json($statusTempatTinggal);
+    }
+    public function getStatusTempatTinggal()
+    {
+        $statusTempatTinggal = RefStatusTempatTinggal::all();
+        return response()->json($statusTempatTinggal);
+    }
+    public function updateStatusTempatTinggal(Request $request, string $Kode)
+    {
+        $statusTempatTinggal = RefStatusTempatTinggal::where('Kode', $Kode)->firstOrFail();
+        $statusTempatTinggal->update($request->all());
+        return response()->json($statusTempatTinggal);
+    }
+    public function deleteStatusTempatTinggal(string $Kode)
+    {
+        $statusTempatTinggal = RefStatusTempatTinggal::where('Kode', $Kode)->first();
+        if (!$statusTempatTinggal) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        $statusTempatTinggal->delete();
+        return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+    
+    public function tambahProfesiSampingan(Request $request)
+    {
+        $profesiSampingan = new RefProfesiSampingan;
+        $kodeTerakhir = RefProfesiSampingan::max('Kode');
+        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 2) + 1 : 1;
+        $profesiSampingan->Kode = sprintf('PS%07d', $nomorBaru);
+        $profesiSampingan->Keterangan = $request->input('Keterangan');
+        $profesiSampingan->save();
+        
+        return response()->json($profesiSampingan);
+    }
+    public function getProfesiSampingan()
+    {
+        $profesiSampingan = RefProfesiSampingan::all();
+        return response()->json($profesiSampingan);
+    }
+    public function updateProfesiSampingan(Request $request, string $Kode)
+    {
+        $profesiSampingan = RefProfesiSampingan::where('Kode', $Kode)->firstOrFail();
+        $profesiSampingan->update($request->all());
+        return response()->json($profesiSampingan);
+    }
+    public function deleteProfesiSampingan(string $Kode)
+    {
+        $profesiSampingan = RefProfesiSampingan::where('Kode', $Kode)->first();
+        if (!$profesiSampingan) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        $profesiSampingan->delete();
+        return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+
     function pemohon(Request $req)
     {
         $pemohon = new Pemohon;
@@ -65,13 +194,8 @@ class PemohonController extends Controller
     }
     public function index()
     {
-        $data = Pemohon::with(["Produk.LimaC","Produk.Financial","Produk.aspekForm","Produk.jaminan","Produk.survey"])
+        $data = Pemohon::with(["Produk.LimaC","Produk.Financial","Produk.aspekForm","Produk.jaminan","Produk.survey","RefProfesiSampingan","RefStatusTempatTinggal","RefStatusUsaha","RefSektorEkonomi"])
         ->get();
-        return response()->json($data);
-    }
-    public function getSektorEkonomi()
-    {
-        $data = SektorEkonomi::all();
         return response()->json($data);
     }
 
@@ -134,6 +258,4 @@ class PemohonController extends Controller
 
         return response()->json(null, 204);
     }
-
-    
 }

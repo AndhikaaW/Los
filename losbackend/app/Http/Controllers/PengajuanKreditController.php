@@ -21,7 +21,7 @@ class PengajuanKreditController extends Controller
         $bidangUsaha = new RefBidangUsaha;
         $kodeTerakhir = RefBidangUsaha::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int) substr($kodeTerakhir, 2) + 1 : 1;
-        $bidangUsaha->Kode = sprintf('BU%02d', $nomorBaru);
+        $bidangUsaha->Kode = sprintf('BU%07d', $nomorBaru);
         $bidangUsaha->Keterangan = $request->input('Keterangan');
         $bidangUsaha->save();
 
@@ -56,7 +56,7 @@ class PengajuanKreditController extends Controller
         $sifatKredit = new SifatKredit;
         $kodeTerakhir = SifatKredit::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int) substr($kodeTerakhir, 2) + 1 : 1;
-        $sifatKredit->Kode = sprintf('SK%02d', $nomorBaru);
+        $sifatKredit->Kode = sprintf('SK%07d', $nomorBaru);
         $sifatKredit->Keterangan = $request->input('Keterangan');
         $sifatKredit->save();
 
@@ -88,7 +88,7 @@ class PengajuanKreditController extends Controller
         $jenisAngsuran = new RefJenisAngsuran;
         $kodeTerakhir = RefJenisAngsuran::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int) substr($kodeTerakhir, 2) + 1 : 1;
-        $jenisAngsuran->Kode = sprintf('JA%02d', $nomorBaru);
+        $jenisAngsuran->Kode = sprintf('JA%07d', $nomorBaru);
         $jenisAngsuran->Keterangan = $request->input('Keterangan');
         $jenisAngsuran->save();
 
@@ -120,7 +120,7 @@ class PengajuanKreditController extends Controller
         $jenisPermohonan = new RefJenisPermohonan;
         $kodeTerakhir = RefJenisPermohonan::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int) substr($kodeTerakhir, 2) + 1 : 1;
-        $jenisPermohonan->Kode = sprintf('JP%02d', $nomorBaru);
+        $jenisPermohonan->Kode = sprintf('JP%07d', $nomorBaru);
         $jenisPermohonan->Keterangan = $request->input('Keterangan');
         $jenisPermohonan->save();
 

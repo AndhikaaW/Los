@@ -12,8 +12,8 @@ class AspekFormController extends Controller
     {
         $aspekForm = new AspekForm;
         $kodeTerakhir = AspekForm::max('Kode');
-        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $aspekForm->Kode = sprintf('A%02d', $nomorBaru);
+        $nomorBaru = $kodeTerakhir ? (int) substr($kodeTerakhir, 1) + 1 : 1;
+        $aspekForm->Kode = sprintf('A%07d', $nomorBaru);
         $aspekForm->Keterangan = $req->input('Keterangan');
         $aspekForm->save();
         return response()->json($aspekForm, 201);
@@ -56,20 +56,40 @@ class AspekFormController extends Controller
         return response()->json($aspek);
     }
 
-    public function getAspekByNomorRekening($nomorRekening)
+    public function getAspekByNoPengajuan($no_pengajuan)
     {
         $aspek = OutAspekForm::leftJoin('aspek_form', 'trx_aspek_form.Kode', '=', 'aspek_form.Kode')
             ->select('aspek_form.*', 'trx_aspek_form.*')
-            ->where('trx_aspek_form.NomorRekening', $nomorRekening)
+            ->where('trx_aspek_form.no_pengajuan', $no_pengajuan)
             ->get();
         return response()->json($aspek);
     }
     public function aspek(Request $request)
     {
         $formAspekData = $request->all();
-        $nomorRekening = $request->input('NomorRekening');
+        $no_pengajuan = $request->input('no_pengajuan');
+        // $risiko = $request->input('risiko');
+        // $mitigasi = $request->input('mitigasi');
+        // $aspekRisiko = AspekForm::firstOrCreate([
+        //     'Keterangan' => 'risiko',
+        // ]);
+        // $aspekMitigasi = AspekForm::firstOrCreate([
+        //     'Keterangan' => 'mitigasi',
+        // ]);
+        // OutAspekForm::create([
+        //     'Kode' => $aspekRisiko->Kode,
+        //     'jawaban' => $risiko,
+        //     'no_pengajuan' => $no_pengajuan,
+        //     'keterangan' => 'risiko'
+        // ]);
+        // OutAspekForm::create([
+        //     'Kode' => $aspekMitigasi->Kode,
+        //     'jawaban' => $mitigasi,
+        //     'no_pengajuan' => $no_pengajuan,
+        //     'keterangan' => 'mitigasi'
+        // ]);
         foreach ($formAspekData as $key => $value) {
-            if ($key === 'risiko' || $key === 'mitigasi' || $key === 'NomorRekening') {
+            if ($key === 'no_pengajuan') {
                 continue;
             } else {
                 $aspek = AspekForm::firstOrCreate([
@@ -78,15 +98,36 @@ class AspekFormController extends Controller
                 OutAspekForm::create([
                     'Kode' => $aspek->Kode,
                     'jawaban' => $value,
-                    'NomorRekening' => $nomorRekening
+                    'no_pengajuan' => $no_pengajuan
                 ]);
             }
         }
         return response()->json($formAspekData);
     }
-    public function destroy($NomorRekening)
+    public function update($no_pengajuan, Request $request)
     {
-        $aspek = OutAspekForm::where('NomorRekening', $NomorRekening)->delete();
-        return response()->json($aspek);
+        $formAspekData = $request->all();
+
+        foreach ($formAspekData as $key => $value) {
+            if ($key === 'risiko' || $key === 'mitigasi' || $key === 'no_pengajuan') {
+                continue;
+            } else {
+                $aspek = AspekForm::firstOrCreate([
+                    'Keterangan' => $key,
+                ]);
+
+                OutAspekForm::updateOrCreate(
+                    ['Kode' => $aspek->Kode, 'no_pengajuan' => $no_pengajuan],
+                    ['jawaban' => $value]
+                );
+            }
+        }
+
+        return response()->json(['message' => 'Data berhasil diperbarui'], 200);
+    }
+    public function destroy($no_pengajuan)
+    {
+        $aspek = OutAspekForm::where('no_pengajuan', $no_pengajuan)->delete();
+        return response()->json(null, 204);
     }
 }

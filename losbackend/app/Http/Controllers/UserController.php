@@ -35,6 +35,35 @@ class UserController extends Controller
 
         return response()->json($user);
     }
+    public function update(Request $req, $id)
+    {
+        $user = User::find($id);
+        $user->name = $req->input('name');
+        $user->email = $req->input('email');
+        $user->status = $req->input('status');
+        
+        $sidebars = $req->input('sidebars');
+    
+        if (!is_array($sidebars)) {
+            $sidebars = json_decode($sidebars, true);
+        }
+        $validatedSidebars = array_map(function ($sidebar) {
+            return [
+                'sidebar_id' => $sidebar['sidebar_id'],
+                'label' => $sidebar['label'],
+                'to_path' => $sidebar['to_path'],
+                'status' => $sidebar['status'],
+                'children' => $sidebar['children'] ?? []
+            ];
+        }, $sidebars);
+
+        // $user->sidebars = json_encode($validatedSidebars);
+        $user->sidebars = $validatedSidebars;
+        $user->save();
+        // $user->sidebars = json_decode($user->sidebars, true);
+        
+        return response()->json($user);
+    }
 
     public function getUserWithSidebars($userId)
     {
@@ -74,6 +103,9 @@ class UserController extends Controller
 
         return response()->json($users);
     }
+
+
+
     public function syncUserSidebars()
     {
         // Fetch all users
@@ -97,9 +129,6 @@ class UserController extends Controller
         // return response()->json($sidebarData);
         return response()->json(['message' => 'User sidebars synced successfully.']);
     }
-
-
-
     public function updateSidebarStatus(Request $request)
     {
         try {

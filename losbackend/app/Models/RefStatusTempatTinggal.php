@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LimaC extends Model
+class RefStatusTempatTinggal extends Model
 {
     use HasFactory;
-    protected $table = 'trx_limacs';
+    protected $table = 'ref_status_tempat_tinggal';
     public $timestamps = false;
     protected $fillable = [
-        'no_pengajuan',
-        'characters',
-        'capacity',
-        'capital',
-        'collateral',
-        'conditions',
+        'id',
+        'Kode',
+        'Keterangan',
     ];
 }

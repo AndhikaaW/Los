@@ -17,7 +17,7 @@ class JaminanController extends Controller
         $jenisAgunan = new RefJenisAgunan;
         $kodeTerakhir = RefJenisAgunan::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $jenisAgunan->Kode = sprintf('A%02d', $nomorBaru);
+        $jenisAgunan->Kode = sprintf('A%07d', $nomorBaru);
         $jenisAgunan->Keterangan = $request->input('Keterangan');
         $jenisAgunan->save();
         
@@ -48,7 +48,7 @@ class JaminanController extends Controller
         $hakMilik = new RefHakMilik;
         $kodeTerakhir = RefHakMilik::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $hakMilik->Kode = sprintf('H%02d', $nomorBaru);
+        $hakMilik->Kode = sprintf('H%07d', $nomorBaru);
         $hakMilik->Keterangan = $request->input('Keterangan');
         $hakMilik->save();
         
@@ -79,7 +79,7 @@ class JaminanController extends Controller
         $tipe = new RefTipe;
         $kodeTerakhir = RefTipe::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $tipe->Kode = sprintf('T%02d', $nomorBaru);
+        $tipe->Kode = sprintf('T%07d', $nomorBaru);
         $tipe->Keterangan = $request->input('Keterangan');
         $tipe->save();
         
@@ -110,7 +110,7 @@ class JaminanController extends Controller
         $jenisPengikatan = new RefJenisPengikatan;
         $kodeTerakhir = RefJenisPengikatan::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $jenisPengikatan->Kode = sprintf('P%02d', $nomorBaru);
+        $jenisPengikatan->Kode = sprintf('P%07d', $nomorBaru);
         $jenisPengikatan->Keterangan = $request->input('Keterangan');
         $jenisPengikatan->save();
         
@@ -141,7 +141,7 @@ class JaminanController extends Controller
         $hubunganPemilik = new RefHubPemilik;
         $kodeTerakhir = RefHubPemilik::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 2) + 1 : 1;
-        $hubunganPemilik->Kode = sprintf('HP%02d', $nomorBaru);
+        $hubunganPemilik->Kode = sprintf('HP%07d', $nomorBaru);
         $hubunganPemilik->Keterangan = $request->input('Keterangan');
         $hubunganPemilik->save();
         
@@ -180,7 +180,7 @@ class JaminanController extends Controller
     public function jaminan(Request $request)
     {
         $jaminan = new Jaminan;
-        $jaminan->NomorRekening = $request->input('NomorRekening');
+        $jaminan->no_pengajuan = $request->input('no_pengajuan');
         $jaminan->jenisAgunan = $request->input('jenisAgunan');
         $jaminan->merek = $request->input('merek');
         $jaminan->buktiHakMilik = $request->input('buktiHakMilik');
@@ -198,25 +198,19 @@ class JaminanController extends Controller
         return response()->json($jaminan);
     }
     
-    public function getJaminanById(string $id)
+    public function getJaminanByNoPengajuan(string $no_pengajuan)
     {
-        $jaminan = Jaminan::findOrFail($id);
+        $jaminan = Jaminan::with(['RefJenisAgunan', 'RefHakMilik', 'RefTipe', 'RefJenisPengikatan', 'RefHubPemilik'])->where('no_pengajuan', $no_pengajuan)->get();
         return response()->json($jaminan);
     }
     
-    public function getJaminanByNomorRekening(string $nomorRekening)
+    public function update(Request $request, string $no_pengajuan)
     {
-        $jaminan = Jaminan::with(['RefJenisAgunan', 'RefHakMilik', 'RefTipe', 'RefJenisPengikatan', 'RefHubPemilik'])->where('NomorRekening', $nomorRekening)->get();
-        return response()->json($jaminan);
-    }
-    
-    public function update(Request $request, string $id)
-    {
-        $jaminan = Jaminan::findOrFail($id);
+        $jaminan = Jaminan::where('no_pengajuan', $no_pengajuan)->firstOrFail();
 
         $validatedData = $request->validate([
             'id' => 'required|numeric',
-            'NomorRekening' => 'required|string',
+            'no_pengajuan' => 'required|string',
             'jenisAgunan' => 'required|string',
             'merek' => 'required|string',
             'buktiHakMilik' => 'required|string',
@@ -236,9 +230,9 @@ class JaminanController extends Controller
 
         return response()->json($jaminan);
     }
-    public function destroy(string $id)
+    public function destroy(string $no_pengajuan)
     {
-        $jaminan = Jaminan::findOrFail($id);
+        $jaminan = Jaminan::where('no_pengajuan', $no_pengajuan)->firstOrFail();
         $jaminan->delete();
 
         return response()->json(null, 204);

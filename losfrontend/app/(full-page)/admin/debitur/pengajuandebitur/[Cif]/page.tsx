@@ -47,23 +47,24 @@ const Pengajuandebitur = () => {
             <div className="card">
                 <DataTable value={data} tableStyle={{ minWidth: '30rem' }}>
                     <Column field="id" header="ID" />
+                    <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="CIF" />
                     <Column field="pengajuan" header="Pengajuan" />
-                    <Column field="bidang_usaha" header="Bidang Usaha" />
+                    <Column field="ref_bidang_usaha.Keterangan" header="Bidang Usaha" />
                     <Column field="NomorRekening" header="Nomor Rekening" />
                     {/* <Column field="plafon_kredit" header="Plafon Kredit" />
                     <Column field="tanggal_aplikasi" header="Tanggal Aplikasi" />
                     <Column field="suku_bunga" header="Suku Bunga" />
                     <Column field="tanggal_permohonan" header="Tanggal Permohonan" />
                     <Column field="jangka_waktu" header="Jangka Waktu" /> */}
-                    <Column field="sifat_kredit" header="Sifat Kredit" />
-                    <Column field="jenis_permohonan" header="Jenis Permohonan" />
-                    {/* <Column field="jenis_angsuran" header="Jenis Angsuran" /> */}
+                    <Column field="ref_sifat_kredit.Keterangan" header="Sifat Kredit" />
+                    <Column field="ref_jenis_permohonan.Keterangan" header="Jenis Permohonan" />
+                    <Column field="ref_jenis_angsuran.Keterangan" header="Jenis Angsuran" />
                     {/* <Column field="no_aplikasi_sebelumnya" header="No Aplikasi Sebelumnya" /> */}
                     <Column field="tujuan_penggunaan" header="Tujuan Penggunaan" />
                     <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" />
                     <Column header="Analisa Kredit" body={(rowData) => (
-                        <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}/analisakredit/${rowData.NomorRekening}`} passHref>
+                        <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}/analisakredit/${rowData.no_pengajuan}`} passHref>
                             <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
                         </Link>
                     )} />

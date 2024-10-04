@@ -6,19 +6,14 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
-import { Paginator } from 'primereact/paginator';
+import { InputText } from 'primereact/inputtext';
 import React, { useEffect, useState } from 'react'
 
 const Debiturpage = () => {
   const [data, setData] = useState([])
   const [selectedRow, setSelectedRow] = useState<any>({});
   const [visible, setVisible] = useState(false);
-  // const [first, setFirst] = useState(0);
-  // const [rows, setRows] = useState(2);
-  // const onPageChange = (event: any) => {
-  //   setFirst(event.first);
-  //   setRows(event.rows);
-  // };
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchCif = async () => {
@@ -38,17 +33,23 @@ const Debiturpage = () => {
       setData(data.filter((item: any) => item.Cif !== Cif));
       const response = await axios.get(API_ENDPOINTS.GETALLPEMOHON);
       setData(response.data);
-      // setPaginatedData(response.data.slice(first, first + rows));
     } catch (error) {
       console.error('Error deleting form pemohon:', error);
     }
   };
+
+  const filteredData = data.filter((item: any) => {
+    return item.Nama.toLowerCase().includes(searchTerm.toLowerCase()) || item.KTP.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
     <div>
-      {/* <h3>Data yang dipilih:</h3>
-      <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <div className="card">
-        <DataTable value={data} tableStyle={{ minWidth: '30rem' }}>
+        <div className="p-input-icon-right flex justify-content-end mb-3">
+          <i className="pi pi-search" />
+          <InputText value={searchTerm} onChange={(e: any) => setSearchTerm(e.target.value)} placeholder="Cari..." />
+        </div>
+        <DataTable value={filteredData} tableStyle={{ minWidth: '30rem' }} paginator={true} rows={5} rowsPerPageOptions={[5, 10, 20]}>
           <Column field="id" header="ID" />
           <Column field="Cif" header="CIF" />
           <Column field="Nama" header="Nama Lengkap" />
@@ -58,6 +59,12 @@ const Debiturpage = () => {
           <Column field="no_hp" header="No HP" />
           <Column field="Alamat" header="Alamat" />
           <Column field="nama_usaha" header="Nama Usaha" />
+          <Column field="ref_profesi_sampingan.Keterangan" header="Profesi Sampingan" />
+          <Column header="Edit" body={(rowData) => (
+            <Link href={`/pemohon/formpemohon/${rowData.id}`} passHref>
+              <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+            </Link>
+          )} />
           <Column header="Pengajuan" body={(rowData) => (
             <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}`} passHref>
               <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
@@ -79,13 +86,6 @@ const Debiturpage = () => {
             </div>
           )} />
         </DataTable>
-        {/* <Paginator
-          first={first}
-          rows={rows}
-          totalRecords={data.length}
-          rowsPerPageOptions={[2, 4, 6]}
-          onPageChange={onPageChange}
-        /> */}
       </div>
     </div>
   )

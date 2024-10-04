@@ -217,10 +217,10 @@ const pemohon = () => {
     setRows(event.rows);
     setPaginatedData(allpemohon.slice(event.first, event.first + event.rows));
   };
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (Cif: string) => {
     try {
-      await axios.delete(API_ENDPOINTS.DELETEPEMOHONBYID(id));
-      setAllPemohon(allpemohon.filter((item: any) => item.id !== id));
+      await axios.delete(API_ENDPOINTS.DELETEPEMOHONBYID(Cif));
+      setAllPemohon(allpemohon.filter((item: any) => item.Cif !== Cif));
       const response = await axios.get(API_ENDPOINTS.GETALLPEMOHON);
       setAllPemohon(response.data);
       setPaginatedData(response.data.slice(first, first + rows));
@@ -264,7 +264,7 @@ const pemohon = () => {
                 <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
                 <div className='flex justify-content-end mt-3'>
                   <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
-                  <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.id); setVisible(false); }} />
+                  <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.Cif); setVisible(false); }} />
                 </div>
               </Dialog>
             </div>

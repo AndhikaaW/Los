@@ -10,7 +10,7 @@ class Jaminan extends Model
     use HasFactory;
     protected $table = 'trx_jaminan';
     protected $fillable = [
-        'NomorRekening',
+        'no_pengajuan',
         'jenisAgunan',
         'merek',
         'buktiHakMilik',

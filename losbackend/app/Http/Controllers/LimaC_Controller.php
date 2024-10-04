@@ -10,7 +10,7 @@ class LimaC_Controller extends Controller
     function limac(Request $req)
     {
         $limac = new LimaC;
-        $limac->NomorRekening = $req->input('NomorRekening');
+        $limac->no_pengajuan = $req->input('no_pengajuan');
         $limac->characters = $req->input('characters');
         $limac->capacity = $req->input('capacity');
         $limac->capital = $req->input('capital');
@@ -24,23 +24,18 @@ class LimaC_Controller extends Controller
         $limac = LimaC::all();
         return response()->json($limac);
     }
-    public function getLimaCById(string $id)
+    public function getLimaCByNoPengajuan(string $no_pengajuan)
     {
-        $limaC = LimaC::findOrFail($id);
-        return response()->json($limaC);
-    }
-    public function getLimaCByNomorRekening(string $nomorRekening)
-    {
-        $limaC = LimaC::where('NomorRekening', $nomorRekening)->get();
+        $limaC = LimaC::where('no_pengajuan', $no_pengajuan)->get();
         return response()->json($limaC);
     }
     
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $no_pengajuan)
     {
-        $limaC = LimaC::findOrFail($id);
+        $limaC = LimaC::where('no_pengajuan', $no_pengajuan)->firstOrFail();
 
         $validatedData = $request->validate([
-            'NomorRekening' => 'required|string',
+            'no_pengajuan' => 'required|string',
             'characters' => 'required|string',
             'capacity' => 'required|string',
             'capital' => 'required|string',
@@ -53,9 +48,9 @@ class LimaC_Controller extends Controller
         return response()->json($limaC);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $no_pengajuan)
     {
-        $limaC = LimaC::findOrFail($id);
+        $limaC = LimaC::where('no_pengajuan', $no_pengajuan)->firstOrFail();
         $limaC->delete();
 
         return response()->json(null, 204);

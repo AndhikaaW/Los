@@ -14,6 +14,6 @@ class OutAspekForm extends Model
         'id',
         'Kode',
         'jawaban',
-        'NomorRekening',
+        'no_pengajuan',
     ];
 }

@@ -9,23 +9,9 @@ class Pemohon extends Model
 {
     use HasFactory;
     protected $table = 'pemohon';
-    protected $connection = 'los'; 
+    protected $connection = 'los';
     public $timestamps = false;
     protected $fillable = [
-        // 'produk',
-        // 'bidang_usaha',
-        // 'nomor_aplikasi',
-        // 'tanggal_aplikasi',
-        // 'tanggal_permohonan',
-        // 'plafon_kredit',
-        // 'suku_bunga',
-        // 'jangka_waktu',
-        // 'sifat_kredit',
-        // 'jenis_permohonan',
-        // 'jenis_angsuran',
-        // 'no_aplikasi_sebelumnya',
-        // 'tujuan_penggunaan',
-        // 'detail_tujuan_penggunaan',
         'Cif',
         'TempatLahir',
         'Kelamin',
@@ -66,5 +52,25 @@ class Pemohon extends Model
     public function Produk()
     {
         return $this->hasMany(Produk::class, 'Cif', 'Cif');
+    }
+
+    public function RefSektorEkonomi()
+    {
+        return $this->belongsTo(RefSektorEkonomi::class, 'sektor_ekonomi', 'Kode');
+    }
+
+    public function RefProfesiSampingan()
+    {
+        return $this->belongsTo(RefProfesiSampingan::class, 'profesi_sampingan', 'Kode');
+    }
+
+    public function RefStatusUsaha()
+    {
+        return $this->belongsTo(RefStatusUsaha::class, 'status_tempat_usaha', 'Kode');
+    }
+
+    public function RefStatusTempatTinggal()
+    {
+        return $this->belongsTo(RefStatusTempatTinggal::class, 'status_tempat_tinggal', 'Kode');
     }
 }

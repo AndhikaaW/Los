@@ -22,7 +22,7 @@ const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
     const [jenisPengikatan, setJenisPengikatan] = useState<any>([]);
     const [formPengajuan] = useState<any>(pengajuan);
     const [formJaminan, setformJaminan] = useState<any>({
-        NomorRekening: formPengajuan?.NomorRekening || '',
+        no_pengajuan: formPengajuan?.no_pengajuan || '',
         jenisAgunan: '',
         merek: '',
         buktiHakMilik: '',
@@ -39,7 +39,7 @@ const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
     });
     const resetForm = () => { 
         setformJaminan({
-            NomorRekening: formPengajuan?.NomorRekening || '',
+            no_pengajuan: formPengajuan?.no_pengajuan || '',
             jenisAgunan: '',
             merek: '',
             buktiHakMilik: '',
@@ -92,8 +92,8 @@ const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (formJaminan.NomorRekening === "") {
-            alert("Nomor Rekening harus diisi!");
+        if (formJaminan.no_pengajuan === "") {
+            alert("No Pengajuan tidak tersedia!");
             return;
         }
         setIsLoading(true)
@@ -108,6 +108,8 @@ const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
             setIsLoading(false)
         }
     };
+    // console.log(formJaminan)
+    
     const jaminanFields = [
         { label: 'Jenis Agunan', type: 'dropdown', options: ['1', '2'], name: 'jenisAgunan' },
         { label: 'Merek', type: 'input', name: 'merek' },

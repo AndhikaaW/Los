@@ -11,7 +11,7 @@ class OutSurvey extends Model
     protected $table = 'trx_survey';
     public $timestamps = false;
     protected $fillable = [
-        'NomorRekening',
+        'no_pengajuan',
         'Kode',
         'Pilihan',
     ];

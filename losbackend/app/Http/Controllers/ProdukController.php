@@ -16,6 +16,7 @@ class ProdukController extends Controller
     function produk(Request $req)
     {
         $produk = new Produk;
+        $produk->no_pengajuan = $req->input('no_pengajuan');
         $produk->Cif = $req->input('Cif');
         $produk->pengajuan = $req->input('pengajuan');
         $produk->bidang_usaha = $req->input('bidang_usaha');
@@ -76,12 +77,25 @@ class ProdukController extends Controller
 
     public function getProdukByCif(string $cif)
     {
-        $produk = Produk::where('Cif', $cif)->get();
+        $produk = Produk::with(['RefSifatKredit', 'RefJenisPermohonan', 'RefJenisAngsuran', 'RefBidangUsaha'])->where('Cif', $cif)->get();
 
         if (!$produk) {
             return response()->json(['message' => 'Produk not found'], 404);
         }
 
         return response()->json($produk);
+    }
+    public function getLastPengajuan()
+    {
+        $lastPengajuan = Produk::orderBy('no_pengajuan', 'desc')->first();
+        
+        if ($lastPengajuan) {
+            $lastNumber = substr($lastPengajuan->no_pengajuan, 2);
+            $newNumber = (int)$lastNumber + 1;
+            $newNoPengajuan = 'PK' . str_pad($newNumber, 7, '0', STR_PAD_LEFT);
+            return $newNoPengajuan;
+        } else {
+            return 'PK0000001';
+        }
     }
 }

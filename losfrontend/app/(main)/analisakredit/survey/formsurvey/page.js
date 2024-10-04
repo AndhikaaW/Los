@@ -15,12 +15,12 @@ const FormSurvey = ({pengajuan}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [survey, setSurvey] = useState([])
   const [formData, setFormData] = useState({
-    NomorRekening: formPengajuan.NomorRekening || ''
+    no_pengajuan: formPengajuan.no_pengajuan || ''
 
   })
   const resetForm = () => {
     setFormData({
-      NomorRekening: formPengajuan.NomorRekening || ''
+      no_pengajuan: formPengajuan.no_pengajuan || ''
     })
   }
 
@@ -42,8 +42,8 @@ const FormSurvey = ({pengajuan}) => {
   }, [])
 
   const handleSave = async () => {
-    if(formData.NomorRekening===''){
-      alert('Nomor Rekening tidak boleh kosong')
+    if(formData.no_pengajuan===''){
+      alert('Nomor Pengajuan tidak tersedia')
       return
     }
     const response = await axios.post(API_ENDPOINTS.ADDSURVEY, formData);

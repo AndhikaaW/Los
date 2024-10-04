@@ -15,20 +15,30 @@ import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 import { useParams } from 'next/navigation';
 
-interface Sektor {
-    Kode: number;
-    Keterangan: string;
-}
 const EditFormPemohon = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [pemohon, setPemohon] = useState<any>([]);
-    const [sektorEkonomi, setSektorEkonomi] = useState<Sektor[]>([]);
+    const [sektorEkonomi, setSektorEkonomi] = useState<any>([]);
+    const [statusTempatUsaha, setStatusTempatUsaha] = useState<any>([]);
+    const [statusTempatTinggal, setStatusTempatTinggal] = useState<any>([]);
+    const [profesiSampingan, setProfesiSampingan] = useState<any>([]);
     const [visible, setVisible] = useState(false);
     const [Isloading, setIsLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [filteredPemohon, setFilteredPemohon] = useState(pemohon);
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(5);
+    const [provinces, setProvinces] = useState([]);
+    const [regencies, setRegencies] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [villages, setVillages] = useState([]);
+    const [selectedProvince, setSelectedProvince] = useState(null);
+    const [selectedRegency, setSelectedRegency] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+    const [selectedVillage, setSelectedVillage] = useState(null);
+    const [provinsiId, setProvinsiId] = useState(null);
+    const [regencyId, setRegencyId] = useState(null);
+    const [districtId, setDistrictId] = useState(null);
 
     const params = useParams();
     const id = params?.id;
@@ -37,7 +47,7 @@ const EditFormPemohon = () => {
             fetchPemohon(id);
         }
     }, [id]);
-    
+
     const fetchPemohon = async (id: any) => {
         try {
             const response = await axios.get(API_ENDPOINTS.GETPEMOHONBYID(id));
@@ -95,17 +105,21 @@ const EditFormPemohon = () => {
         fetchNasabah();
     }, []);
     useEffect(() => {
-        const fetchsektor = async () => {
+        const fetchData = async (url:any, setter:any) => {
             try {
-                const response = await axios.get(API_ENDPOINTS.GETSEKTOREKONOMI);
-                setSektorEkonomi(response.data)
+                const response = await axios.get(url);
+                setter(response.data);
             } catch (error) {
-                console.error('There was an error fetching the users!', error);
+                console.error(`Error fetching data: ${error}`);
             } finally {
                 setIsLoading(false);
             }
         };
-        fetchsektor();
+
+        fetchData(API_ENDPOINTS.GETSEKTOREKONOMI, setSektorEkonomi);
+        fetchData(API_ENDPOINTS.GETSTATUSUSAHA, setStatusTempatUsaha);
+        fetchData(API_ENDPOINTS.GETPROFESISAMPAINGAN, setProfesiSampingan);
+        fetchData(API_ENDPOINTS.GETSTATUSTEMPATTINGGAL, setStatusTempatTinggal);
     }, []);
 
     const handleChange = async (e: any) => {
@@ -147,32 +161,7 @@ const EditFormPemohon = () => {
             setActiveIndex(activeIndex - 1);
         }
     };
-    const validateForm = () => {
-        for (const [key, value] of Object.entries(formData)) {
-            if (!value) {
-                window.alert(`${key.charAt(0) + key.slice(1)} tidak boleh kosong!`);
-                return false;
-            }
-        }
-        return true;
-    };
-
-    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     console.log(formData)
-    //     setIsLoading(true);
-    //     try {
-    //         const response = await axios.post(API_ENDPOINTS.PEMOHON, formData);
-    //         console.log('Response from API:', response.data);
-    //         setIsLoading(false);
-    //         setVisible(true);
-    //         resetForm()
-    //     } catch (error) {
-    //         console.error('Error submitting form:', error);
-    //         setIsLoading(false);
-    //     }
-    // };
-    const handleSubmit = async (e:any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         setIsLoading(true);
         try {
@@ -191,14 +180,72 @@ const EditFormPemohon = () => {
             setIsLoading(false);
         }
     };
-    // const pemohonOptions = pemohon.map((item, index) => ({
-    //     label: item.Cif,
-    //     value: item.Cif
-    // }));
-    const sektorEkonomiOptions = sektorEkonomi.map((item) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
+    useEffect(() => {
+        const fetchProvinces = async () => {
+            try {
+                const response = await fetch('https://andhikaaw.github.io/api-wilayah-indonesia/api/provinces.json');
+                const provinces = await response.json();
+                setProvinces(provinces);
+                return provinces;
+            } catch (error) {
+                console.error('Error fetching provinces:', error);
+                return [];
+            }
+        };
+        const fetchRegencies = async (provinsiId: any) => {
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/regencies/${provinsiId}.json`);
+                const regencies = await response.json();
+                setRegencies(regencies);
+            } catch (error) {
+                console.error('Error fetching regencies:', error);
+                setRegencies([]);
+            }
+        };
+        fetchProvinces().then(() => fetchRegencies(provinsiId));
+        const fetchDistricts = async (regencyId: any) => {
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/districts/${regencyId}.json`);
+                const districts = await response.json();
+                setDistricts(districts);
+            } catch (error) {
+                console.error('Error fetching districts:', error);
+                setDistricts([]);
+            }
+        };
+        fetchProvinces().then(() => fetchRegencies(provinsiId)).then(() => fetchDistricts(regencyId));
+        const fetchVillages = async (districtId: any) => {
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/villages/${districtId}.json`);
+                const villages = await response.json();
+                setVillages(villages);
+            } catch (error) {
+                console.error('Error fetching villages:', error);
+                setVillages([]);
+            }
+        };
+        fetchProvinces().then(() => fetchRegencies(provinsiId)).then(() => fetchDistricts(regencyId)).then(() => fetchVillages(districtId));
+    }, [formData.provinsi, formData.kota, formData.kecamatan]);
+
+
+    const template = (option: any, props: any, placeholder: string) => {
+        return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{placeholder}</span>;
+    };
+    const selectedProvinceTemplate = (option: any, props: any) => template(option, props, props.placeholder);
+    const provinceOptionTemplate = (option: any) => template(option, {}, '');
+    const selectedRegencyTemplate = (option: any, props: any) => template(option, props, props.placeholder);
+    const regencyOptionTemplate = (option: any) => template(option, {}, '');
+    const selectedDistrictTemplate = (option: any, props: any) => template(option, props, props.placeholder);
+    const districtOptionTemplate = (option: any) => template(option, {}, '');
+    const selectedVillageTemplate = (option: any, props: any) => template(option, props, props.placeholder);
+    const villageOptionTemplate = (option: any) => template(option, {}, '');
+
+
+
+    const sektorEkonomiOptions = sektorEkonomi.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const statusTempatUsahaOptions = statusTempatUsaha.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const profesiSampinganOptions = profesiSampingan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const statusTempatTinggalOptions = statusTempatTinggal.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
 
     const headerElement = (
         <div className="inline-flex align-items-center justify-content-center gap-2">
@@ -216,7 +263,7 @@ const EditFormPemohon = () => {
 
     useEffect(() => {
         setFilteredPemohon(
-            pemohon.filter((item:any) =>
+            pemohon.filter((item: any) =>
                 item.Cif.toString().toLowerCase().includes(searchValue.toLowerCase()) ||
                 item.Nama.toLowerCase().includes(searchValue.toLowerCase()) ||
                 item.KTP.toLowerCase().includes(searchValue.toLowerCase()) ||
@@ -256,7 +303,7 @@ const EditFormPemohon = () => {
                                                     <span className="p-inputgroup-addon"><i className="pi pi-search"></i></span>
                                                     <InputText placeholder="Search" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className="w-full" />
                                                 </div>
-                                                <DataTable value={paginatedPemohon} tableStyle={{ minWidth: '50rem' }} onRowClick={onRowClick} className='cursor-pointer'>
+                                                <DataTable value={paginatedPemohon} tableStyle={{ minWidth: '50rem' }} onRowClick={onRowClick} className='cursor-pointer' rowClassName={(data) => `hover:bg-gray-100`}>
                                                     <Column field="ID" header="ID" />
                                                     <Column field="Cif" header="CIF" />
                                                     <Column field="Nama" header="Nama Lengkap" />
@@ -310,7 +357,8 @@ const EditFormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Profesi Sampingan</label>
-                                    <InputText required name='profesi_sampingan' type="text" placeholder='Pilih profesi sampingan' className="p-inputtext p-component w-full" value={formData.profesi_sampingan} onChange={handleChange} />
+                                    {/* <InputText required name='profesi_sampingan' type="text" placeholder='Pilih profesi sampingan' className="p-inputtext p-component w-full" value={formData.profesi_sampingan} onChange={handleChange} /> */}
+                                    <Dropdown name='profesi_sampingan' value={formData.profesi_sampingan} onChange={handleChange} options={profesiSampinganOptions} placeholder="Pilih profesi sampingan" className="w-full md:w-full" />
                                 </div>
                             </div>
                             <div className="col-12 md:col-6">
@@ -363,11 +411,25 @@ const EditFormPemohon = () => {
                             <div className="col-12 md:col-6">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Provinsi</label>
-                                    <InputText required name='provinsi' type="text" placeholder='Pilih Provinsi dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.provinsi} onChange={handleChange} />
+                                    <Dropdown value={selectedProvince} onChange={(e) => {
+                                        setSelectedProvince(e.value);
+                                        setProvinsiId(e.value.id);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            provinsi: e.value.name,
+                                        }));
+                                    }} options={provinces}  optionLabel="name" placeholder="Pilih Provinsi dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedProvinceTemplate} itemTemplate={provinceOptionTemplate} className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kecamatan</label>
-                                    <InputText required name='kecamatan' type="text" placeholder='Pilih Kecamatan dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kecamatan} onChange={handleChange} />
+                                    <Dropdown value={selectedDistrict} onChange={(e) => {
+                                        setSelectedDistrict(e.value);
+                                        setDistrictId(e.value.id);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            kecamatan: e.value.name,
+                                        }));
+                                    }} options={districts} optionLabel="name" placeholder="Pilih Kecamatan dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedDistrictTemplate} itemTemplate={districtOptionTemplate} className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Telepon</label>
@@ -375,17 +437,31 @@ const EditFormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Status Tempat Tinggal</label>
-                                    <InputText required name='status_tempat_tinggal' type="text" placeholder='Pilih status tempat tinggal' className="p-inputtext p-component w-full" value={formData.status_tempat_tinggal} onChange={handleChange} />
+                                    {/* <InputText required name='status_tempat_tinggal' type="text" placeholder='Pilih status tempat tinggal' className="p-inputtext p-component w-full" value={formData.status_tempat_tinggal} onChange={handleChange} /> */}
+                                    <Dropdown name='status_tempat_tinggal' value={formData.status_tempat_tinggal} onChange={handleChange} options={statusTempatTinggalOptions} placeholder="Pilih status tempat tinggal" className="w-full md:w-full" />
                                 </div>
                             </div>
                             <div className="col-12 md:col-6 mb-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kota/Kabupaten</label>
-                                    <InputText required name='kota' type="text" placeholder='Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kota} onChange={handleChange} />
+                                    <Dropdown value={selectedRegency} onChange={(e) => {
+                                        setSelectedRegency(e.value);
+                                        setRegencyId(e.value.id);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            kota: e.value.name,
+                                        }));
+                                    }} options={regencies} optionLabel="name" placeholder="Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedRegencyTemplate} itemTemplate={regencyOptionTemplate} className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kelurahan</label>
-                                    <InputText required name='kelurahan' type="text" placeholder='Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kelurahan} onChange={handleChange} />
+                                    <Dropdown value={selectedVillage} onChange={(e) => {
+                                        setSelectedVillage(e.value);
+                                        setFormData((prevData) => ({
+                                            ...prevData,
+                                            kelurahan: e.value.name,
+                                        }));
+                                    }} options={villages} optionLabel="name" placeholder="Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedVillageTemplate} itemTemplate={villageOptionTemplate} className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Fax</label>
@@ -419,7 +495,8 @@ const EditFormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Status Tempat Usaha</label>
-                                    <InputText name='status_tempat_usaha' type="text" placeholder='Pilih Status Tempat Usaha' className="p-inputtext p-component w-full" value={formData.status_tempat_usaha} onChange={handleChange} />
+                                    {/* <InputText name='status_tempat_usaha' type="text" placeholder='Pilih Status Tempat Usaha' className="p-inputtext p-component w-full" value={formData.status_tempat_usaha} onChange={handleChange} /> */}
+                                    <Dropdown name='status_tempat_usaha' value={formData.status_tempat_usaha} onChange={handleChange} options={statusTempatUsahaOptions} placeholder="Pilih Status Tempat Usaha" className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Surat Keterangan Usaha/SIUP No</label>
@@ -429,15 +506,7 @@ const EditFormPemohon = () => {
                             <div className="col-12 md:col-6 mb-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Sektor Ekonomi OJK</label>
-                                    {/* <InputText name='sektor_ekonomi' type="text" placeholder='Pilih sektor ekonomi' className="p-inputtext p-component w-full" value={formData.sektor_ekonomi} onChange={handleChange} /> */}
-                                    <Dropdown
-                                        name='sektor_ekonomi'
-                                        value={formData.sektor_ekonomi}
-                                        onChange={handleChange}
-                                        options={sektorEkonomiOptions}
-                                        placeholder="Pilih sektor ekonomi"
-                                        className="w-full md:w-full"
-                                    />
+                                    <Dropdown name='sektor_ekonomi' value={formData.sektor_ekonomi} onChange={handleChange} options={sektorEkonomiOptions} placeholder="Pilih sektor ekonomi" className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Jumlah Karyawan</label>
@@ -479,6 +548,14 @@ const EditFormPemohon = () => {
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Provinsi</label>
                                     <InputText name='provinsi_usaha' type="text" placeholder='Pilih Provinsi dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.provinsi_usaha} onChange={handleChange} />
+                                    {/* <Dropdown value={selectedProvinceUsaha} onChange={(e) => {
+                                    setSelectedProvinceUsaha(e.value);
+                                    setProvinsiIdUsaha(e.value.id);
+                                    setFormData((prevData) => ({
+                                        ...prevData,
+                                        provinsi_usaha: e.value.name,
+                                    }));
+                                }} options={provinces} optionLabel="provinsi" placeholder="Pilih Provinsi dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedProvinceTemplate} itemTemplate={provinceOptionTemplate} className="w-full md:w-full" /> */}
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kecamatan</label>

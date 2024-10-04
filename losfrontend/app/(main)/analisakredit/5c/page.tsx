@@ -35,10 +35,10 @@ const RealisasiPinjaman = () => {
         setRows(event.rows);
         setPaginatedData(limaC.slice(event.first, event.first + event.rows));
     };
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (no_pengajuan: string) => {
         try {
-            await axios.delete(API_ENDPOINTS.DELETELIMACBYID(id));
-            setlimaC(limaC.filter((item: any) => item.id !== id));
+            await axios.delete(API_ENDPOINTS.DELETELIMACBYID(no_pengajuan));
+            setlimaC(limaC.filter((item: any) => item.no_pengajuan !== no_pengajuan));
             // Refresh data setelah delete
             const response = await axios.get(API_ENDPOINTS.GETALLLIMAC);
             setlimaC(response.data);

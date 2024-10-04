@@ -35,15 +35,15 @@ const Financial = () => {
         setRows(event.rows);
         setPaginatedData(financial.slice(event.first, event.first + event.rows));
     };
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (no_pengajuan: string) => {
         try {
-            await axios.delete(API_ENDPOINTS.DELETEFINANCIALBYID(id));
-            setfinancial(financial.filter((item: any) => item.id !== id));
+            await axios.delete(API_ENDPOINTS.DELETEFINANCIALBYID(no_pengajuan));
+            setfinancial(financial.filter((item: any) => item.no_pengajuan !== no_pengajuan));
             const response = await axios.get(API_ENDPOINTS.GETALLFINANCIAL);
             setfinancial(response.data);
             setPaginatedData(response.data.slice(first, first + rows));
         } catch (error) {
-            console.error('Error deleting form 5C:', error);
+            console.error('Error deleting form financial:', error);
         }
     };
     return (

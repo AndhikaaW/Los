@@ -7,6 +7,9 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { InputSwitch } from 'primereact/inputswitch';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
 
 interface Sidebar {
     sidebar_id: number;
@@ -25,6 +28,9 @@ interface User {
 
 const Statuspage = () => {
     const [users, setUsers] = useState<User[]>([]);
+    const [selectedRow, setSelectedRow] = useState<any>({});
+    const [visibleEdit, setVisibleEdit] = useState(false);
+
     const toast = useRef<Toast>(null);
 
     const handleSync = async () => {
@@ -42,7 +48,6 @@ const Statuspage = () => {
             try {
                 const response = await axios.get(API_ENDPOINTS.GETSIDEBAR);
                 setUsers(response.data);
-                console.log(response.data)
             } catch (error) {
                 console.error('There was an error fetching the sidebar!', error);
                 if (toast.current) {
@@ -89,7 +94,7 @@ const Statuspage = () => {
     const SidebarItem = ({ sidebar, userId, isChild }: { sidebar: Sidebar, userId: number, isChild?: boolean }) => {
         return (
             <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between' }}>
                     <span className={`py-2 ${isChild ? 'ml-4' : ''}`}>{sidebar.label}</span>
                     {!isChild && (
                         <InputSwitch
@@ -112,16 +117,71 @@ const Statuspage = () => {
 
     const SidebarList = ({ sidebars, userId }: { sidebars: Sidebar[], userId: number }) => {
         return (
-            <ul>
+            <div>
                 {sidebars.map((sidebar, index) => (
                     <SidebarItem key={index} sidebar={sidebar} userId={userId} />
                 ))}
-            </ul>
+            </div>
+            
         );
     };
 
     const sidebarTemplate = (rowData: User) => {
         return <SidebarList sidebars={rowData.sidebars} userId={rowData.id} />;
+    };
+
+    const statusOptions = [
+        { label: 'Marketing', value: 3 },
+        { label: 'Approval', value: 2 },
+        { label: 'Administrator', value: 1 },
+    ];
+    const handleUpdateUser = async (e: any) => {
+        e.preventDefault();
+        try {
+            setVisibleEdit(false);
+            if (toast.current) {
+                toast.current.show({ severity: 'success', summary: 'Update Success', detail: 'User updated successfully' });
+            }
+            
+            const updatedSidebars = selectedRow.sidebars.map((sidebar: any) => {
+                if (selectedRow.status === 3) {
+                    // Marketing: Semua sidebar kecuali User, Debitur, dan CMS Data Master
+                    if (!['Status User', 'Debitur', 'CMS Data Master'].includes(sidebar.label)) {
+                        return { ...sidebar, status: 2 };
+                    }
+                    return { ...sidebar, status: 1 };
+                } else if (selectedRow.status === 2) {
+                    // Approval: Tidak ada sidebar
+                    return { ...sidebar, status: 1 };
+                } else if (selectedRow.status === 1) {
+                    // Administrator: Semua sidebar
+                    return { ...sidebar, status: 2 };
+                }
+                return sidebar;
+            });
+            console.log(updatedSidebars)
+
+            const userUpdateResponse = await axios.put(API_ENDPOINTS.UPDATE_USER(selectedRow.id), {
+                ...selectedRow,
+                sidebars: JSON.stringify(updatedSidebars)
+            });
+            console.log(userUpdateResponse)
+            if (userUpdateResponse.data) {
+                setUsers(prevUsers => prevUsers.map(user => 
+                    user.id === userUpdateResponse.data.id ? userUpdateResponse.data : user
+                ));
+                
+                setSelectedRow(userUpdateResponse.data);
+            } else {
+                throw new Error('Failed to update user');
+            }
+            
+        } catch (error) {
+            console.error('Error updating user:', error);
+            if (toast.current) {
+                toast.current.show({ severity: 'error', summary: 'Update Failed', detail: 'Failed to update the user and sidebars' });
+            }
+        }
     };
 
     return (
@@ -134,9 +194,40 @@ const Statuspage = () => {
             <DataTable value={users} tableStyle={{ minWidth: '50rem' }}>
                 <Column field="id" header="User ID" />
                 <Column field="name" header="User Name" />
-                <Column field="email" header="Email" />
+                <Column field="email" header="Email" style={{ width: '20%' }} />
+                <Column field="status" header="Status" body={(rowData) => (
+                    <div>
+                        {rowData.status === 1 ? 'Administrator' : rowData.status === 2 ? 'Approval' : 'Marketing'}
+                    </div>
+                )} />
+                <Column style={{ width: '5%' }} header="Edit" body={(rowData) => (
+                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' onClick={() => {
+                        setSelectedRow(rowData);
+                        setVisibleEdit(true);
+                    }} />
+                )} />
                 <Column header="Sidebars" body={sidebarTemplate} />
             </DataTable>
+            <Dialog header="Edit User" visible={visibleEdit} className='flex flex-column' style={{ width: '50vw' }} onHide={() => setVisibleEdit(false)}>
+                <form onSubmit={handleUpdateUser}>
+                    <div className="mb-3">
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                        <InputText id="name" value={selectedRow.name} onChange={(e) => setSelectedRow({ ...selectedRow, name: e.target.value })} required />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <InputText id="email" value={selectedRow.email} onChange={(e) => setSelectedRow({ ...selectedRow, email: e.target.value })} required />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <Dropdown value={selectedRow.status} options={statusOptions} onChange={(e) => setSelectedRow({ ...selectedRow, status: e.value })} />
+                    </div>
+                    <div className='flex justify-content-end mt-3'>
+                        <Button label="Cancel" icon="pi pi-times" onClick={() => setVisibleEdit(false)} className="p-button-text" />
+                        <Button label="Save" icon="pi pi-check" autoFocus type="submit" />
+                    </div>
+                </form>
+            </Dialog>
         </div>
     );
 }

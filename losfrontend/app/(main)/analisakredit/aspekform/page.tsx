@@ -90,7 +90,7 @@ const AspekForm = () => {
                     </Link>
                 </div>
                 <DataTable value={paginatedData} tableStyle={{ minWidth: '50rem' }}>
-                    <Column field="NomorRekening" header="Nomor Rekening" />
+                    <Column field="no_pengajuan" header="Nomor Pengajuan" />
                     <Column header="Aspek Details" body={aspekTemplate} />
                 </DataTable>
                 <Paginator

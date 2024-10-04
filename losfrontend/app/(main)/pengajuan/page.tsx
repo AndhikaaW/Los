@@ -75,6 +75,7 @@ const produk = () => {
                 </div>
                 <DataTable value={paginatedData} tableStyle={{ minWidth: '130rem' }}>
                     <Column field="id" header="ID" />
+                    <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="Cif" />
                     <Column field="pengajuan" header="Pengajuan" />
                     <Column field="bidang_usaha" header="Bidang Usaha" />

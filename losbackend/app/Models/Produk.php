@@ -11,6 +11,7 @@ class Produk extends Model
     protected $table = 'produk';
     public $timestamps = false;
     protected $fillable = [
+        'no_pengajuan',
         'Cif',
         'pengajuan',
         'bidang_usaha',
@@ -34,26 +35,47 @@ class Produk extends Model
     ];
     public function financial()
     {
-        return $this->hasOne(Finansial::class, 'NomorRekening', 'NomorRekening');
+        return $this->hasOne(Finansial::class, 'no_pengajuan', 'no_pengajuan');
     }
 
     public function survey()
     {
-        return $this->hasMany(OutSurvey::class, 'NomorRekening', 'NomorRekening');
+        return $this->hasMany(OutSurvey::class, 'no_pengajuan', 'no_pengajuan');
     }
     public function LimaC()
     {
-        return $this->hasOne(LimaC::class, 'NomorRekening', 'NomorRekening');
+        return $this->hasOne(LimaC::class, 'no_pengajuan', 'no_pengajuan');
     }
 
     public function aspekForm()
     {
-        return $this->hasMany(OutAspekForm::class, 'NomorRekening', 'NomorRekening');
+        return $this->hasMany(OutAspekForm::class, 'no_pengajuan', 'no_pengajuan');
     }
 
     public function jaminan()
     {
-        return $this->hasOne(Jaminan::class, 'NomorRekening', 'NomorRekening');
+        return $this->hasOne(Jaminan::class, 'no_pengajuan', 'no_pengajuan');
     }
 
+
+
+    public function RefBidangUsaha()
+    {
+        return $this->belongsTo(RefBidangUsaha::class, 'bidang_usaha', 'Kode');
+    }
+
+    public function RefSifatKredit()
+    {
+        return $this->belongsTo(SifatKredit::class, 'sifat_kredit', 'Kode');
+    }
+
+    public function RefJenisPermohonan()
+    {
+        return $this->belongsTo(RefJenisPermohonan::class, 'jenis_permohonan', 'Kode');
+    }
+
+    public function RefJenisAngsuran()
+    {
+        return $this->belongsTo(RefJenisAngsuran::class, 'jenis_angsuran', 'Kode');
+    }
 }

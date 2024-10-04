@@ -20,12 +20,12 @@ const FormFinancial = ({pengajuan}:{pengajuan:any}) => {
     const [Isloading, setIsLoading] = useState(false);
     const [formFinancial, setFormFinancial] = useState<any>(
         {
-            NomorRekening: formPengajuan.NomorRekening || ''
+            no_pengajuan: formPengajuan.no_pengajuan || ''
         });
 
     const resetForm = () => {
         setFormFinancial({
-            NomorRekening: formPengajuan.NomorRekening || ''
+            no_pengajuan: formPengajuan.no_pengajuan || ''
         });
     };
 
@@ -60,8 +60,8 @@ const FormFinancial = ({pengajuan}:{pengajuan:any}) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true)
-        if(formFinancial.NomorRekening===''){
-            alert('Nomor Rekening tidak boleh kosong')
+        if(formFinancial.no_pengajuan===''){
+            alert('No Pengajuan tidak tersedia')
             return
           }
         try {

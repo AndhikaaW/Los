@@ -6,27 +6,27 @@ import axios from 'axios';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import { Dialog } from 'primereact/dialog';
 
-const FormAspek = ({pengajuan}:{pengajuan:any}) => {
+const FormAspek = ({ pengajuan }: { pengajuan: any }) => {
     const [formPengajuan] = useState<any>(pengajuan);
     const [titleAspek, settitleAspek] = useState<any>([])
     const [visible, setVisible] = useState(false);
     const [Isloading, setIsLoading] = useState(false);
 
     const [formAspek, setformAspek] = useState<any>({
-        NomorRekening: formPengajuan.NomorRekening || ''
+        no_pengajuan: formPengajuan.no_pengajuan || ''
     });
-    
+
     const resetForm = () => {
         setformAspek({
-          NomorRekening: formPengajuan.NomorRekening || '',
-          ...titleAspek.reduce((acc:any, aspect:any) => {
-            acc[aspect.Keterangan] = '';
-            return acc;
-        }, {}),
-        risiko: '',
-        mitigasi: ''
+            no_pengajuan: formPengajuan.no_pengajuan || '',
+            ...titleAspek.reduce((acc: any, aspect: any) => {
+                acc[aspect.Keterangan] = '';
+                return acc;
+            }, {}),
+            risiko: '',
+            mitigasi: ''
         })
-      }
+    }
 
     useEffect(() => {
         const fetchAspekForm = async () => {
@@ -48,13 +48,14 @@ const FormAspek = ({pengajuan}:{pengajuan:any}) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        if(formAspek.NomorRekening===''){
-            alert('Nomor Rekening tidak boleh kosong')
+        if (formAspek.no_pengajuan === '') {
+            alert('Nomor Pengajuan tidak tersedia')
             return
-          }
+        }
         try {
             const response = await axios.post(API_ENDPOINTS.ASPEKFORM, formAspek);
             console.log('Response from API:', response.data);
+            console.log(formAspek)
             setIsLoading(false);
             setVisible(true);
             resetForm();
@@ -70,24 +71,37 @@ const FormAspek = ({pengajuan}:{pengajuan:any}) => {
                     <fieldset className="border-round mb-4 p-6">
                         <legend className="text-xl font-bold">Formulir Aspek</legend>
                         {titleAspek.map((aspect: any, index: any) => (
-                            <div key={index} className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">{aspect.Keterangan}</label>
-                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.Keterangan]} onChange={(e) => handleInputChange(e, aspect.Keterangan)} />
+                            <div>
+                                {
+                                    aspect.Keterangan !== 'Resiko' && aspect.Keterangan !== 'Mitigasi' ? (
+                                        <div key={index} className="mb-4">
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">{aspect.Keterangan}</label>
+                                            <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.Keterangan]} onChange={(e) => handleInputChange(e, aspect.Keterangan)} />
+                                        </div>
+                                    ) : (
+                                        null
+                                    )
+                                }
                             </div>
                         ))}
-
-                        <div className="mtext-sm text-red-700 mb-10 italic bg-red-100 p-4 border-round">
+                        <div className="mtext-sm text-red-700 mb-10 italic bg-red-100 p-4 border-round" >
                             <h3 className="font-semibold text-lg text-gray-800 mb-2">Aspek Resiko dan Mitigasi</h3>
-                            <div className="mb-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Risiko:</label>
-                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" name='risiko' value={formAspek.risiko} onChange={(e) => handleInputChange(e, 'risiko')} />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Mitigasi:</label>
-                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" name='mitigasi' value={formAspek.mitigasi} onChange={(e) => handleInputChange(e, 'mitigasi')} />
-                            </div>
-                        </div>
+                            {titleAspek.map((aspect: any, index: any) => (
+                                <div>
+                                    {
+                                        aspect.Keterangan === 'Resiko' || aspect.Keterangan === 'Mitigasi' ? (
 
+                                            <div className="mb-2" key={index}>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Aspek {aspect.Keterangan}</label>
+                                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" name={aspect.Keterangan} value={formAspek[aspect.Keterangan]} onChange={(e) => handleInputChange(e, aspect.Keterangan)} />
+                                            </div>
+                                        ) : (
+                                            null
+                                        )
+                                    }
+                                </div>
+                            ))}
+                        </div>
                         <div className="text-sm text-black-700 italic pt-3 rounded-lg text-center">Catatan: Kolom di atas berisi hasil-hasil yang didapat</div>
                     </fieldset>
                     <div className='flex gap-4 justify-content-end'> {/*Button*/}

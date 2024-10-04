@@ -14,7 +14,7 @@ class SurveyController extends Controller
         $survey = new Survey;
         $kodeTerakhir = Survey::max('Kode');
         $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $survey->Kode = sprintf('S%02d', $nomorBaru);
+        $survey->Kode = sprintf('S%07d', $nomorBaru);
         $survey->Keterangan = $request->input('Keterangan');
         $survey->save();
 
@@ -70,9 +70,9 @@ class SurveyController extends Controller
             ->get();
         return response()->json($survey);
     }
-    public function getAllSurveyByNomorRekening($nomorRekening)
+    public function getSurveyByNoPengajuan($no_pengajuan)
     {
-        $survey = OutSurvey::where('NomorRekening', $nomorRekening)
+        $survey = OutSurvey::where('no_pengajuan', $no_pengajuan)
             ->leftJoin('ref_survey', 'trx_survey.Kode', '=', 'ref_survey.Kode')
             ->select('ref_survey.*', 'trx_survey.*')
             ->get();
@@ -81,9 +81,9 @@ class SurveyController extends Controller
     public function addSurvey(Request $request)
     {
         $surveyData = $request->all();
-        $nomorRekening = $request->input('NomorRekening');
+        $no_pengajuan = $request->input('no_pengajuan');
         foreach ($surveyData as $key => $value) {
-            if ($key === 'NomorRekening') {
+            if ($key === 'no_pengajuan') {
                 continue;
             }else {
                 $aspek = Survey::firstOrCreate([
@@ -92,10 +92,34 @@ class SurveyController extends Controller
                 OutSurvey::create([
                     'Kode' => $aspek->Kode,
                     'Pilihan' => $value,
-                    'NomorRekening' => $nomorRekening
+                    'no_pengajuan' => $no_pengajuan
                 ]);
             }
         }
         return response()->json($surveyData);
+    }
+    
+    public function update(Request $request, $no_pengajuan)
+    {
+        $surveyData = $request->all();
+        foreach ($surveyData as $key => $value) {
+            if ($key === 'no_pengajuan') {
+                continue;
+            } else {
+                $aspek = Survey::firstOrCreate([
+                    'Keterangan' => $key,
+                ]);
+                OutSurvey::updateOrCreate(
+                    ['Kode' => $aspek->Kode, 'no_pengajuan' => $no_pengajuan],
+                    ['Pilihan' => $value]
+                );
+            }
+        }
+        return response()->json(['message' => 'Data survei berhasil diperbarui'], 200);
+    }
+    public function destroy($no_pengajuan)
+    {
+        $survey = OutSurvey::where('no_pengajuan', $no_pengajuan)->delete();
+        return response()->json(null, 204);
     }
 }

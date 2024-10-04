@@ -16,7 +16,7 @@ const FormLimaC = ({pengajuan}:{pengajuan:any}) => {
     const [formPengajuan] = useState<any>(pengajuan);
     const [Isloading, setIsLoading] = useState(false);
     const [formLimac, setformLimac] = useState({
-        NomorRekening: formPengajuan.NomorRekening || '',
+        no_pengajuan: formPengajuan.no_pengajuan || '',
         characters: '',
         capacity: '',
         capital: '',
@@ -25,7 +25,7 @@ const FormLimaC = ({pengajuan}:{pengajuan:any}) => {
     });
     const resetForm = () => {
         setformLimac({
-            NomorRekening: '',
+            no_pengajuan: formPengajuan.no_pengajuan || '',
             characters: '',
             capacity: '',
             capital: '',

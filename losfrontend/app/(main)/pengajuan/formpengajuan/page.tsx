@@ -17,7 +17,6 @@ import FormAspek from '../../analisakredit/aspekform/formaspek/page';
 import FormSurvey from '../../analisakredit/survey/formsurvey/page';
 import FormLimaC from '../../analisakredit/5c/form5c/page';
 
-
 const FormProduk = () => {
     const [pengajuan, setPengajuan] = useState<any>([]);
     const [sifatKredit, setSifatKredit] = useState<any>([]);
@@ -43,6 +42,21 @@ const FormProduk = () => {
         }));
     };
 
+    useEffect(() => {
+        const generateNoPengajuan = async () => {
+            try {
+                const response = await axios.get(API_ENDPOINTS.GETLASTPENGAJUAN);
+                setFormPengajuan((prevData: any) => ({
+                    ...prevData,
+                    no_pengajuan: response.data
+                }));
+            } catch (error) {
+                console.error('Error generating no pengajuan:', error);
+            }
+        };
+        generateNoPengajuan();
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setActiveIndex(1);
@@ -61,6 +75,7 @@ const FormProduk = () => {
             setIsLoading(false);
         }
     };
+    // console.log(formPengajuan)
 
     useEffect(() => {
         const fetchOptions = async (endpoint: any, setter: any) => {
@@ -93,13 +108,16 @@ const FormProduk = () => {
 
     const mapOptions = (data: any[]) => data.map((item: any) => ({
         label: item.Keterangan,
-        value: item.Keterangan
+        value: item.Kode
     }));
     const SifatKreditOptions = mapOptions(sifatKredit);
     const BidangUsahaOptions = mapOptions(bidangUsaha);
     const JenisPermohonanOptions = mapOptions(jenisPermohonan);
     const JenisAngsuranOptions = mapOptions(jenisAngsuran);
-    const PengajuanOptions = mapOptions(pengajuan);
+    const PengajuanOptions = pengajuan.map((item: any) => ({
+        label: item.Keterangan,
+        value: item.Keterangan
+    }));
 
     const onRowClick = (e: any) => {
         setFormPengajuan((prevData: any) => ({
@@ -118,7 +136,7 @@ const FormProduk = () => {
             <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                 <TabPanel header="Pengajuan">
                     <div className='flex gap-2 mb-4 justify-content-end'>
-                        <InputText required name='Cif' type="text" placeholder='Masukkan Nomor Cif Anda' className="p-inputtext p-component w-3" value={formPengajuan.Cif} onChange={handleChange} />
+                        <InputText required name='Cif' type="text" placeholder='Masukkan Nomor Cif Anda' className="p-inputtext p-component w-3" value={formPengajuan.Cif || ''} onChange={handleChange} />
                         <Button icon="pi pi-search" onClick={() => setVisibleSearch(true)} style={{ backgroundColor: 'transparent', border: '1', color: '#333' }} />
                     </div>
                     <Dialog visible={visiblesearch} onHide={() => setVisibleSearch(false)} header="Search Cif" style={{ width: '70vw' }}>
@@ -235,7 +253,7 @@ const FormProduk = () => {
                                         <label>Loading...</label>
                                     </div>
                                 ) : (
-                                    'Next'
+                                    'Kirim'
                                 )}</Button>
                             <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                                 <p className="m-0">
@@ -246,7 +264,7 @@ const FormProduk = () => {
                     </form>
                 </TabPanel>
                 <TabPanel header="Jaminan">
-                    <FormJaminan pengajuan={formPengajuan}/>
+                    <FormJaminan pengajuan={formPengajuan} />
                 </TabPanel>
                 <TabPanel header="Financial">
                     <FormFinancial pengajuan={formPengajuan} />
