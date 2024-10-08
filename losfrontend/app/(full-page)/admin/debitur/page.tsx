@@ -20,6 +20,7 @@ const Debiturpage = () => {
       try {
         const response = await axios.get(API_ENDPOINTS.GETALLPEMOHON);
         setData(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching CIF data:", error);
       }
@@ -49,19 +50,23 @@ const Debiturpage = () => {
           <i className="pi pi-search" />
           <InputText value={searchTerm} onChange={(e: any) => setSearchTerm(e.target.value)} placeholder="Cari..." />
         </div>
-        <DataTable value={filteredData} tableStyle={{ minWidth: '30rem' }} paginator={true} rows={5} rowsPerPageOptions={[5, 10, 20]}>
-          <Column field="id" header="ID" />
+        <DataTable value={filteredData} tableStyle={{ minWidth: '30rem' }}
+          paginator={true} rows={5} rowsPerPageOptions={[5, 10, 20]}
+          className='cursor-pointer'
+          rowClassName={() => `hover:bg-gray-100`}
+          onRowClick={(e) => { window.location.href = `/admin/debitur/detail/${e.data.Cif}`; }}>
+          {/* <Column field="id" header="ID" /> */}
           <Column field="Cif" header="CIF" />
           <Column field="Nama" header="Nama Lengkap" />
           <Column field="Kelamin" header="Jenis Kelamin" />
-          <Column field="StatusPerkawinan" header="Status Perkawinan" />
+          {/* <Column field="StatusPerkawinan" header="Status Perkawinan" /> */}
           <Column field="KTP" header="No KTP" />
           <Column field="no_hp" header="No HP" />
           <Column field="Alamat" header="Alamat" />
-          <Column field="nama_usaha" header="Nama Usaha" />
+          {/* <Column field="nama_usaha" header="Nama Usaha" /> */}
           <Column field="ref_profesi_sampingan.Keterangan" header="Profesi Sampingan" />
           <Column header="Edit" body={(rowData) => (
-            <Link href={`/pemohon/formpemohon/${rowData.id}`} passHref>
+            <Link href={`/pemohon/formpemohon/${rowData.Cif}`} passHref>
               <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
             </Link>
           )} />

@@ -11,6 +11,7 @@ import { Paginator } from 'primereact/paginator';
 import React, { useEffect, useMemo, useState } from 'react'
 
 const Analisakredit = () => {
+    const [pengajuan, setPengajuan] = useState<any>([]);
     const [jaminan, setJaminan] = useState<any>(null);
     const [finansial, setFinansial] = useState<any>(null);
     const [survey, setSurvey] = useState<any>(null);
@@ -43,6 +44,7 @@ const Analisakredit = () => {
             return acc;
         }, {});
     }
+
     if (survey) {
         groupedDataSurvey = survey.reduce((acc: any, curr: any) => {
             if (!acc[curr.no_pengajuan]) {
@@ -68,7 +70,6 @@ const Analisakredit = () => {
                 setLoading(false);
             }
         };
-
         if (noPengajuan) {
             fetchData(API_ENDPOINTS.GETFINANCIALBYNOPENGAJUAN, setFinansial);
             fetchData(API_ENDPOINTS.GETASPEKBYNOPENGAJUAN, setAspek);
@@ -77,6 +78,19 @@ const Analisakredit = () => {
             fetchData(API_ENDPOINTS.GETLIMACBYNOPENGAJUAN, setLimaC);
         }
     }, [noPengajuan]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(API_ENDPOINTS.GETPRODUKBYID(noPengajuan));
+                setPengajuan(response.data);
+                console.log(response.data)
+            } catch (error) {
+                console.error("Error fetching CIF data:", error);
+            }
+        };
+        fetchData();
+    }, []);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -99,7 +113,37 @@ const Analisakredit = () => {
     const handleDeleteAspek = (no_pengajuan: string) => handleDelete(no_pengajuan, setAspek, API_ENDPOINTS.DELETEASPEKBYID);
     const handleDeleteSurvey = (no_pengajuan: string) => handleDelete(no_pengajuan, setSurvey, API_ENDPOINTS.DELETESURVEYBYID);
 
-    console.log(groupedDataAspek);
+    const editTemplate = (rowData: any, path: string) => {
+        if (rowData.status === 0) {
+            return (
+                <Link href={`/analisakredit/${path}/form${path}/${rowData.no_pengajuan}`} passHref>
+                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                </Link>
+            );
+        }
+        return null;
+    };
+
+    const deleteTemplate = (rowData: any, handleDelete: (no_pengajuan: string) => void, selectedRow: any, setSelectedRow: React.Dispatch<React.SetStateAction<any>>, visible: boolean, setVisible: React.Dispatch<React.SetStateAction<boolean>>) => {
+        if (rowData.status === 0) {
+            return (
+                <div className='flex justify-content-center'>
+                    <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                        setSelectedRow(rowData);
+                        setVisible(true);
+                    }} />
+                    <Dialog header={`Hapus Data ${selectedRow.no_pengajuan}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                        <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
+                        <div className='flex justify-content-end mt-3'>
+                            <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+                            <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.no_pengajuan); setVisible(false); }} />
+                        </div>
+                    </Dialog>
+                </div>
+            );
+        }
+        return null;
+    };
     return (
         <div>
             <div className="card">
@@ -107,7 +151,6 @@ const Analisakredit = () => {
                     <h4>Jaminan</h4>
                 </header>
                 <DataTable value={jaminan} tableStyle={{ minWidth: '30rem' }}>
-                    {/* <Column field="id" header="ID" /> */}
                     <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="ref_jenis_agunan.Keterangan" header="Jenis Agunan" />
                     <Column field="ref_hak_milik.Keterangan" header="Bukti Hak Milik" />
@@ -116,26 +159,12 @@ const Analisakredit = () => {
                     <Column field="ref_jenis_pengikatan.Keterangan" header="Jenis Pengikatan" />
                     <Column field="ref_tipe.Keterangan" header="Tipe" />
                     <Column field="tahunPembuatan" header="Tahun Pembuatan" />
-                    <Column header="Edit" body={(rowData) => (
-                        <Link href={`/analisakredit/jaminan/formjaminan/${rowData.no_pengajuan}`} passHref>
-                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-                        </Link>
-                    )} />
-                    <Column header="Delete" body={(rowData) => (
-                        <div className='flex justify-content-center'>
-                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                setSelectedRowJaminan(rowData);
-                                setVisibleJaminan(true);
-                            }} />
-                            <Dialog header={`Hapus Data ${selectedRowJaminan.no_pengajuan}`} visible={visibleJaminan} style={{ width: '50vw' }} onHide={() => { if (!visibleJaminan) return; setVisibleJaminan(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisibleJaminan(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteJaminan(selectedRowJaminan.no_pengajuan); setVisibleJaminan(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                    )} />
+                    {pengajuan.status === 0 && (
+                        <Column header="Edit" body={(rowData) => editTemplate(rowData, 'jaminan')} />
+                    )}
+                    {pengajuan.status === 0 && (
+                        <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteJaminan, selectedRowJaminan, setSelectedRowJaminan, visibleJaminan, setVisibleJaminan)} />
+                    )}
                 </DataTable>
                 <header className='mt-5'>
                     <h4>Finansial</h4>
@@ -149,26 +178,12 @@ const Analisakredit = () => {
                     <Column field="hrg_pokok_jual" header="Harga Pokok Jual" />
                     <Column field="btk_tdklangsung" header="BTK Tidak Langsung" />
                     <Column field="jumlah_passiva" header="Jumlah Passiva" />
-                    <Column header="Edit" body={(rowData) => (
-                        <Link href={`/analisakredit/financial/formfinancial/${rowData.no_pengajuan}`} passHref>
-                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-                        </Link>
-                    )} />
-                    <Column header="Delete" body={(rowData) => (
-                        <div className='flex justify-content-center'>
-                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                setSelectedRowFinansial(rowData);
-                                setVisibleFinansial(true);
-                            }} />
-                            <Dialog header={`Hapus Data ${selectedRowFinansial.no_pengajuan}`} visible={visibleFinansial} style={{ width: '50vw' }} onHide={() => { if (!visibleFinansial) return; setVisibleFinansial(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisibleFinansial(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteFinansial(selectedRowFinansial.no_pengajuan); setVisibleFinansial(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                    )} />
+                    {pengajuan.status === 0 && (
+                        <Column header="Edit" body={(rowData) => editTemplate(rowData, 'financial')} />
+                    )}
+                    {pengajuan.status === 0 && (
+                        <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteFinansial, selectedRowFinansial, setSelectedRowFinansial, visibleFinansial, setVisibleFinansial)} />
+                    )}
                 </DataTable>
                 <header className='mt-5'>
                     <h4>Survey</h4>
@@ -185,7 +200,7 @@ const Analisakredit = () => {
                         )
                     }))
                 }))} tableStyle={{ minWidth: '30rem' }}>
-                    <Column field="no_pengajuan" header="No Pengajuan"  style={{ width: '20%' }}/>
+                    <Column field="no_pengajuan" header="No Pengajuan" style={{ width: '20%' }} />
                     <Column header="Survey" body={(rowData) => (
                         <div className='flex flex-column gap-2'>
                             {rowData.surveyData.map((survey: any, index: number) => (
@@ -195,26 +210,12 @@ const Analisakredit = () => {
                             ))}
                         </div>
                     )} />
-                     <Column style={{ width: '5%' }} header="Edit" body={(rowData) => (
-                        <Link href={`/analisakredit/survey/formsurvey/${rowData.no_pengajuan}`} passHref>
-                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-                        </Link>
-                    )} />
-                    <Column style={{ width: '5%' }} header="Delete" body={(rowData) => (
-                        <div>
-                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                setSelectedRowSurvey(rowData);
-                                setVisibleSurvey(true);
-                            }} />
-                            <Dialog header={`Hapus Data ${selectedRowSurvey.no_pengajuan}`} visible={visibleSurvey} style={{ width: '50vw' }} onHide={() => { if (!visibleSurvey) return; setVisibleSurvey(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisibleSurvey(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteSurvey(selectedRowSurvey.no_pengajuan); setVisibleSurvey(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                    )} />
+                    {pengajuan.status === 0 && (
+                        <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'survey')} />
+                    )}
+                    {pengajuan.status === 0 && (
+                        <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteSurvey, selectedRowSurvey, setSelectedRowSurvey, visibleSurvey, setVisibleSurvey)} />
+                    )}
                 </DataTable>
                 <header className='mt-5'>
                     <h4>Aspek</h4>
@@ -231,7 +232,7 @@ const Analisakredit = () => {
                         )
                     }))
                 }))} tableStyle={{ minWidth: '30rem' }}>
-                    <Column field="no_pengajuan" header="No Pengajuan" style={{ width: '20%' }}/>
+                    <Column field="no_pengajuan" header="No Pengajuan" style={{ width: '20%' }} />
                     <Column header="Aspek" body={(rowData) => (
                         <div className='flex flex-column gap-2'>
                             {rowData.aspekData.map((aspek: any, index: number) => (
@@ -241,26 +242,12 @@ const Analisakredit = () => {
                             ))}
                         </div>
                     )} />
-                     <Column style={{ width: '5%' }} header="Edit" body={(rowData) => (
-                        <Link href={`/analisakredit/aspekform/formaspek/${rowData.no_pengajuan}`} passHref>
-                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-                        </Link>
-                    )} />
-                    <Column style={{ width: '5%' }} header="Delete" body={(rowData) => (
-                        <div>
-                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                setSelectedRowAspek(rowData);
-                                setVisibleAspek(true);
-                            }} />
-                            <Dialog header={`Hapus Data ${selectedRowAspek.no_pengajuan}`} visible={visibleAspek} style={{ width: '50vw' }} onHide={() => { if (!visibleAspek) return; setVisibleAspek(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisibleAspek(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteAspek(selectedRowAspek.no_pengajuan); setVisibleAspek(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                    )} />
+                    {pengajuan.status === 0 && (
+                        <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'aspek')} />
+                    )}
+                    {pengajuan.status === 0 && (
+                        <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteAspek, selectedRowAspek, setSelectedRowAspek, visibleAspek, setVisibleAspek)} />
+                    )}
                 </DataTable>
                 <header className='mt-5'>
                     <h4>5C</h4>
@@ -268,32 +255,17 @@ const Analisakredit = () => {
                 <DataTable value={limaC} tableStyle={{ minWidth: '30rem' }}>
                     {/* <Column field="id" header="ID" /> */}
                     <Column field="no_pengajuan" header="No Pengajuan" />
-                    <Column field="NomorRekening" header="Nomor Rekening" />
                     <Column field="characters" header="Characters" />
                     <Column field="capacity" header="Capacity" />
                     <Column field="capital" header="Capital" />
                     <Column field="collateral" header="Collateral" />
                     <Column field="conditions" header="Conditions" />
-                    <Column header="Edit" body={(rowData) => (
-                        <Link href={`/analisakredit/5c/form5c/${rowData.no_pengajuan}`} passHref>
-                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-                        </Link>
-                    )} />
-                    <Column header="Delete" body={(rowData) => (
-                        <div className='flex justify-content-center'>
-                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                setSelectedRowLimaC(rowData);
-                                setVisibleLimaC(true);
-                            }} />
-                            <Dialog header={`Hapus Data ${selectedRowLimaC.no_pengajuan}`} visible={visibleLimaC} style={{ width: '50vw' }} onHide={() => { if (!visibleLimaC) return; setVisibleLimaC(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisibleLimaC(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteLimaC(selectedRowLimaC.no_pengajuan); setVisibleLimaC(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                    )} />
+                    {pengajuan.status === 0 && (
+                        <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'limaC')} />
+                    )}
+                    {pengajuan.status === 0 && (
+                        <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteLimaC, selectedRowLimaC, setSelectedRowLimaC, visibleLimaC, setVisibleLimaC)} />
+                    )}
                 </DataTable>
             </div>
         </div>

@@ -146,12 +146,15 @@ const Statuspage = () => {
             const updatedSidebars = selectedRow.sidebars.map((sidebar: any) => {
                 if (selectedRow.status === 3) {
                     // Marketing: Semua sidebar kecuali User, Debitur, dan CMS Data Master
-                    if (!['Status User', 'Debitur', 'CMS Data Master'].includes(sidebar.label)) {
+                    if (!['Status User', 'Debitur', 'CMS Data Master', 'List Pengajuan'].includes(sidebar.label)) {
                         return { ...sidebar, status: 2 };
                     }
                     return { ...sidebar, status: 1 };
                 } else if (selectedRow.status === 2) {
                     // Approval: Tidak ada sidebar
+                    if (['List Pengajuan'].includes(sidebar.label)) {
+                        return { ...sidebar, status: 2 };
+                    }
                     return { ...sidebar, status: 1 };
                 } else if (selectedRow.status === 1) {
                     // Administrator: Semua sidebar

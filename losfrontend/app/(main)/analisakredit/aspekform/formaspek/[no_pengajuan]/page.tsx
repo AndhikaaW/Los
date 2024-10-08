@@ -80,7 +80,6 @@ const EditFormAspek = () => {
             } else {
                 response = await axios.post(API_ENDPOINTS.ASPEKFORM, formAspek);
             }
-            // console.log('Response from API:', response.data);
             setIsLoading(false);
             setVisible(true);
             if (!no_pengajuan) resetForm();
@@ -100,7 +99,7 @@ const EditFormAspek = () => {
                                     aspect.Keterangan !== 'Resiko' && aspect.Keterangan !== 'Mitigasi' ? (
                                         <div key={index} className="mb-4">
                                             <label className="block text-sm font-medium text-gray-700 mb-1">{aspect.Keterangan}</label>
-                                            <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.Keterangan]} onChange={handleChange} />
+                                            <InputTextarea name={aspect.Keterangan} required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.Keterangan]} onChange={handleChange} />
                                         </div>
                                     ) : (
                                         null
@@ -117,7 +116,7 @@ const EditFormAspek = () => {
 
                                             <div className="mb-2" key={index}>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Aspek {aspect.Keterangan}</label>
-                                                <InputTextarea required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" name={aspect.Keterangan} value={formAspek[aspect.Keterangan]} onChange={handleChange} />
+                                                <InputTextarea name={aspect.Keterangan} required rows={3} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={formAspek[aspect.Keterangan]} onChange={handleChange} />
                                             </div>
                                         ) : (
                                             null

@@ -142,7 +142,7 @@ const FormPemohon = () => {
             setActiveIndex(activeIndex - 1);
         }
     };
-    
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // if (!validateForm()) {
@@ -282,8 +282,6 @@ const FormPemohon = () => {
                                     <Dialog visible={visible} modal header={headerElement} style={{ width: '70rem' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                                         <div className='flex'>
                                             <div>
-                                                {/* <label className="block text-900 font-medium mb-2">CIF Debitur</label> */}
-                                                {/* <Dropdown name='cif' value={formData.cif} onChange={handleChange} options={pemohonOptions} placeholder="Pilih CIF nasabah/debitur" className="w-full md:w-full" /> */}
                                                 <div className="p-inputgroup mb-3 w-4">
                                                     <span className="p-inputgroup-addon"><i className="pi pi-search"></i></span>
                                                     <InputText placeholder="Search" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className="w-full" />
@@ -342,7 +340,6 @@ const FormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Profesi Sampingan</label>
-                                    {/* <InputText required name='profesi_sampingan' type="text" placeholder='Pilih profesi sampingan' className="p-inputtext p-component w-full" value={formData.profesi_sampingan} onChange={handleChange} /> */}
                                     <Dropdown name='profesi_sampingan' value={formData.profesi_sampingan} onChange={handleChange} options={profesiSampinganOptions} placeholder="Pilih profesi sampingan" className="w-full md:w-full"/>
                                 </div>
                             </div>
@@ -401,7 +398,7 @@ const FormPemohon = () => {
                                         setProvinsiId(e.value.id);
                                         setFormData((prevData) => ({
                                             ...prevData,
-                                            provinsi: e.value.name,
+                                            provinsi: e.value.id,
                                         }));
                                     }} options={provinces} optionLabel="name" placeholder="Pilih Provinsi dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedProvinceTemplate} itemTemplate={provinceOptionTemplate} className="w-full md:w-full" />
                                 </div>
@@ -412,7 +409,7 @@ const FormPemohon = () => {
                                         setDistrictId(e.value.id);
                                         setFormData((prevData) => ({
                                             ...prevData,
-                                            kecamatan: e.value.name,
+                                            kecamatan: e.value.id,
                                         }));
                                     }} options={districts} optionLabel="name" placeholder="Pilih Kecamatan dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedDistrictTemplate} itemTemplate={districtOptionTemplate} className="w-full md:w-full" />
                                 </div>
@@ -434,7 +431,7 @@ const FormPemohon = () => {
                                         setRegencyId(e.value.id);
                                         setFormData((prevData) => ({
                                             ...prevData,
-                                            kota: e.value.name,
+                                            kota: e.value.id,
                                         }));
                                     }} options={regencies} optionLabel="name" placeholder="Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedRegencyTemplate} itemTemplate={regencyOptionTemplate} className="w-full md:w-full" />
                                 </div>
@@ -444,7 +441,7 @@ const FormPemohon = () => {
                                         setSelectedVillage(e.value);
                                         setFormData((prevData) => ({
                                             ...prevData,
-                                            kelurahan: e.value.name,
+                                            kelurahan: e.value.id,
                                         }));
                                     }} options={villages} optionLabel="name" placeholder="Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedVillageTemplate} itemTemplate={villageOptionTemplate} className="w-full md:w-full" />
                                 </div>

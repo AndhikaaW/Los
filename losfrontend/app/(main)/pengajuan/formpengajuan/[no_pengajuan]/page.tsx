@@ -16,7 +16,7 @@ import React, { useEffect, useState } from 'react'
 
 const EditFormPengajuan = () => {
     const params = useParams();
-    const id = params?.id;
+    const no_pengajuan = params?.no_pengajuan;
     const [sifatKredit, setSifatKredit] = useState<any>([]);
     const [bidangUsaha, setBidangUsaha] = useState<any>([]);
     const [jenisPermohonan, setJenisPermohonan] = useState<any>([]);
@@ -32,14 +32,14 @@ const EditFormPengajuan = () => {
     const [Isloading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (id) {
-            fetchPengajuanData(id);
+        if (no_pengajuan) {
+            fetchPengajuanData(no_pengajuan);
         }
-    }, [id]);
+    }, [no_pengajuan]);
 
-    const fetchPengajuanData = async (id: any) => {
+    const fetchPengajuanData = async (no_pengajuan: any) => {
         try {
-            const response = await axios.get(API_ENDPOINTS.GETPRODUKBYID(id));
+            const response = await axios.get(API_ENDPOINTS.GETPRODUKBYID(no_pengajuan));
             const formattedData = {
                 ...response.data,
                 tanggal_aplikasi: formatDate(response.data.tanggal_aplikasi),
@@ -57,13 +57,11 @@ const EditFormPengajuan = () => {
         return date.toISOString().split('T')[0];
     };
     const [formData, setFormData] = useState({
-        //form pengajuan
         Cif: '',
         pengajuan: '', bidang_usaha: '', NomorRekening: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: ''
     });
     const resetForm = () => {
         setFormData({
-            //form pengajuan
             Cif: '',
             pengajuan: '', bidang_usaha: '', NomorRekening: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: ''
         });
@@ -81,15 +79,15 @@ const EditFormPengajuan = () => {
         setIsLoading(true);
         try {
             let response;
-            if (id) {
-                response = await axios.put(API_ENDPOINTS.UPDATEPENGAJUANBYID(id), formData);
+            if (no_pengajuan) {
+                response = await axios.put(API_ENDPOINTS.UPDATEPENGAJUANBYID(no_pengajuan), formData);
             } else {
                 response = await axios.post(API_ENDPOINTS.ADDPRODUK, formData);
             }
             console.log('Response from API:', response.data);
             setIsLoading(false);
             setVisible(true);
-            if (!id) resetForm();
+            if (!no_pengajuan) resetForm();
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false);
@@ -124,15 +122,11 @@ const EditFormPengajuan = () => {
         );
     }, [searchValue, cif]);
 
-    const mapOptions = (data: any[]) => data.map((item: any) => ({
-        label: item.Keterangan,
-        value: item.Keterangan
-    }));
-    const SifatKreditOptions = mapOptions(sifatKredit);
-    const BidangUsahaOptions = mapOptions(bidangUsaha);
-    const JenisPermohonanOptions = mapOptions(jenisPermohonan);
-    const JenisAngsuranOptions = mapOptions(jenisAngsuran);
-    const PengajuanOptions = mapOptions(pengajuan);
+    const SifatKreditOptions = sifatKredit.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const BidangUsahaOptions = bidangUsaha.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const JenisPermohonanOptions = jenisPermohonan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const JenisAngsuranOptions = jenisAngsuran.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const PengajuanOptions = pengajuan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const onRowClick = (e: any) => {
         setFormData(prevData => ({
             ...prevData,
@@ -145,6 +139,7 @@ const EditFormPengajuan = () => {
         setRows(event.rows);
     };
     const paginatedCif = filteredCif.slice(first, first + rows);
+    console.log(formData);
     return (
         <div className='surface-card shadow-2 p-5 border-round'>
             <div className='flex gap-2 mb-4 justify-content-end'>
@@ -179,14 +174,12 @@ const EditFormPengajuan = () => {
                     <div className="col-12 md:col-6">
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Pengajuan</label>
-                            {/* <InputText required name='pengajuan' type="text" placeholder='Kredit UMKM Industri' className="p-inputtext p-component w-full" value={formData.pengajuan} onChange={handleChange} /> */}
                             <Dropdown name='pengajuan' value={formData.pengajuan} onChange={handleChange} options={PengajuanOptions} placeholder="Kredit UMKM Industri" className="w-full md:w-full" />
                         </div>
                     </div>
                     <div className="col-12 md:col-6">
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Bidang Usaha</label>
-                            {/* <InputText required name='bidang_usaha' type="text" placeholder='Pilih bidang usaha' className="p-inputtext p-component w-full" value={formData.bidang_usaha} onChange={handleChange} /> */}
                             <Dropdown name='bidang_usaha' value={formData.bidang_usaha} onChange={handleChange} options={BidangUsahaOptions} placeholder="Pilih Bidang Usaha" className="w-full md:w-full" />
                         </div>
                     </div>
@@ -229,19 +222,16 @@ const EditFormPengajuan = () => {
                     <div className="col-12 md:col-6">
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Sifat Kredit</label>
-                            {/* <InputText required name='sifat_kredit' type="text" placeholder='Pilih sifat kredit' className="p-inputtext p-component w-full" value={formData.sifat_kredit} onChange={handleChange} /> */}
                             <Dropdown name='sifat_kredit' value={formData.sifat_kredit} onChange={handleChange} options={SifatKreditOptions} placeholder="Pilih Sifat Kredit" className="w-full md:w-full" />
                         </div>
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Jenis Permohonan</label>
-                            {/* <InputText required name='jenis_permohonan' type="text" placeholder='Pilih jenis permohonan' className="p-inputtext p-component w-full" value={formData.jenis_permohonan} onChange={handleChange} /> */}
                             <Dropdown name='jenis_permohonan' value={formData.jenis_permohonan} onChange={handleChange} options={JenisPermohonanOptions} placeholder="Pilih Jenis Permohonan" className="w-full md:w-full" />
                         </div>
                     </div>
                     <div className="col-12 md:col-6">
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Jenis Angsuran</label>
-                            {/* <InputText required name='jenis_angsuran' type="text" placeholder='Pilih jenis angsuran' className="p-inputtext p-component w-full" value={formData.jenis_angsuran} onChange={handleChange} /> */}
                             <Dropdown name='jenis_angsuran' value={formData.jenis_angsuran} onChange={handleChange} options={JenisAngsuranOptions} placeholder="Pilih Jenis Angsuran" className="w-full md:w-full" />
                         </div>
                         <div className="mb-2">
@@ -270,7 +260,7 @@ const EditFormPengajuan = () => {
                                     <label>Loading...</label>
                                 </div>
                             ) : (
-                                id ? 'Update' : 'Kirim'
+                                no_pengajuan ? 'Update' : 'Kirim'
                             )}
                         </Button>
                         <Link href="/pengajuan" passHref>
@@ -279,7 +269,7 @@ const EditFormPengajuan = () => {
 
                         <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                             <p className="m-0">
-                                {id ? 'Data berhasil diperbarui' : 'Terima Kasih telah mengisi form'}
+                                {no_pengajuan ? 'Data berhasil diperbarui' : 'Terima Kasih telah mengisi form'}
                             </p>
                         </Dialog>
                     </div>

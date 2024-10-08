@@ -10,7 +10,7 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produk = Produk::all();
+        $produk = Produk::with(['financial','LimaC','aspekForm','jaminan','survey','RefSifatKredit', 'RefJenisPermohonan', 'RefJenisAngsuran', 'RefBidangUsaha'])->get();
         return response()->json($produk);
     }
     function produk(Request $req)
@@ -35,15 +35,15 @@ class ProdukController extends Controller
         $produk->save();
         return $produk;
     }
-    public function getProdukById(string $cif)
+    public function getProdukById(string $no_pengajuan)
     {
-        $produk = Produk::findOrFail($cif);
+        $produk = Produk::where('no_pengajuan', $no_pengajuan)->firstOrFail();
         return response()->json($produk);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $no_pengajuan)
     {
-        $produk = Produk::findOrFail($id);
+        $produk = Produk::where('no_pengajuan', $no_pengajuan)->firstOrFail();
 
         $validatedData = $request->validate([
             'Cif' => 'required|numeric',
@@ -65,6 +65,13 @@ class ProdukController extends Controller
 
         $produk->update($validatedData);
 
+        return response()->json($produk);
+    }
+    public function updateStatusPengajuan(Request $request, string $no_pengajuan)
+    {
+        $produk = Produk::where('no_pengajuan', $no_pengajuan)->firstOrFail();
+        $produk->status = $request->input('status');
+        $produk->save();
         return response()->json($produk);
     }
     public function destroy(string $NomorRekening)

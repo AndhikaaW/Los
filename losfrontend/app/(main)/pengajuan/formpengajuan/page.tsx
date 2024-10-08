@@ -33,7 +33,9 @@ const FormProduk = () => {
     const [rows, setRows] = useState(5);
     const [visible, setVisible] = useState(false);
     const [Isloading, setIsLoading] = useState(false);
-    const [formPengajuan, setFormPengajuan] = useState<any>({});
+    const [formPengajuan, setFormPengajuan] = useState<any>({
+        tanggal_aplikasi: '', tanggal_permohonan: '',
+    });
     const resetForm = () => { setFormPengajuan(null) };
     const handleChange = async (e: any) => {
         setFormPengajuan((prevData: any) => ({
@@ -190,7 +192,7 @@ const FormProduk = () => {
                             <div className="col-12 md:col-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Tanggal Aplikasi</label>
-                                    <InputText required name='tanggal_aplikasi' type="date" placeholder='' className="p-inputtext p-component w-full" value={formPengajuan.tanggal_aplikasi || ''} onChange={handleChange} />
+                                    <InputText required name='tanggal_aplikasi' type="date" placeholder='' className="p-inputtext p-component w-full" value={formPengajuan.tanggal_aplikasi} onChange={handleChange} />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Suku Bunga</label>
@@ -203,7 +205,7 @@ const FormProduk = () => {
                             <div className="col-12 md:col-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Tanggal Permohonan</label>
-                                    <InputText required name='tanggal_permohonan' type="date" placeholder='' className="p-inputtext p-component w-full" value={formPengajuan.tanggal_permohonan || ''} onChange={handleChange} />
+                                    <InputText required name='tanggal_permohonan' type="date" placeholder='' className="p-inputtext p-component w-full" value={formPengajuan.tanggal_permohonan} onChange={handleChange} />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Jangka Waktu</label>

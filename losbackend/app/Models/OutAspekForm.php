@@ -16,4 +16,8 @@ class OutAspekForm extends Model
         'jawaban',
         'no_pengajuan',
     ];
+    public function aspekForm()
+    {
+        return $this->belongsTo(AspekForm::class, 'Kode', 'Kode');
+    }
 }

@@ -1,4 +1,4 @@
-export const api_url = 'http://192.168.1.35:8000/api';
+export const api_url = 'http://192.168.200.100:8000/api';
 
 export const API_ENDPOINTS = {
   //user
@@ -36,8 +36,8 @@ export const API_ENDPOINTS = {
 
   //pemohon
   PEMOHON: `${api_url}/pemohon`,
-  GETPEMOHONBYID: (id: string) => `${api_url}/getpemohonbyid/${id}`,
-  UPDATEPEMOHONBYID: (id: string) => `${api_url}/updatepemohonbyid/${id}`,
+  GETPEMOHONBYCIF: (cif: string) => `${api_url}/getpemohonbycif/${cif}`,
+  UPDATEPEMOHONBYID: (cif: string) => `${api_url}/updatepemohonbyid/${cif}`,
   DELETEPEMOHONBYID: (Cif: string) => `${api_url}/deletepemohonbyid/${Cif}`,
   GETALLPEMOHON:`${api_url}/getallpemohon`,
   GETNASABAH: `${api_url}/getregisternasabah`,
@@ -53,19 +53,20 @@ export const API_ENDPOINTS = {
   //tambah judul survey
   ADDTITLESURVEY: `${api_url}/addTitleSurvey`,
   UPDATETITLESURVEYBYID: (Kode: string) => `${api_url}/updateTitleSurveybyid/${Kode}`,
-  DELETEREFSURVEYBYID: (Kode: string) => `${api_url}/deleterRefSurveybyid/${Kode}`,
+  DELETEREFSURVEYBYID: (Kode: string) => `${api_url}/deleteRefSurveybyid/${Kode}`,
   
   //produk
   GETSEKTOREKONOMI: `${api_url}/getsektorekonomi`,
   GETALLPRODUK: `${api_url}/getallproduk`,
   GETPRODUKBYCIF: (cif: string) => `${api_url}/getprodukbycif/${cif}`,
-  GETPRODUKBYID: (id: string) => `${api_url}/getprodukbyid/${id}`,
+  GETPRODUKBYID: (no_pengajuan: string) => `${api_url}/getprodukbyid/${no_pengajuan}`,
   DELETEPRODUKBYID: (NomorRekening: string) => `${api_url}/deleteprodukbyid/${NomorRekening}`,
 
   //sifat kredit
   GETLASTPENGAJUAN: `${api_url}/getlastpengajuan`,
   ADDPRODUK: `${api_url}/produk`,
-  UPDATEPENGAJUANBYID: (id: string) => `${api_url}/updatepengajuanbyid/${id}`,
+  UPDATEPENGAJUANBYID: (no_pengajuan: string) => `${api_url}/updatepengajuanbyid/${no_pengajuan}`,
+  UPDATESTATUSPENGAJUANBYID: (no_pengajuan: string) => `${api_url}/updatestatuspengajuanbyid/${no_pengajuan}`,
 
   //pengajuan kredit
   GETGOLONGANKREDIT: `${api_url}/getgolongankredit`,

@@ -204,9 +204,42 @@ class PemohonController extends Controller
         $pemohon = Pemohon::findOrFail($id);
         return response()->json($pemohon);
     }
-    public function update(Request $request, string $id)
+    public function getPemohonByCif(string $cif)
     {
-        $pemohon = Pemohon::findOrFail($id);
+        $pemohon = Pemohon::with([
+            'Produk.LimaC', 
+            'Produk.Financial', 
+            'Produk.aspekForm', 
+            'Produk.jaminan' => function ($query) {
+                $query->with([
+                    'RefJenisAgunan', 
+                    'RefHakMilik', 
+                    'RefTipe', 
+                    'RefJenisPengikatan', 
+                    'RefHubPemilik'
+                ]);
+            }, 
+            'Produk.survey' => function ($query) {
+                $query->leftJoin('ref_survey', 'trx_survey.Kode', '=', 'ref_survey.Kode')
+                      ->select('ref_survey.*', 'trx_survey.*');
+            }, 
+            'RefProfesiSampingan', 
+            'RefStatusTempatTinggal', 
+            'RefStatusUsaha', 
+            'RefSektorEkonomi', 
+            'Produk.RefSifatKredit', 
+            'Produk.RefJenisPermohonan', 
+            'Produk.RefJenisAngsuran', 
+            'Produk.RefBidangUsaha', 
+            'Produk.aspekForm' => function ($query) {
+                $query->leftJoin('aspek_form', 'trx_aspek_form.Kode', '=', 'aspek_form.Kode');
+            }
+        ])->where('Cif', $cif)->firstOrFail();
+        return response()->json($pemohon);
+    }
+    public function update(Request $request, string $cif)
+    {
+        $pemohon = Pemohon::where('Cif', $cif)->firstOrFail();
 
         $validatedData = $request->validate([
             'Cif' => 'required|numeric',

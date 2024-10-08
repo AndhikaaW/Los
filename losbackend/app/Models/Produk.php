@@ -27,6 +27,7 @@ class Produk extends Model
         'no_aplikasi_sebelumnya',
         'tujuan_penggunaan',
         'detail_tujuan_penggunaan',
+        'status'
     ];
 
     protected $casts = [

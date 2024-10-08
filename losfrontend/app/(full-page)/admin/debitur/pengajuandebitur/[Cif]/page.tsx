@@ -35,32 +35,80 @@ const Pengajuandebitur = () => {
             setData(data.filter((item: any) => item.id !== id));
             const response = await axios.get(API_ENDPOINTS.GETPRODUKBYCIF(cif));
             setData(response.data);
-            // setPaginatedData(response.data.slice(first, first + rows));
         } catch (error) {
             console.error('Error deleting form pengajuan:', error);
         }
     };
+    const handleUpdateStatus = async (status: number, no_pengajuan: string) => {
+        try {
+            await axios.put(API_ENDPOINTS.UPDATESTATUSPENGAJUANBYID(no_pengajuan), { status: status });
+            const response = await axios.get(API_ENDPOINTS.GETPRODUKBYCIF(cif));
+            setData(response.data);
+        } catch (error) {
+            console.error('Error updating status:', error);
+        }
+    };
+    const statusTemplate = (rowData: any) => {
+        switch (rowData.status) {
+            case 0:
+                return <Button label='Ajukan' className='p-1 bg-yellow-200 border-round border-none text-gray-900' onClick={() => { handleUpdateStatus(1, rowData.no_pengajuan); }} />;
+            case 1:
+                return <span className='p-1 bg-green-200 border-round'>Diajukan</span>;
+            case 2:
+                return <span className='p-1 bg-blue-200 border-round'>Disetujui</span>;
+            case 3:
+                return <span className='p-1 bg-red-200 border-round'>Ditolak</span>;
+            default:
+                return <span className='p-1 bg-gray-200 border-round'>Tidak Diketahui</span>;
+        }
+    };
+
+    const editTemplate = (rowData: any) => {
+        if (rowData.status === 0) {
+            return (
+                <Link href={`/pengajuan/formpengajuan/${rowData.no_pengajuan}`} passHref>
+                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                </Link>
+            );
+        }
+        return null;
+    };
+
+    const deleteTemplate = (rowData: any) => {
+        if (rowData.status === 0) {
+            return (
+                <div className='flex justify-content-center'>
+                    <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                        setSelectedRow(rowData);
+                        setVisible(true);
+                    }} />
+                    <Dialog header={`Hapus Data ${selectedRow.NomorRekening}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                        <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
+                        <div className='flex justify-content-end mt-3'>
+                            <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+                            <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.NomorRekening); setVisible(false); }} />
+                        </div>
+                    </Dialog>
+                </div>
+            );
+        }
+        return null;
+    };
+
     return (
         <div>
             {/* <h3>Data yang dipilih:</h3>
       <pre>{JSON.stringify(data, null, 2)}</pre> */}
             <div className="card">
-                <DataTable value={data} tableStyle={{ minWidth: '30rem' }}>
-                    <Column field="id" header="ID" />
+                <DataTable value={data} tableStyle={{ minWidth: '30rem' }} paginator rows={5} rowsPerPageOptions={[5, 10, 20]}>
                     <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="CIF" />
                     <Column field="pengajuan" header="Pengajuan" />
                     <Column field="ref_bidang_usaha.Keterangan" header="Bidang Usaha" />
-                    <Column field="NomorRekening" header="Nomor Rekening" />
-                    {/* <Column field="plafon_kredit" header="Plafon Kredit" />
-                    <Column field="tanggal_aplikasi" header="Tanggal Aplikasi" />
-                    <Column field="suku_bunga" header="Suku Bunga" />
-                    <Column field="tanggal_permohonan" header="Tanggal Permohonan" />
-                    <Column field="jangka_waktu" header="Jangka Waktu" /> */}
                     <Column field="ref_sifat_kredit.Keterangan" header="Sifat Kredit" />
                     <Column field="ref_jenis_permohonan.Keterangan" header="Jenis Permohonan" />
                     <Column field="ref_jenis_angsuran.Keterangan" header="Jenis Angsuran" />
-                    {/* <Column field="no_aplikasi_sebelumnya" header="No Aplikasi Sebelumnya" /> */}
+                    <Column field="status" header="Status Pengajuan" body={statusTemplate} />
                     <Column field="tujuan_penggunaan" header="Tujuan Penggunaan" />
                     <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" />
                     <Column header="Analisa Kredit" body={(rowData) => (
@@ -68,34 +116,13 @@ const Pengajuandebitur = () => {
                             <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
                         </Link>
                     )} />
-                    <Column header="Edit" body={(rowData) => (
-                        <Link href={`/pengajuan/formpengajuan/${rowData.id}`} passHref>
-                            <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-                        </Link>
-                    )} />
-                    <Column header="Delete" body={(rowData) => (
-                        <div className='flex justify-content-center'>
-                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
-                                setSelectedRow(rowData);
-                                setVisible(true);
-                            }} />
-                            <Dialog header={`Hapus Data ${selectedRow.NomorRekening}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.NomorRekening); setVisible(false); }} />
-                                </div>
-                            </Dialog>
-                        </div>
-                    )} />
+                    {data.some((row: any) => row.status === 0) && (
+                        <Column header="Edit" body={editTemplate} />
+                    )}
+                    {data.some((row: any) => row.status === 0) && (
+                        <Column header="Delete" body={deleteTemplate} />
+                    )}
                 </DataTable>
-                {/* <Paginator
-                    first={first}
-                    rows={rows}
-                    totalRecords={allpemohon.length}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    onPageChange={onPageChange}
-                /> */}
             </div>
         </div>
     )

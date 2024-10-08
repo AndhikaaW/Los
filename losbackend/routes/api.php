@@ -130,8 +130,9 @@ Route::delete('/deleteprofesisampinganbyid/{Kode}', [PemohonController::class, '
 Route::post('/pemohon', [PemohonController::class, 'pemohon']); //tambah data
 Route::get('/getallpemohon', [PemohonController::class, 'index']); //get all data
 Route::get('/pemohon/{cif}', [PemohonController::class, 'show']); //get data by cif
-Route::get('/getpemohonbyid/{id}', [PemohonController::class, 'getPemohonById']); //get data by id
-Route::put('/updatepemohonbyid/{id}', [PemohonController::class, 'update']); //update data
+// Route::get('/getpemohonbyid/{id}', [PemohonController::class, 'getPemohonById']); //get data by id
+Route::get('/getpemohonbycif/{cif}', [PemohonController::class, 'getPemohonByCif']); //get data by cif
+Route::put('/updatepemohonbyid/{cif}', [PemohonController::class, 'update']); //update data
 Route::delete('/deletepemohonbyid/{Cif}', [PemohonController::class, 'destroy']); //delete data
 
 
@@ -165,9 +166,10 @@ Route::get('/getregisternasabah', [RegisterNasabahController::class, 'index']); 
 
 Route::post('/produk', [ProdukController::class, 'produk']); //tambah data
 Route::get('/getallproduk', [ProdukController::class, 'index']); //get all data
-Route::get('/getprodukbyid/{id}', [ProdukController::class, 'getProdukById']); //get data by id
+Route::get('/getprodukbyid/{no_pengajuan}', [ProdukController::class, 'getProdukById']); //get data by id
 Route::get('/getprodukbycif/{cif}', [ProdukController::class, 'getProdukByCif']); //get data by cif
-Route::put('/updatepengajuanbyid/{id}', [ProdukController::class, 'update']); //update data
+Route::put('/updatepengajuanbyid/{no_pengajuan}', [ProdukController::class, 'update']); //update data
+Route::put('/updatestatuspengajuanbyid/{no_pengajuan}', [ProdukController::class, 'updateStatusPengajuan']); //update status pengajuan
 Route::delete('/deleteprodukbyid/{NomorRekening}', [ProdukController::class, 'destroy']); //delete data
 Route::get('/getlastpengajuan', [ProdukController::class, 'getLastPengajuan']); //get last pengajuan
 
