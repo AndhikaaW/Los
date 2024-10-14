@@ -19,6 +19,10 @@ const DetailPemohon = () => {
     const [regencies, setRegencies] = useState<Location[]>([]);
     const [districts, setDistricts] = useState<Location[]>([]);
     const [villages, setVillages] = useState<Location[]>([]);
+    const [provincesUsaha, setProvincesUsaha] = useState<Location[]>([]);
+    const [regenciesUsaha, setRegenciesUsaha] = useState<Location[]>([]);
+    const [districtsUsaha, setDistrictsUsaha] = useState<Location[]>([]);
+    const [villagesUsaha, setVillagesUsaha] = useState<Location[]>([]);
     const params = useParams();
     const Cif = params?.Cif;
 
@@ -43,6 +47,7 @@ const DetailPemohon = () => {
             const response = await fetch('https://andhikaaw.github.io/api-wilayah-indonesia/api/provinces.json');
             const data = await response.json();
             setProvinces(data);
+            setProvincesUsaha(data);
         } catch (error) {
             console.error('Error fetching provinces:', error);
         }
@@ -58,6 +63,16 @@ const DetailPemohon = () => {
         }
     };
 
+    const fetchRegenciesUsaha = async (provinceId: string) => {
+        try {
+            const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/regencies/${provinceId}.json`);
+            const data = await response.json();
+            setRegenciesUsaha(data);
+        } catch (error) {
+            console.error('Error fetching regencies usaha:', error);
+        }
+    };
+
     const fetchDistricts = async (regencyId: string) => {
         try {
             const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/districts/${regencyId}.json`);
@@ -65,6 +80,16 @@ const DetailPemohon = () => {
             setDistricts(data);
         } catch (error) {
             console.error('Error fetching districts:', error);
+        }
+    };
+
+    const fetchDistrictsUsaha = async (regencyId: string) => {
+        try {
+            const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/districts/${regencyId}.json`);
+            const data = await response.json();
+            setDistrictsUsaha(data);
+        } catch (error) {
+            console.error('Error fetching districts usaha:', error);
         }
     };
 
@@ -78,6 +103,16 @@ const DetailPemohon = () => {
         }
     };
 
+    const fetchVillagesUsaha = async (districtId: string) => {
+        try {
+            const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/villages/${districtId}.json`);
+            const data = await response.json();
+            setVillagesUsaha(data);
+        } catch (error) {
+            console.error('Error fetching villages usaha:', error);
+        }
+    };
+
     useEffect(() => {
         fetchProvinces();
     }, []);
@@ -85,27 +120,38 @@ const DetailPemohon = () => {
     useEffect(() => {
         if (pemohon) {
             fetchRegencies(pemohon.provinsi);
-            fetchRegencies(pemohon.provinsi_usaha);
+            fetchRegenciesUsaha(pemohon.provinsi_usaha);
         }
     }, [pemohon]);
 
     useEffect(() => {
         if (pemohon && regencies.length > 0) {
             fetchDistricts(pemohon.kota);
-            fetchDistricts(pemohon.kota_usaha);
         }
     }, [pemohon, regencies]);
 
     useEffect(() => {
+        if (pemohon && regenciesUsaha.length > 0) {
+            fetchDistrictsUsaha(pemohon.kota_usaha);
+        }
+    }, [pemohon, regenciesUsaha]);
+
+    useEffect(() => {
         if (pemohon && districts.length > 0) {
             fetchVillages(pemohon.kecamatan);
-            fetchVillages(pemohon.kecamatan_usaha);
         }
     }, [pemohon, districts]);
 
+    useEffect(() => {
+        if (pemohon && districtsUsaha.length > 0) {
+            fetchVillagesUsaha(pemohon.kecamatan_usaha);
+        }
+    }, [pemohon, districtsUsaha]);
+
+
     const getLocationName = (id: string, locations: Location[]) => {
         const location = locations.find(loc => loc.id === id);
-        return location ? location.name : id;
+        return location ? location.name : 'Data tidak ditemukan';
     };
 
     if (!pemohon) {
@@ -184,20 +230,140 @@ const DetailPemohon = () => {
                                     <InfoItem label="Masa Laku" value={pemohon.masa_laku} />
                                     <InfoItem label="Alamat Usaha" value={pemohon.alamat_usaha} />
                                     <InfoItem label="Kode Pos Usaha" value={pemohon.kode_pos_usaha} />
-                                    {/* <InfoItem label="Provinsi Usaha" value={pemohon.provinsi_usaha} />
-                                    <InfoItem label="Kecamatan Usaha" value={pemohon.kecamatan_usaha} />
-                                    <InfoItem label="Kota Usaha" value={pemohon.kota_usaha} />
-                                    <InfoItem label="Kelurahan Usaha" value={pemohon.kelurahan_usaha} /> */}
-                                    <InfoItem label="Provinsi Usaha" value={getLocationName(pemohon.provinsi_usaha, provinces)} />
-                                    <InfoItem label="Kota Usaha" value={getLocationName(pemohon.kota_usaha, regencies)} />
-                                    <InfoItem label="Kecamatan Usaha" value={getLocationName(pemohon.kecamatan_usaha, districts)} />
-                                    <InfoItem label="Kelurahan Usaha" value={getLocationName(pemohon.kelurahan_usaha, villages)} />
+                                    <InfoItem label="Provinsi Usaha" value={getLocationName(pemohon.provinsi_usaha, provincesUsaha)} />
+                                    <InfoItem label="Kota Usaha" value={getLocationName(pemohon.kota_usaha, regenciesUsaha)} />
+                                    <InfoItem label="Kecamatan Usaha" value={getLocationName(pemohon.kecamatan_usaha, districtsUsaha)} />
+                                    <InfoItem label="Kelurahan Usaha" value={getLocationName(pemohon.kelurahan_usaha, villagesUsaha)} />
                                 </Panel>
                             </div>
                         </div>
                     </div>
                 </TabPanel>
                 <TabPanel header="Produk">
+                    {pemohon.produk.map((produk: any) => (
+                        <div key={produk.id}>
+                            <h2>Detail Pengajuan</h2>
+                            <div className="p-4 bg-gray-100 border-round-lg">
+                                <div className="mb-4">
+                                    <strong>No Pengajuan :</strong> {produk?.no_pengajuan}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>CIF :</strong> {produk?.Cif}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Tanggal Aplikasi :</strong> {produk?.tanggal_aplikasi}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Tanggal Permohonan :</strong> {produk?.tanggal_permohonan}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Pengajuan :</strong> {produk?.pengajuan}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Bidang Usaha :</strong> {produk?.ref_bidang_usaha?.Keterangan}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Sifat Kredit :</strong> {produk?.ref_sifat_kredit?.Keterangan}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Jenis Permohonan :</strong> {produk?.ref_jenis_permohonan?.Keterangan}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Jenis Angsuran :</strong> {produk?.ref_jenis_angsuran?.Keterangan}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Tujuan Penggunaan :</strong> {produk?.tujuan_penggunaan}
+                                </div>
+                                <div className="mb-4">
+                                    <strong>Detail Tujuan Penggunaan :</strong> {produk?.detail_tujuan_penggunaan}
+                                </div>
+                            </div>
+
+                            <TabView>
+                                <TabPanel header="Jaminan">
+                                    {produk?.jaminan ? (
+                                        <Panel header={header(<FileText />, "Jaminan")}>
+                                            <InfoItem label="Jenis Agunan" value={produk.jaminan.ref_jenis_agunan.Keterangan} />
+                                            <InfoItem label="Merek" value={produk.jaminan.merek} />
+                                            <InfoItem label="Bukti Hak Milik" value={produk.jaminan.ref_hak_milik.Keterangan} />
+                                            <InfoItem label="Nama Pemilik Jaminan" value={produk.jaminan.namaPemilikJaminan} />
+                                            <InfoItem label="Lokasi Agunan" value={produk.jaminan.lokasiAgunan} />
+                                            <InfoItem label="Nilai Transaksi" value={produk.jaminan.nilaiTransaksi} />
+                                            <InfoItem label="Jenis Pengikatan" value={produk.jaminan.ref_jenis_pengikatan.Keterangan} />
+                                            <InfoItem label="Tipe" value={produk.jaminan.ref_tipe.Keterangan} />
+                                            <InfoItem label="Tahun Pembuatan" value={produk.jaminan.tahunPembuatan} />
+                                            <InfoItem label="No Agunan" value={produk.jaminan.noAgunan} />
+                                            <InfoItem label="Hubungan dengan Pemilik" value={produk.jaminan.ref_hub_pemilik.Keterangan} />
+                                            <InfoItem label="Informasi Tambahan" value={produk.jaminan.informasiTambahan} />
+                                            <InfoItem label="Asuransi" value={produk.jaminan.asuransi} />
+                                        </Panel>
+                                    ) : (
+                                        <p>Tidak ada data Jaminan.</p>
+                                    )}
+                                </TabPanel>
+                                <TabPanel header="Financial">
+                                    {produk?.financial ? (
+                                        <Panel header={header(<FileText />, "Financial")}>
+                                            <InfoItem label="Omset Ramai" value={produk.financial.oms_ramai} />
+                                            <InfoItem label="Omset Normal" value={produk.financial.oms_normal} />
+                                            <InfoItem label="Omset Sepi" value={produk.financial.oms_sepi} />
+                                            <InfoItem label="Harga Pokok Jual" value={produk.financial.hrg_pokok_jual} />
+                                            <InfoItem label="BTK Tidak Langsung" value={produk.financial.btk_tdklangsung} />
+                                            <InfoItem label="OHC" value={produk.financial.ohc} />
+                                            <InfoItem label="Biaya Usaha lainnya" value={produk.financial.b_usahalainnya} />
+                                            <InfoItem label="Biaya Rumahtangga" value={produk.financial.b_rumahtangga} />
+                                            <InfoItem label="Biaya Sekolah" value={produk.financial.b_sekolah} />
+                                            <InfoItem label="Biaya PLN PDAM" value={produk.financial.b_pln_pdam} />
+                                            <InfoItem label="Biaya Transport Komunikasi" value={produk.financial.b_transport_komunikasi} />
+                                            <InfoItem label="Biaya Lain Lain" value={produk.financial.b_lain_lain} />
+                                            <InfoItem label="Pendapatan Lainnya" value={produk.financial.p_lainnya} />
+                                            <InfoItem label="Biaya Lainnya" value={produk.financial.b_lainnya} />
+                                            <InfoItem label="Bukti Pendapatan" value={produk.financial.bukti_pendapatan} />
+                                        </Panel>
+                                    ) : (
+                                        <p>Tidak ada data Financial.</p>
+                                    )}
+                                </TabPanel>
+                                <TabPanel header="Survey">
+                                    {produk?.survey.length > 0 ? (
+                                        <Panel header={header(<FileText />, "Survey")}>
+                                            {produk.survey.map((survey: any, index: any) => (
+                                                <InfoItem key={index} label={survey.Keterangan} value={survey.Pilihan} />
+                                            ))}
+                                        </Panel>
+                                    ) : (
+                                        <p>Tidak ada data Survey.</p>
+                                    )}
+                                </TabPanel>
+                                <TabPanel header="Aspek Form">
+                                    {produk?.aspek_form.length > 0 ? (
+                                        <Panel header={header(<FileText />, "Aspek Form")}>
+                                            {produk.aspek_form.map((aspekForm: any, index: any) => (
+                                                <InfoItem key={index} label={aspekForm.Keterangan} value={aspekForm.jawaban} />
+                                            ))}
+                                        </Panel>
+                                    ) : (
+                                        <p>Tidak ada data Aspek Form.</p>
+                                    )}
+                                </TabPanel>
+                                <TabPanel header="Lima C">
+                                    {produk?.lima_c ? (
+                                        <Panel header={header(<FileText />, "Lima C")}>
+                                            <InfoItem label="Characters" value={produk.lima_c.characters} />
+                                            <InfoItem label="Capacity" value={produk.lima_c.capacity} />
+                                            <InfoItem label="Capital" value={produk.lima_c.capital} />
+                                            <InfoItem label="Collateral" value={produk.lima_c.collateral} />
+                                            <InfoItem label="Conditions" value={produk.lima_c.conditions} />
+                                        </Panel>
+                                    ) : (
+                                        <p>Tidak ada data Lima C.</p>
+                                    )}
+                                </TabPanel>
+                            </TabView>
+                        </div>
+                    ))}
+                </TabPanel>
+                {/* <TabPanel header="Produk">
                     {pemohon.produk.length > 0 ? (
                         <div className='grid'>
                             {
@@ -231,8 +397,8 @@ const DetailPemohon = () => {
                             <p>Tidak ada data produk. Silakan tambah produk baru.</p>
                         </div>
                     )}
-                </TabPanel>
-                <TabPanel header="Analisa Kredit">
+                </TabPanel> */}
+                {/* <TabPanel header="Analisa Kredit">
                     {pemohon.produk.map((produk: any) => (
                         <div key={produk.id}>
                             <h3>Analisa Kredit</h3>
@@ -366,7 +532,7 @@ const DetailPemohon = () => {
                             </TabView>
                         </div>
                     ))}
-                </TabPanel>
+                </TabPanel> */}
             </TabView>
         </div >
     );

@@ -80,7 +80,7 @@ const EditFormPengajuan = () => {
         try {
             let response;
             if (no_pengajuan) {
-                response = await axios.put(API_ENDPOINTS.UPDATEPENGAJUANBYID(no_pengajuan), formData);
+                response = await axios.put(API_ENDPOINTS.UPDATEPRODUKBYID(no_pengajuan), formData);
             } else {
                 response = await axios.post(API_ENDPOINTS.ADDPRODUK, formData);
             }

@@ -10,7 +10,7 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produk = Produk::with(['financial','LimaC','aspekForm','jaminan','survey','RefSifatKredit', 'RefJenisPermohonan', 'RefJenisAngsuran', 'RefBidangUsaha'])->get();
+        $produk = Produk::with(['financial', 'LimaC', 'aspekForm', 'jaminan', 'survey', 'RefSifatKredit', 'RefJenisPermohonan', 'RefJenisAngsuran', 'RefBidangUsaha'])->get();
         return response()->json($produk);
     }
     function produk(Request $req)
@@ -37,7 +37,32 @@ class ProdukController extends Controller
     }
     public function getProdukById(string $no_pengajuan)
     {
-        $produk = Produk::where('no_pengajuan', $no_pengajuan)->firstOrFail();
+        $produk = Produk::with(
+            [
+                'financial',
+                'LimaC',
+                'aspekForm' => function ($query) {
+                    $query->leftJoin('aspek_form', 'trx_aspek_form.Kode', '=', 'aspek_form.Kode');
+                },
+                'jaminan' => function ($query) {
+                    $query->with([
+                        'RefJenisAgunan',
+                        'RefHakMilik',
+                        'RefTipe',
+                        'RefJenisPengikatan',
+                        'RefHubPemilik'
+                    ]);
+                },
+                'survey' => function ($query) {
+                    $query->leftJoin('ref_survey', 'trx_survey.Kode', '=', 'ref_survey.Kode')
+                          ->select('ref_survey.*', 'trx_survey.*');
+                },
+                'RefSifatKredit',
+                'RefJenisPermohonan',
+                'RefJenisAngsuran',
+                'RefBidangUsaha'
+            ]
+        )->where('no_pengajuan', $no_pengajuan)->firstOrFail();
         return response()->json($produk);
     }
 
@@ -95,10 +120,10 @@ class ProdukController extends Controller
     public function getLastPengajuan()
     {
         $lastPengajuan = Produk::orderBy('no_pengajuan', 'desc')->first();
-        
+
         if ($lastPengajuan) {
             $lastNumber = substr($lastPengajuan->no_pengajuan, 2);
-            $newNumber = (int)$lastNumber + 1;
+            $newNumber = (int) $lastNumber + 1;
             $newNoPengajuan = 'PK' . str_pad($newNumber, 7, '0', STR_PAD_LEFT);
             return $newNoPengajuan;
         } else {

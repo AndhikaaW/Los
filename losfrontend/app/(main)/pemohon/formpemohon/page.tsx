@@ -31,10 +31,19 @@ const FormPemohon = () => {
     const [regencies, setRegencies] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [villages, setVillages] = useState([]);
-    const [selectedProvince, setSelectedProvince] = useState(null);
-    const [selectedRegency, setSelectedRegency] = useState(null);
-    const [selectedDistrict, setSelectedDistrict] = useState(null);
-    const [selectedVillage, setSelectedVillage] = useState(null);
+    const [provincesUsaha, setProvincesUsaha] = useState([]);
+    const [regenciesUsaha, setRegenciesUsaha] = useState([]);
+    const [districtsUsaha, setDistrictsUsaha] = useState([]);
+    const [villagesUsaha, setVillagesUsaha] = useState([]);
+    
+    const [selectedProvince, setSelectedProvince] = useState<any>(null);
+    const [selectedProvinceUsaha, setSelectedProvinceUsaha] = useState<any>(null);
+    const [selectedRegency, setSelectedRegency] = useState<any>(null);
+    const [selectedRegencyUsaha, setSelectedRegencyUsaha] = useState<any>(null);
+    const [selectedDistrict, setSelectedDistrict] = useState<any>(null);
+    const [selectedDistrictUsaha, setSelectedDistrictUsaha] = useState<any>(null);
+    const [selectedVillage, setSelectedVillage] = useState<any>(null);
+    const [selectedVillageUsaha, setSelectedVillageUsaha] = useState<any>(null);
     const [provinsiId, setProvinsiId] = useState(null);
     const [regencyId, setRegencyId] = useState(null);
     const [districtId, setDistrictId] = useState(null);
@@ -214,6 +223,55 @@ const FormPemohon = () => {
         fetchProvinces().then(() => fetchRegencies(provinsiId)).then(() => fetchDistricts(regencyId)).then(() => fetchVillages(districtId));
     }, [formData.provinsi, formData.kota, formData.kecamatan]);
 
+    useEffect(() => {
+        const fetchProvincesUsaha = async () => {
+            try {
+                const response = await fetch('https://andhikaaw.github.io/api-wilayah-indonesia/api/provinces.json');
+                const provinces = await response.json();
+                setProvincesUsaha(provinces);
+            } catch (error) {
+                console.error('Error fetching provinces:', error);
+            }
+        };
+        
+        const fetchRegenciesUsaha = async (provinsiId: any) => {
+            if (!provinsiId) return;
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/regencies/${provinsiId}.json`);
+                const regencies = await response.json();
+                setRegenciesUsaha(regencies);
+            } catch (error) {
+                console.error('Error fetching regencies:', error);
+            }
+        };
+        
+        const fetchDistrictsUsaha = async (regencyId: any) => {
+            if (!regencyId) return;
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/districts/${regencyId}.json`);
+                const districts = await response.json();
+                setDistrictsUsaha(districts);
+            } catch (error) {
+                console.error('Error fetching districts:', error);
+            }
+        };
+        
+        const fetchVillagesUsaha = async (districtId: any) => {
+            if (!districtId) return;
+            try {
+                const response = await fetch(`https://andhikaaw.github.io/api-wilayah-indonesia/api/villages/${districtId}.json`);
+                const villages = await response.json();
+                setVillagesUsaha(villages);
+            } catch (error) {
+                console.error('Error fetching villages:', error);
+            }
+        };
+
+        fetchProvincesUsaha();
+        fetchRegenciesUsaha(formData.provinsi_usaha);
+        fetchDistrictsUsaha(formData.kota_usaha);
+        fetchVillagesUsaha(formData.kecamatan_usaha);
+    }, [formData.provinsi_usaha, formData.kota_usaha, formData.kecamatan_usaha]);
 
     const template = (option: any, props: any, placeholder: string) => {
         return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{placeholder}</span>;
@@ -464,7 +522,7 @@ const FormPemohon = () => {
                         </div>
                     </TabPanel>
                     <TabPanel header="Data Usaha">
-                        <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Data Usaha*/}
+                    <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Data Usaha*/}
                             <legend className="text-xl font-bold">Data Usaha</legend>
                             <div className="col-12 md:col-6">
                                 <div className="mb-2">
@@ -477,8 +535,7 @@ const FormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Status Tempat Usaha</label>
-                                    {/* <InputText name='status_tempat_usaha' type="text" placeholder='Pilih Status Tempat Usaha' className="p-inputtext p-component w-full" value={formData.status_tempat_usaha} onChange={handleChange} /> */}
-                                    <Dropdown name='status_tempat_usaha' value={formData.status_tempat_usaha} onChange={handleChange} options={statusTempatUsahaOptions} placeholder="Pilih Status Tempat Usaha" className="w-full md:w-full"/>
+                                    <Dropdown name='status_tempat_usaha' value={formData.status_tempat_usaha} onChange={handleChange} options={statusTempatUsahaOptions} placeholder="Pilih Status Tempat Usaha" className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Surat Keterangan Usaha/SIUP No</label>
@@ -488,7 +545,7 @@ const FormPemohon = () => {
                             <div className="col-12 md:col-6 mb-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Sektor Ekonomi OJK</label>
-                                    <Dropdown name='sektor_ekonomi' value={formData.sektor_ekonomi} onChange={handleChange} options={sektorEkonomiOptions} placeholder="Pilih sektor ekonomi" className="w-full md:w-full"/>
+                                    <Dropdown name='sektor_ekonomi' value={formData.sektor_ekonomi} onChange={handleChange} options={sektorEkonomiOptions} placeholder="Pilih sektor ekonomi" className="w-full md:w-full" />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Jumlah Karyawan</label>
@@ -529,29 +586,86 @@ const FormPemohon = () => {
                             <div className="col-12 md:col-6">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Provinsi</label>
-                                    <InputText name='provinsi_usaha' type="text" placeholder='Pilih Provinsi dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.provinsi_usaha} onChange={handleChange} />
-                                    {/* <Dropdown value={selectedProvinceUsaha} onChange={(e) => {
-                                        setSelectedProvinceUsaha(e.value);
-                                        setProvinsiIdUsaha(e.value.id);
-                                        setFormData((prevData) => ({
-                                            ...prevData,
-                                            provinsi_usaha: e.value.name,
-                                        }));
-                                    }} options={provinces} optionLabel="provinsi" placeholder="Pilih Provinsi dari alamat tinggal/tempat usaha debitur" filter valueTemplate={selectedProvinceTemplate} itemTemplate={provinceOptionTemplate} className="w-full md:w-full" /> */}
+                                    {/* <InputText name='provinsi_usaha' type="text" placeholder='Pilih Provinsi dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.provinsi_usaha} onChange={handleChange} /> */}
+                                    <Dropdown
+                                        value={selectedProvinceUsaha}
+                                        onChange={(e) => {
+                                            setSelectedProvinceUsaha(e.value);
+                                            setFormData((prevData) => ({
+                                                ...prevData,
+                                                provinsi_usaha: e.value.id,
+                                            }));
+                                            // fetchRegenciesUsaha(e.value.id);
+                                        }}
+                                        options={provincesUsaha}
+                                        optionLabel="name"
+                                        placeholder="Pilih Provinsi Usaha"
+                                        filter
+                                        className="w-full md:w-full"
+                                    />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kecamatan</label>
-                                    <InputText name='kecamatan_usaha' type="text" placeholder='Pilih Kecamatan dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kecamatan_usaha} onChange={handleChange} />
+                                    {/* <InputText name='kecamatan_usaha' type="text" placeholder='Pilih Kecamatan dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kecamatan_usaha} onChange={handleChange} /> */}
+                                    <Dropdown
+                                        value={selectedDistrictUsaha}
+                                        onChange={(e) => {
+                                            setSelectedDistrictUsaha(e.value);
+                                            // console.log(e.value)
+                                            setFormData((prevData) => ({
+                                                ...prevData,
+                                                kecamatan_usaha: e.value.id,
+                                            }));
+                                            // fetchVillagesUsaha(e.value.id, '');
+                                        }}
+                                        options={districtsUsaha}
+                                        optionLabel="name"
+                                        placeholder="Pilih Kecamatan Usaha"
+                                        filter
+                                        className="w-full md:w-full"
+                                    />
                                 </div>
                             </div>
                             <div className="col-12 md:col-6 mb-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kota/Kabupaten</label>
-                                    <InputText name='kota_usaha' type="text" placeholder='Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kota_usaha} onChange={handleChange} />
+                                    {/* <InputText name='kota_usaha' type="text" placeholder='Pilih Kota/Kabupaten dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kota_usaha} onChange={handleChange} /> */}
+                                    <Dropdown
+                                        value={selectedRegencyUsaha}
+                                        onChange={(e) => {
+                                            setSelectedRegencyUsaha(e.value);
+                                            // console.log(e.value)
+                                            setFormData((prevData) => ({
+                                                ...prevData,
+                                                kota_usaha: e.value.id,
+                                            }));
+                                        }}
+                                        options={regenciesUsaha}
+                                        optionLabel="name"
+                                        placeholder="Pilih Kota/Kabupaten Usaha"
+                                        filter
+                                        className="w-full md:w-full"
+                                    />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Kelurahan</label>
-                                    <InputText name='kelurahan_usaha' type="text" placeholder='Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kelurahan_usaha} onChange={handleChange} />
+                                    {/* <InputText name='kelurahan_usaha' type="text" placeholder='Pilih Kelurahan/Desa dari alamat tinggal/tempat usaha debitur' className="p-inputtext p-component w-full" value={formData.kelurahan_usaha} onChange={handleChange} /> */}
+                                    <Dropdown
+                                        value={selectedVillageUsaha}
+                                        onChange={(e) => {
+                                            setSelectedVillageUsaha(e.value);
+                                            // console.log(e.value)
+                                            setFormData((prevData) => ({
+                                                ...prevData,
+                                                kelurahan_usaha: e.value.id,
+                                            }));
+                                        }}
+                                        options={villagesUsaha}
+                                        optionLabel="name"
+                                        placeholder="Pilih Kelurahan Usaha"
+                                        filter
+                                        className="w-full md:w-full"
+                                    />
                                 </div>
                             </div>
                         </fieldset>

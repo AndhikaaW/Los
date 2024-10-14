@@ -26,7 +26,7 @@ const TambahDataDebiturPanel = () => {
                 statusTempatTinggalResponse,
                 profesiSampinganResponse
             ] = await Promise.all([
-                axios.get(API_ENDPOINTS.GETSEKTORPEMOHON),
+                axios.get(API_ENDPOINTS.GETSEKTOREKONOMI),
                 axios.get(API_ENDPOINTS.GETSTATUSUSAHA),
                 axios.get(API_ENDPOINTS.GETSTATUSTEMPATTINGGAL),
                 axios.get(API_ENDPOINTS.GETPROFESISAMPAINGAN)

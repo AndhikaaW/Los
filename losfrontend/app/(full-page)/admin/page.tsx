@@ -5,6 +5,36 @@ import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import Debiturpage from './debitur/page';
 
 const Adminpage = () => {
+    const [allproduk, setAllProduk] = useState([]);
+    const formatDate = (dateString: any) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${day}-${month}-${year}`;
+    };
+    useEffect(() => {
+        const fetchAllProduk = async () => {
+            try {
+                const response = await axios.get(API_ENDPOINTS.GETALLPRODUK);
+                const formattedData = response.data.map((item: any) => ({
+                    ...item,
+                    tanggal_aplikasi: formatDate(item.tanggal_aplikasi),
+                    tanggal_permohonan: formatDate(item.tanggal_permohonan)
+                }));
+                setAllProduk(formattedData);
+            } catch (error) {
+                console.error('There was an error fetching the users!', error);
+            } finally {
+                // setIsLoading(false);
+            }
+        };
+        fetchAllProduk();
+    }, []);
+    const statusCount = allproduk.reduce((acc: any, curr: any) => {
+        acc[curr.status] = (acc[curr.status] || 0) + 1;
+        return acc;
+    }, {});
     return (
         <div>
             <h4><strong>Overview</strong></h4>
@@ -14,7 +44,7 @@ const Adminpage = () => {
                         <div className="flex justify-content-between mb-3">
                             <div>
                                 <span className="block text-500 font-medium mb-3">Submitted</span>
-                                <div className="text-900 font-medium text-xl">10</div>
+                                <div className="text-900 font-medium text-xl">{statusCount[1] ||0}</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                                 <i className="pi pi-shopping-cart text-blue-500 text-xl" />
@@ -29,7 +59,7 @@ const Adminpage = () => {
                         <div className="flex justify-content-between mb-3">
                             <div>
                                 <span className="block text-500 font-medium mb-3">Approved</span>
-                                <div className="text-900 font-medium text-xl">10</div>
+                                <div className="text-900 font-medium text-xl">{statusCount[2] || 0}</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                                 <i className="pi pi-map-marker text-orange-500 text-xl" />
@@ -44,7 +74,7 @@ const Adminpage = () => {
                         <div className="flex justify-content-between mb-3">
                             <div>
                                 <span className="block text-500 font-medium mb-3">Rejected</span>
-                                <div className="text-900 font-medium text-xl">10</div>
+                                <div className="text-900 font-medium text-xl">{statusCount[3] || 0}</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                                 <i className="pi pi-inbox text-cyan-500 text-xl" />

@@ -7,11 +7,13 @@ import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import { Dropdown } from 'primereact/dropdown'
 import { ProgressSpinner } from 'primereact/progressspinner'
+import { InputText } from 'primereact/inputtext'
 import React, { useEffect, useState } from 'react'
 
 const PengajuanApprovel = () => {
     const [allproduk, setAllproduk] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [globalFilter, setGlobalFilter] = useState('');
     const formatDate = (dateString: any) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -51,7 +53,7 @@ const PengajuanApprovel = () => {
             await handleUpdateStatus(newStatus, rowData.no_pengajuan);
         };
         return (
-            <select value={rowData.status} onChange={handleChange} className={statusOptions.find(option => option.value === rowData.status)?.className}>
+            <select value={rowData.status} onChange={handleChange} className={statusOptions.find(option => option.value === rowData.status)?.className} onClick={(e) => e.stopPropagation()}>
                 {statusOptions.map(option => (
                     <option key={option.value} value={option.value} className={option.className}>
                         {option.label}
@@ -87,18 +89,36 @@ const PengajuanApprovel = () => {
         const filterProduk = allproduk.filter((item: any) => {
             if (selectedStatus === null) return true;
             return item.status === selectedStatus;
+        }).filter((item: any) => {
+            if (!globalFilter) return true;
+            return item.no_pengajuan.toLowerCase().includes(globalFilter.toLowerCase()) ||
+                   item.Cif.toString().toLowerCase().includes(globalFilter.toLowerCase());
         });
         setFilteredProduk(filterProduk);
-    }, [selectedStatus, allproduk]);
+    }, [selectedStatus, allproduk, globalFilter]);
 
     return (
         <div>
             <div className="card">
-                <div className="p-input-icon-right flex justify-content-end mb-3">
-                    <i className="pi pi-filter" />
-                    <Dropdown value={selectedStatus} options={statusOptions} onChange={(e) => setSelectedStatus(e.value)} placeholder="Filter by Status" />
+                <div className="flex justify-content-between mb-3">
+                    <div className="p-input-icon-left">
+                        <i className="pi pi-search" />
+                        <InputText 
+                            placeholder="Cari No Pengajuan atau CIF" 
+                            value={globalFilter} 
+                            onChange={(e) => setGlobalFilter(e.target.value)} 
+                        />
+                    </div>
+                    <div className="p-input-icon-right">
+                        <i className="pi pi-filter" />
+                        <Dropdown value={selectedStatus} options={statusOptions} onChange={(e) => setSelectedStatus(e.value)} placeholder="Filter by Status" />
+                    </div>
                 </div>
-                <DataTable value={filteredProduk} tableStyle={{ minWidth: '30rem' }} paginator rows={5} rowsPerPageOptions={[5, 10, 20]}>
+                <DataTable value={filteredProduk} tableStyle={{ minWidth: '30rem' }} paginator rows={5} rowsPerPageOptions={[5, 10, 20]} 
+                className='cursor-pointer'
+                rowClassName={() => `hover:bg-gray-100`}
+                onRowClick={(e) => { window.location.href = `/approvel/pengajuan/${e.data.no_pengajuan}`; }}
+                >
                     <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="CIF" />
                     <Column field="pengajuan" header="Pengajuan" />

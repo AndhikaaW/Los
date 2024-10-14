@@ -17,7 +17,7 @@ interface User {
     password: string,
     phone: string,
     address: string,
-    status: 2
+    status: 3
 }
 const SignupPage = () => {
     const [formData, setFormData] = useState<User>({
@@ -26,7 +26,7 @@ const SignupPage = () => {
         password: '',
         phone: '',
         address: '',
-        status: 2
+        status: 3
     });
 
 

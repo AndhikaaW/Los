@@ -43,6 +43,8 @@ const LoginPage = () => {
                     headers: {
                         "Content-Type": "application/json",
                         Accept: "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                        "ngrok-skip-browser-warning": "true",
                     },
                 }
             );
@@ -54,7 +56,7 @@ const LoginPage = () => {
                 localStorage.setItem('user-info', JSON.stringify(response.data));
                 router.push("/admin/debitur");
             }
-            // if (response.data) {
+             // if (response.data) {
             // }
             //   if (response.data.success) {
             //     // login(response.data.user);
@@ -66,7 +68,6 @@ const LoginPage = () => {
             //   }
         } catch (error) {
             console.error("Terjadi kesalahan!", error);
-            //   setShowAlert(true);
         } finally {
             //   setIsLoading(false);
         }

@@ -133,7 +133,7 @@ const Statuspage = () => {
     const statusOptions = [
         { label: 'Marketing', value: 3 },
         { label: 'Approval', value: 2 },
-        { label: 'Administrator', value: 1 },
+        { label: 'Administrator', value: 1 }, 
     ];
     const handleUpdateUser = async (e: any) => {
         e.preventDefault();
