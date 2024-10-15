@@ -62,7 +62,7 @@ const Analisakredit = () => {
                 setLoading(true);
                 const response = await axios.get(endpoint(noPengajuan));
                 setter(response.data);
-                console.log(response.data);
+                // console.log(response.data);
             } catch (error: any) {
                 console.error("Error fetching data:", error);
                 setError(error.message);
@@ -84,7 +84,7 @@ const Analisakredit = () => {
             try {
                 const response = await axios.get(API_ENDPOINTS.GETPRODUKBYID(noPengajuan));
                 setPengajuan(response.data);
-                console.log(response.data)
+                // console.log(response.data)
             } catch (error) {
                 console.error("Error fetching CIF data:", error);
             }
@@ -114,7 +114,8 @@ const Analisakredit = () => {
     const handleDeleteSurvey = (no_pengajuan: string) => handleDelete(no_pengajuan, setSurvey, API_ENDPOINTS.DELETESURVEYBYID);
 
     const editTemplate = (rowData: any, path: string) => {
-        if (rowData.status === 0) {
+
+        if (pengajuan.status === 0) {
             return (
                 <Link href={`/analisakredit/${path}/form${path}/${rowData.no_pengajuan}`} passHref>
                     <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
@@ -125,7 +126,7 @@ const Analisakredit = () => {
     };
 
     const deleteTemplate = (rowData: any, handleDelete: (no_pengajuan: string) => void, selectedRow: any, setSelectedRow: React.Dispatch<React.SetStateAction<any>>, visible: boolean, setVisible: React.Dispatch<React.SetStateAction<boolean>>) => {
-        if (rowData.status === 0) {
+        if (pengajuan.status === 0) {
             return (
                 <div className='flex justify-content-center'>
                     <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
@@ -165,6 +166,16 @@ const Analisakredit = () => {
                     {pengajuan.status === 0 && (
                         <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteJaminan, selectedRowJaminan, setSelectedRowJaminan, visibleJaminan, setVisibleJaminan)} />
                     )}
+                    {!jaminan && (
+                        <>
+                            {pengajuan.status === 0 && (
+                                <Column header="Edit" body={(rowData) => editTemplate(rowData, 'jaminan')} />
+                            )}
+                            {pengajuan.status === 0 && (
+                                <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteJaminan, selectedRowJaminan, setSelectedRowJaminan, visibleJaminan, setVisibleJaminan)} />
+                            )}
+                        </>
+                    )}
                 </DataTable>
                 <header className='mt-5'>
                     <h4>Finansial</h4>
@@ -183,6 +194,16 @@ const Analisakredit = () => {
                     )}
                     {pengajuan.status === 0 && (
                         <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteFinansial, selectedRowFinansial, setSelectedRowFinansial, visibleFinansial, setVisibleFinansial)} />
+                    )}
+                    {!finansial && (
+                        <>
+                            {pengajuan.status === 0 && (
+                                <Column header="Edit" body={(rowData) => editTemplate(rowData, 'financial')} />
+                            )}
+                            {pengajuan.status === 0 && (
+                                <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteFinansial, selectedRowFinansial, setSelectedRowFinansial, visibleFinansial, setVisibleFinansial)} />
+                            )}
+                        </>
                     )}
                 </DataTable>
                 <header className='mt-5'>
@@ -216,6 +237,16 @@ const Analisakredit = () => {
                     {pengajuan.status === 0 && (
                         <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteSurvey, selectedRowSurvey, setSelectedRowSurvey, visibleSurvey, setVisibleSurvey)} />
                     )}
+                    {!survey && (
+                        <>
+                            {pengajuan.status === 0 && (
+                                <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'survey')} />
+                            )}
+                            {pengajuan.status === 0 && (
+                                <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteSurvey, selectedRowSurvey, setSelectedRowSurvey, visibleSurvey, setVisibleSurvey)} />
+                            )}
+                        </>
+                    )}
                 </DataTable>
                 <header className='mt-5'>
                     <h4>Aspek</h4>
@@ -248,6 +279,16 @@ const Analisakredit = () => {
                     {pengajuan.status === 0 && (
                         <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteAspek, selectedRowAspek, setSelectedRowAspek, visibleAspek, setVisibleAspek)} />
                     )}
+                    {!aspek && (
+                        <>
+                            {pengajuan.status === 0 && (
+                                <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'aspek')} />
+                            )}
+                            {pengajuan.status === 0 && (
+                                <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteAspek, selectedRowAspek, setSelectedRowAspek, visibleAspek, setVisibleAspek)} />
+                            )}
+                        </>
+                    )}
                 </DataTable>
                 <header className='mt-5'>
                     <h4>5C</h4>
@@ -260,11 +301,22 @@ const Analisakredit = () => {
                     <Column field="capital" header="Capital" />
                     <Column field="collateral" header="Collateral" />
                     <Column field="conditions" header="Conditions" />
+
                     {pengajuan.status === 0 && (
                         <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'limaC')} />
                     )}
                     {pengajuan.status === 0 && (
                         <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteLimaC, selectedRowLimaC, setSelectedRowLimaC, visibleLimaC, setVisibleLimaC)} />
+                    )}
+                    {!limaC && (
+                        <>
+                            {pengajuan.status === 0 && (
+                                <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'limaC')} />
+                            )}
+                            {pengajuan.status === 0 && (
+                                <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteLimaC, selectedRowLimaC, setSelectedRowLimaC, visibleLimaC, setVisibleLimaC)} />
+                            )}
+                        </>
                     )}
                 </DataTable>
             </div>

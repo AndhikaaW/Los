@@ -241,8 +241,8 @@ const DetailPemohon = () => {
                 </TabPanel>
                 <TabPanel header="Produk">
                     {pemohon.produk.map((produk: any) => (
-                        <div key={produk.id}>
-                            <h2>Detail Pengajuan</h2>
+                        <div key={produk.id} >
+                            <h2>Detail Pengajuan {produk?.no_pengajuan}</h2>
                             <div className="p-4 bg-gray-100 border-round-lg">
                                 <div className="mb-4">
                                     <strong>No Pengajuan :</strong> {produk?.no_pengajuan}

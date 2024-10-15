@@ -19,6 +19,8 @@ const TambahSurveyPanel = () => {
     const [pilihanSurveyUpdate, setPilihanSurveyUpdate] = useState(['']);
     const [selectedSurveyKode, setSelectedSurveyKode] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedRow, setSelectedRow] = useState<any>({});
+    const [visible, setVisible] = useState(false);
     const toast = useRef<Toast>(null);
 
     useEffect(() => {
@@ -145,9 +147,19 @@ const TambahSurveyPanel = () => {
                                 <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' onClick={() => handleEditSurvey(rowData.Kode)} />
                             )} />
                             <Column key="Delete" field="Delete" header="Delete" body={(rowData) => (
-                                <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => handleDeleteSurvey(rowData.Kode)} />
+                                <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                                    setSelectedRow(rowData);
+                                    setVisible(true);
+                                }} />
                             )} />
                         </DataTable>
+                        <Dialog header={`Hapus Data ${selectedRow.Keterangan}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                            <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
+                            <div className='flex justify-content-end mt-3'>
+                                <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+                                <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteSurvey(selectedRow.Kode); setVisible(false); }} />
+                            </div>
+                        </Dialog>
                         <Dialog header="Update" visible={visibleUpdateSurvey} style={{ width: '50vw' }} onHide={() => setVisibleUpdateSurvey(false)}>
                             <div className="p-fluid mb-5">
                                 <form onSubmit={handleUpdateSurvey}>

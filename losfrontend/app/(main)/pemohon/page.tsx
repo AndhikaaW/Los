@@ -74,7 +74,7 @@ const pemohon = () => {
       setAllPemohon(allpemohon.filter((item: any) => item.Cif !== Cif));
       const response = await axios.get(API_ENDPOINTS.GETALLPEMOHON);
       setAllPemohon(response.data);
-      
+
     } catch (error) {
       console.error('Error deleting form pemohon:', error);
     }
@@ -108,17 +108,16 @@ const pemohon = () => {
                 setSelectedRow(rowData);
                 setVisible(true);
               }} />
-              <Dialog header={`Hapus Data ${selectedRow.id}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
-                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                <div className='flex justify-content-end mt-3'>
-                  <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
-                  <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.Cif); setVisible(false); }} />
-                </div>
-              </Dialog>
             </div>
           )} />
         </DataTable>
-       
+        <Dialog header={`Hapus Data ${selectedRow.Nama}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+          <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
+          <div className='flex justify-content-end mt-3'>
+            <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+            <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.Cif); setVisible(false); }} />
+          </div>
+        </Dialog>
       </div>
     </div>
   )

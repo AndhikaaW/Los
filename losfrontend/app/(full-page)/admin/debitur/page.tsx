@@ -2,6 +2,7 @@
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
@@ -14,6 +15,7 @@ const Debiturpage = () => {
   const [selectedRow, setSelectedRow] = useState<any>({});
   const [visible, setVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCif = async () => {
@@ -54,7 +56,7 @@ const Debiturpage = () => {
           paginator={true} rows={5} rowsPerPageOptions={[5, 10, 20]}
           className='cursor-pointer'
           rowClassName={() => `hover:bg-gray-100`}
-          onRowClick={(e) => { window.location.href = `/admin/debitur/detail/${e.data.Cif}`; }}>
+          onRowClick={(e) => { router.push(`/admin/debitur/detail/${e.data.Cif}`); }}>
           {/* <Column field="id" header="ID" /> */}
           <Column field="Cif" header="CIF" />
           <Column field="Nama" header="Nama Lengkap" />
@@ -65,32 +67,32 @@ const Debiturpage = () => {
           <Column field="Alamat" header="Alamat" />
           {/* <Column field="nama_usaha" header="Nama Usaha" /> */}
           <Column field="ref_profesi_sampingan.Keterangan" header="Profesi Sampingan" />
-          <Column header="Edit" body={(rowData) => (
-            <Link href={`/pemohon/formpemohon/${rowData.Cif}`} passHref>
-              <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-            </Link>
-          )} />
-          <Column header="Pengajuan" body={(rowData) => (
+          <Column className='flex justify-content-center' header="Pengajuan" body={(rowData) => (
             <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}`} passHref>
               <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
             </Link>
           )} />
-          <Column header="Delete" body={(rowData) => (
+          {/* <Column header="Edit" body={(rowData) => (
+            <Link href={`/pemohon/formpemohon/${rowData.Cif}`} passHref>
+              <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+            </Link>
+          )} />
+          <Column header="Hapus" body={(rowData) => (
             <div className='flex justify-content-center'>
               <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
                 setSelectedRow(rowData);
                 setVisible(true);
               }} />
-              <Dialog header={`Hapus Data ${selectedRow.Cif}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
-                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                <div className='flex justify-content-end mt-3'>
-                  <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
-                  <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.Cif); setVisible(false); }} />
-                </div>
-              </Dialog>
             </div>
-          )} />
+          )} /> */}
         </DataTable>
+        <Dialog header={`Hapus Data ${selectedRow.Nama}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+          <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
+          <div className='flex justify-content-end mt-3'>
+            <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+            <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.Cif); setVisible(false); }} />
+          </div>
+        </Dialog>
       </div>
     </div>
   )

@@ -50,6 +50,7 @@ class SurveyController extends Controller
     public function deleteRefSurvey($kode)
     {
         $survey = Survey::where('Kode', $kode)->firstOrFail();
+        OutSurvey::where('Kode', $kode)->delete();
         PilihanSurvey::where('Kode', $kode)->delete();
         $survey->delete();
         return response()->json($survey, 200);

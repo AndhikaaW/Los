@@ -1,10 +1,10 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Button } from 'primereact/button';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
+
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Dialog } from 'primereact/dialog';
 import { Copy } from 'lucide-react';
@@ -132,13 +132,6 @@ const FormPemohon = () => {
         }
     };
 
-
-    const copyAddress = () => {
-        setFormData((prevData) => ({
-            ...prevData,
-            alamat_usaha: prevData.Alamat, kode_pos_usaha: prevData.kode_pos, provinsi_usaha: prevData.provinsi, kecamatan_usaha: prevData.kecamatan, kota_usaha: prevData.kota, kelurahan_usaha: prevData.kelurahan,
-        }));
-    };
 
     const handleNextTab = () => {
         if (activeIndex < 3) { // Asumsi Anda memiliki 4 tab panel
@@ -272,6 +265,33 @@ const FormPemohon = () => {
         fetchDistrictsUsaha(formData.kota_usaha);
         fetchVillagesUsaha(formData.kecamatan_usaha);
     }, [formData.provinsi_usaha, formData.kota_usaha, formData.kecamatan_usaha]);
+
+    const copyAddress = useCallback(() => {
+        setFormData((prevData) => {
+            const newData = {
+                ...prevData,
+                alamat_usaha: prevData.Alamat,
+                kode_pos_usaha: prevData.kode_pos,
+                provinsi_usaha: prevData.provinsi,
+                kota_usaha: prevData.kota,
+                kecamatan_usaha: prevData.kecamatan,
+                kelurahan_usaha: prevData.kelurahan,
+            };
+
+            
+            const provinceUsaha = provincesUsaha.find((p: any) => p.id === prevData.provinsi);
+            const regencyUsaha = regenciesUsaha.find((r: any) => r.id === prevData.kota);
+            const districtUsaha = districtsUsaha.find((d: any) => d.id === prevData.kecamatan);
+            const villageUsaha = villagesUsaha.find((v: any) => v.id === prevData.kelurahan);
+
+            setSelectedProvinceUsaha(provinceUsaha || null);
+            setSelectedRegencyUsaha(regencyUsaha || null);
+            setSelectedDistrictUsaha(districtUsaha || null);
+            setSelectedVillageUsaha(villageUsaha || null);
+
+            return newData;
+        });
+    }, [provincesUsaha, regenciesUsaha, districtsUsaha, villagesUsaha]);
 
     const template = (option: any, props: any, placeholder: string) => {
         return option ? <div className="flex align-items-center"><div>{option.name}</div></div> : <span>{placeholder}</span>;

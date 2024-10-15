@@ -2,7 +2,8 @@
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { Router } from 'next/router';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
@@ -16,6 +17,7 @@ const Pengajuandebitur = () => {
     const [visible, setVisible] = useState(false);
     const params = useParams();
     const cif = params?.Cif;
+    const router = useRouter();
 
     useEffect(() => {
         const fetchCif = async () => {
@@ -100,7 +102,11 @@ const Pengajuandebitur = () => {
             {/* <h3>Data yang dipilih:</h3>
       <pre>{JSON.stringify(data, null, 2)}</pre> */}
             <div className="card">
-                <DataTable value={data} tableStyle={{ minWidth: '30rem' }} paginator rows={5} rowsPerPageOptions={[5, 10, 20]}>
+                <DataTable value={data} tableStyle={{ minWidth: '30rem' }}
+                    paginator rows={5} rowsPerPageOptions={[5, 10, 20]}
+                    className='cursor-pointer'
+                    rowClassName={() => `hover:bg-gray-100`}
+                    onRowClick={(e) => { router.push(`/admin/debitur/pengajuandebitur/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}>
                     <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="CIF" />
                     <Column field="pengajuan" header="Pengajuan" />
@@ -111,11 +117,11 @@ const Pengajuandebitur = () => {
                     <Column field="status" header="Status Pengajuan" body={statusTemplate} />
                     <Column field="tujuan_penggunaan" header="Tujuan Penggunaan" />
                     <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" />
-                    <Column header="Analisa Kredit" body={(rowData) => (
+                    {/* <Column header="Analisa Kredit" body={(rowData) => (
                         <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}/analisakredit/${rowData.no_pengajuan}`} passHref>
                             <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
                         </Link>
-                    )} />
+                    )} /> */}
                     {data.some((row: any) => row.status === 0) && (
                         <Column header="Edit" body={editTemplate} />
                     )}
