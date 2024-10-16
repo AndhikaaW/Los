@@ -126,7 +126,8 @@ const EditFormPengajuan = () => {
     const BidangUsahaOptions = bidangUsaha.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const JenisPermohonanOptions = jenisPermohonan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const JenisAngsuranOptions = jenisAngsuran.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
-    const PengajuanOptions = pengajuan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const PengajuanOptions = pengajuan.map((item: any) => ({ label: item.Keterangan, value: item.Keterangan }));
+    console.log(PengajuanOptions);
     const onRowClick = (e: any) => {
         setFormData(prevData => ({
             ...prevData,
@@ -174,6 +175,7 @@ const EditFormPengajuan = () => {
                     <div className="col-12 md:col-6">
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Pengajuan</label>
+                            {/* <InputText required name='pengajuan' type="text" placeholder='Isikan dengan angka' className="p-inputtext p-component w-full" value={formData.pengajuan} onChange={handleChange} /> */}
                             <Dropdown name='pengajuan' value={formData.pengajuan} onChange={handleChange} options={PengajuanOptions} placeholder="Kredit UMKM Industri" className="w-full md:w-full" />
                         </div>
                     </div>
@@ -260,11 +262,11 @@ const EditFormPengajuan = () => {
                                     <label>Loading...</label>
                                 </div>
                             ) : (
-                                no_pengajuan ? 'Update' : 'Kirim'
+                                no_pengajuan ? 'Perbarui' : 'Kirim'
                             )}
                         </Button>
                         <Link href="/pengajuan" passHref>
-                            <Button type="button" className='p-button-secondary'>Back to List</Button>
+                            <Button type="button" className='p-button-secondary'>Kembali ke List</Button>
                         </Link>
 
                         <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>

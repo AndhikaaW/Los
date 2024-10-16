@@ -94,11 +94,12 @@ const Analisakredit = () => {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
-    if (!finansial) return <div>No data available</div>;
-    if (!aspek) return <div>No data available</div>;
-    if (!limaC) return <div>No data available</div>;
-    if (!survey) return <div>No data available</div>;
-    if (!jaminan) return <div>No data available</div>;
+    if (!finansial) return <div>Data tidak tersedia</div>;
+    if (!aspek) return <div>Data tidak tersedia</div>;
+    if (!limaC) return <div>Data tidak tersedia</div>;
+    if (!survey) return <div>Data tidak tersedia</div>;
+    if (!jaminan) return <div>Data tidak tersedia</div>;
+
     const handleDelete = async (no_pengajuan: string, setData: React.Dispatch<React.SetStateAction<any>>, endpoint: (no_pengajuan: string) => string) => {
         try {
             await axios.delete(endpoint(no_pengajuan));
@@ -118,7 +119,7 @@ const Analisakredit = () => {
         if (pengajuan.status === 0) {
             return (
                 <Link href={`/analisakredit/${path}/form${path}/${rowData.no_pengajuan}`} passHref>
-                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' , transition: 'transform 0.3s ease-in-out'}} className='bg-blue-200 border-none hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} />
                 </Link>
             );
         }
@@ -129,7 +130,7 @@ const Analisakredit = () => {
         if (pengajuan.status === 0) {
             return (
                 <div className='flex justify-content-center'>
-                    <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                    <Button icon="pi pi-trash" style={{ border: '1', color: '#333' , transition: 'transform 0.3s ease-in-out'}} className='bg-red-200 border-none hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
                         setSelectedRow(rowData);
                         setVisible(true);
                     }} />
@@ -164,7 +165,7 @@ const Analisakredit = () => {
                         <Column header="Edit" body={(rowData) => editTemplate(rowData, 'jaminan')} />
                     )}
                     {pengajuan.status === 0 && (
-                        <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteJaminan, selectedRowJaminan, setSelectedRowJaminan, visibleJaminan, setVisibleJaminan)} />
+                        <Column header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteJaminan, selectedRowJaminan, setSelectedRowJaminan, visibleJaminan, setVisibleJaminan)} />
                     )}
                     {!jaminan && (
                         <>
@@ -172,7 +173,7 @@ const Analisakredit = () => {
                                 <Column header="Edit" body={(rowData) => editTemplate(rowData, 'jaminan')} />
                             )}
                             {pengajuan.status === 0 && (
-                                <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteJaminan, selectedRowJaminan, setSelectedRowJaminan, visibleJaminan, setVisibleJaminan)} />
+                                <Column header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteJaminan, selectedRowJaminan, setSelectedRowJaminan, visibleJaminan, setVisibleJaminan)} />
                             )}
                         </>
                     )}
@@ -193,7 +194,7 @@ const Analisakredit = () => {
                         <Column header="Edit" body={(rowData) => editTemplate(rowData, 'financial')} />
                     )}
                     {pengajuan.status === 0 && (
-                        <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteFinansial, selectedRowFinansial, setSelectedRowFinansial, visibleFinansial, setVisibleFinansial)} />
+                        <Column header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteFinansial, selectedRowFinansial, setSelectedRowFinansial, visibleFinansial, setVisibleFinansial)} />
                     )}
                     {!finansial && (
                         <>
@@ -201,7 +202,7 @@ const Analisakredit = () => {
                                 <Column header="Edit" body={(rowData) => editTemplate(rowData, 'financial')} />
                             )}
                             {pengajuan.status === 0 && (
-                                <Column header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteFinansial, selectedRowFinansial, setSelectedRowFinansial, visibleFinansial, setVisibleFinansial)} />
+                                <Column header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteFinansial, selectedRowFinansial, setSelectedRowFinansial, visibleFinansial, setVisibleFinansial)} />
                             )}
                         </>
                     )}
@@ -235,7 +236,7 @@ const Analisakredit = () => {
                         <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'survey')} />
                     )}
                     {pengajuan.status === 0 && (
-                        <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteSurvey, selectedRowSurvey, setSelectedRowSurvey, visibleSurvey, setVisibleSurvey)} />
+                        <Column style={{ width: '5%' }} header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteSurvey, selectedRowSurvey, setSelectedRowSurvey, visibleSurvey, setVisibleSurvey)} />
                     )}
                     {!survey && (
                         <>
@@ -243,7 +244,7 @@ const Analisakredit = () => {
                                 <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'survey')} />
                             )}
                             {pengajuan.status === 0 && (
-                                <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteSurvey, selectedRowSurvey, setSelectedRowSurvey, visibleSurvey, setVisibleSurvey)} />
+                                <Column style={{ width: '5%' }} header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteSurvey, selectedRowSurvey, setSelectedRowSurvey, visibleSurvey, setVisibleSurvey)} />
                             )}
                         </>
                     )}
@@ -277,7 +278,7 @@ const Analisakredit = () => {
                         <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'aspek')} />
                     )}
                     {pengajuan.status === 0 && (
-                        <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteAspek, selectedRowAspek, setSelectedRowAspek, visibleAspek, setVisibleAspek)} />
+                        <Column style={{ width: '5%' }} header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteAspek, selectedRowAspek, setSelectedRowAspek, visibleAspek, setVisibleAspek)} />
                     )}
                     {!aspek && (
                         <>
@@ -285,7 +286,7 @@ const Analisakredit = () => {
                                 <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'aspek')} />
                             )}
                             {pengajuan.status === 0 && (
-                                <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteAspek, selectedRowAspek, setSelectedRowAspek, visibleAspek, setVisibleAspek)} />
+                                <Column style={{ width: '5%' }} header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteAspek, selectedRowAspek, setSelectedRowAspek, visibleAspek, setVisibleAspek)} />
                             )}
                         </>
                     )}
@@ -303,18 +304,18 @@ const Analisakredit = () => {
                     <Column field="conditions" header="Conditions" />
 
                     {pengajuan.status === 0 && (
-                        <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'limaC')} />
+                        <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, '5c')} />
                     )}
                     {pengajuan.status === 0 && (
-                        <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteLimaC, selectedRowLimaC, setSelectedRowLimaC, visibleLimaC, setVisibleLimaC)} />
+                        <Column style={{ width: '5%' }} header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteLimaC, selectedRowLimaC, setSelectedRowLimaC, visibleLimaC, setVisibleLimaC)} />
                     )}
                     {!limaC && (
                         <>
                             {pengajuan.status === 0 && (
-                                <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, 'limaC')} />
+                                <Column style={{ width: '5%' }} header="Edit" body={(rowData) => editTemplate(rowData, '5c')} />
                             )}
                             {pengajuan.status === 0 && (
-                                <Column style={{ width: '5%' }} header="Delete" body={(rowData) => deleteTemplate(rowData, handleDeleteLimaC, selectedRowLimaC, setSelectedRowLimaC, visibleLimaC, setVisibleLimaC)} />
+                                <Column style={{ width: '5%' }} header="Hapus" body={(rowData) => deleteTemplate(rowData, handleDeleteLimaC, selectedRowLimaC, setSelectedRowLimaC, visibleLimaC, setVisibleLimaC)} />
                             )}
                         </>
                     )}

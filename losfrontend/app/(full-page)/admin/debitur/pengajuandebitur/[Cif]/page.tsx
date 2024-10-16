@@ -1,4 +1,5 @@
 "use client"
+import SearchFilter from '@/app/(full-page)/component/search/page';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
 import Link from 'next/link';
@@ -15,6 +16,7 @@ const Pengajuandebitur = () => {
     const [data, setData] = useState([])
     const [selectedRow, setSelectedRow] = useState<any>({});
     const [visible, setVisible] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const params = useParams();
     const cif = params?.Cif;
     const router = useRouter();
@@ -53,15 +55,15 @@ const Pengajuandebitur = () => {
     const statusTemplate = (rowData: any) => {
         switch (rowData.status) {
             case 0:
-                return <Button label='Ajukan' className='p-1 bg-yellow-200 border-round border-none text-gray-900' onClick={() => { handleUpdateStatus(1, rowData.no_pengajuan); }} />;
+                return <Button label='Ajukan' style={{ background: '#FDEBC5', color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='p-2 border-round border-none hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => { handleUpdateStatus(1, rowData.no_pengajuan); }} />;
             case 1:
-                return <span className='p-1 bg-green-200 border-round'>Diajukan</span>;
+                return <span style={{ background: '#CDFDC5', color: '#000000' }} className='p-2 border-round '>Diajukan</span>;
             case 2:
-                return <span className='p-1 bg-blue-200 border-round'>Disetujui</span>;
+                return <span style={{ background: '#C5E9FD', color: '#000000' }} className='p-2 border-round '>Disetujui</span>;
             case 3:
-                return <span className='p-1 bg-red-200 border-round'>Ditolak</span>;
+                return <span style={{ background: '#FFC8D4', color: '#000000' }} className='p-2 border-round '>Ditolak</span>;
             default:
-                return <span className='p-1 bg-gray-200 border-round'>Tidak Diketahui</span>;
+                return <span style={{ background: '#D9D9D9', color: '#000000' }} className='p-2 border-round '>Tidak Diketahui</span>;
         }
     };
 
@@ -69,7 +71,7 @@ const Pengajuandebitur = () => {
         if (rowData.status === 0) {
             return (
                 <Link href={`/pengajuan/formpengajuan/${rowData.no_pengajuan}`} passHref>
-                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' , transition: 'transform 0.3s ease-in-out'}} className='bg-blue-200 border-none hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}/>
                 </Link>
             );
         }
@@ -80,7 +82,7 @@ const Pengajuandebitur = () => {
         if (rowData.status === 0) {
             return (
                 <div className='flex justify-content-center'>
-                    <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                    <Button icon="pi pi-trash" style={{ border: '1', color: '#333', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-none hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
                         setSelectedRow(rowData);
                         setVisible(true);
                     }} />
@@ -97,16 +99,22 @@ const Pengajuandebitur = () => {
         return null;
     };
 
+    const filteredData = data.filter((item: any) => {
+        return item.no_pengajuan.toLowerCase().includes(searchTerm.toLowerCase());
+    });
     return (
         <div>
             {/* <h3>Data yang dipilih:</h3>
       <pre>{JSON.stringify(data, null, 2)}</pre> */}
             <div className="card">
-                <DataTable value={data} tableStyle={{ minWidth: '30rem' }}
+                <h2 className="text-2xl font-bold mb-4">Pengajuan Debitur</h2>
+                <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Cari no pengajuan..." />
+                <DataTable value={filteredData} tableStyle={{ minWidth: '30rem' }}
                     paginator rows={5} rowsPerPageOptions={[5, 10, 20]}
-                    className='cursor-pointer'
-                    rowClassName={() => `hover:bg-gray-100`}
-                    onRowClick={(e) => { router.push(`/admin/debitur/pengajuandebitur/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}>
+                    // className='cursor-pointer mt-3'
+                    // rowClassName={() => `hover:bg-gray-100`}
+                    // onRowClick={(e) => { router.push(`/admin/debitur/pengajuandebitur/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}
+                    >
                     <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="CIF" />
                     <Column field="pengajuan" header="Pengajuan" />
@@ -116,7 +124,7 @@ const Pengajuandebitur = () => {
                     <Column field="ref_jenis_angsuran.Keterangan" header="Jenis Angsuran" />
                     <Column field="status" header="Status Pengajuan" body={statusTemplate} />
                     <Column field="tujuan_penggunaan" header="Tujuan Penggunaan" />
-                    <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" />
+                    {/* <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" /> */}
                     {/* <Column header="Analisa Kredit" body={(rowData) => (
                         <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}/analisakredit/${rowData.no_pengajuan}`} passHref>
                             <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />

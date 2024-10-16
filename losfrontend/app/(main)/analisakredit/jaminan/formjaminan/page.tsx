@@ -139,13 +139,9 @@ const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
             NomorRekening: e.target.value
         }));
     };
+    console.log(formJaminan)
     return (
         <div className="jaminan-page">
-             {/* <SearchRekening 
-                onAccountSelect={handleAccountSelect}
-                value={formJaminan.NomorRekening}
-                onChange={handleSearchChange}
-            /> */}
             <div className="surface-card p-4 border-round">
                 <form onSubmit={handleSubmit}>
                     <fieldset className="mb-4 p-4 border-round">

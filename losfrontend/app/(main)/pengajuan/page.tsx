@@ -1,7 +1,10 @@
 "use client"
+import SearchFilter from '@/app/(full-page)/component/search/page';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
@@ -12,6 +15,8 @@ const produk = () => {
     const [allproduk, setAllProduk] = useState([]);
     const [selectedRow, setSelectedRow] = useState<any>({});
     const [visible, setVisible] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const router = useRouter();
     const formatDate = (dateString: any) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -61,7 +66,7 @@ const produk = () => {
     const statusTemplate = (rowData: any) => {
         switch (rowData.status) {
             case 0:
-                return <Button label='Ajukan' className='p-1 bg-yellow-200 border-round border-none text-gray-900' onClick={() => { handleUpdateStatus(1, rowData.no_pengajuan); }} />;
+                return <Button label='Ajukan' style={{ background: '#FDEBC5', color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='p-2 border-round border-none hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => { handleUpdateStatus(1, rowData.no_pengajuan); }} />;
             case 1:
                 return <span className='p-1 bg-green-200 border-round'>Diajukan</span>;
             case 2:
@@ -77,18 +82,19 @@ const produk = () => {
         if (rowData.status === 0) {
             return (
                 <Link href={`/pengajuan/formpengajuan/${rowData.no_pengajuan}`} passHref>
-                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                    <Button icon="pi pi-pencil" style={{ color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} />
                 </Link>
             );
         }
         return null;
     };
 
+    
     const deleteTemplate = (rowData: any) => {
         if (rowData.status === 0) {
             return (
                 <div className='flex justify-content-center'>
-                    <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                    <Button icon="pi pi-trash" style={{ color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
                         setSelectedRow(rowData);
                         setVisible(true);
                     }} />
@@ -104,15 +110,26 @@ const produk = () => {
         }
         return null;
     };
+
+    const filteredData = allproduk.filter((item: any) => {
+        return item.no_pengajuan.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+
     return (
         <div>
             <div className="card">
-                <div className='flex align-items-center justify-content-start mb-2'>
-                    <Link href={'/pengajuan/formpengajuan'} passHref>
-                        <Button label='Add' icon="pi pi-plus" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+                <h2 className='text-2xl font-bold mb-4'>Data Pengajuan</h2>
+                <div className='flex align-items-center justify-content-end mb-2'>
+                    <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Cari no pengajuan..." />
+                    <Link href={'/pengajuan/formpengajuan'} passHref style={{ transition: 'transform 0.3s ease-in-out' }} className='ml-2 p-2 bg-blue-200 border-round hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                        <Plus size={20} style={{ color: '#333' }} />
                     </Link>
                 </div>
-                <DataTable value={allproduk} tableStyle={{ minWidth: '30rem' }} paginator rows={5} rowsPerPageOptions={[5, 10, 20]}>
+                <DataTable value={filteredData} tableStyle={{ minWidth: '30rem' }}
+                    paginator rows={5} rowsPerPageOptions={[5, 10, 20]}
+                    className='cursor-pointer'
+                    rowClassName={() => `hover:bg-gray-100`}
+                    onRowClick={(e) => { router.push(`/admin/debitur/pengajuandebitur/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}>
                     <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="CIF" />
                     <Column field="pengajuan" header="Pengajuan" />
@@ -122,17 +139,17 @@ const produk = () => {
                     <Column field="ref_jenis_angsuran.Keterangan" header="Jenis Angsuran" />
                     <Column field="status" header="Status Pengajuan" body={statusTemplate} />
                     <Column field="tujuan_penggunaan" header="Tujuan Penggunaan" />
-                    <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" />
-                    <Column header="Analisa Kredit" body={(rowData) => (
+                    {/* <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" /> */}
+                    {/* <Column header="Analisa Kredit" body={(rowData) => (
                         <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}/analisakredit/${rowData.no_pengajuan}`} passHref>
                             <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
                         </Link>
-                    )} />
+                    )} /> */}
                     {allproduk.some((row: any) => row.status === 0) && (
                         <Column header="Edit" body={editTemplate} />
                     )}
                     {allproduk.some((row: any) => row.status === 0) && (
-                        <Column header="Delete" body={deleteTemplate} />
+                        <Column header="Hapus" body={deleteTemplate} />
                     )}
                 </DataTable>
             </div>

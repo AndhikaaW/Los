@@ -189,6 +189,7 @@ const Statuspage = () => {
 
     return (
         <div className="card">
+            <h2 className='text-2xl font-bold mb-4'>Status User</h2>
             <div className='flex align-items-center justify-content-end '>
                 <label htmlFor="">Refresh</label>
                 <Button icon="pi pi-refresh" rounded text aria-label="Filter" onClick={handleSync} />

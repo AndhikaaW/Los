@@ -67,10 +67,10 @@ const AppMenu = () => {
                     to: item.to_path
                 }))
         }] : []),
-        ...(sidebar.some(item => item.status === 2 && item.sidebar_id > 10) ? [{
+        ...(sidebar.some(item => item.status === 2 && item.sidebar_id >= 10) ? [{
             label: 'List Pengajuan',
             items: sidebar
-                .filter(item => item.status === 2 && item.sidebar_id > 10)
+                .filter(item => item.status === 2 && item.sidebar_id >= 10)
                 .map(item => ({
                     label: item.label,
                     icon: 'pi pi-fw pi-file',
@@ -112,17 +112,7 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-file',
                     to: item.to_path
                 }))
-        }] : []),
-        // ...(sidebar.some(item => item.status === 2 && item.sidebar_id > 10) ? [{
-        //     label: 'List Pengajuan',
-        //     items: sidebar
-        //         .filter(item => item.status === 2 && item.sidebar_id > 10)
-        //         .map(item => ({
-        //             label: item.label,
-        //             icon: 'pi pi-fw pi-file',
-        //             to: item.to_path
-        //         }))
-        // }] : []),
+        }] : [])
     ];
 
     return (

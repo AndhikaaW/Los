@@ -103,6 +103,12 @@ const TambahSurveyPanel = () => {
     const addPilihanSurvey = () => {
         setPilihanSurvey([...pilihanSurvey, '']);
     };
+    const removePilihanSurveyUpdate = (index: number) => {
+        setPilihanSurveyUpdate(pilihanSurveyUpdate.filter((_, i) => i !== index));
+    };
+    const removePilihanSurvey = (index: number) => {
+        setPilihanSurvey(pilihanSurvey.filter((_, i) => i !== index));
+    };
 
     const handlePilihanSurveyChange = (index: number, value: string) => {
         const newPilihanSurvey = [...pilihanSurvey];
@@ -131,7 +137,7 @@ const TambahSurveyPanel = () => {
                 <div>
                     <div className='mb-5'>
                         <div className='mb-2 flex justify-content-end'>
-                            <Button label="Tambah" icon="pi pi-plus" style={{ border: '1', color: '#333' }} className='bg-blue-200 w-2' onClick={() => setVisibleAddSurvey(true)} />
+                            <Button label="Tambah" icon="pi pi-plus" style={{ border: 'none', color: '#333',  transition: 'transform 0.3s ease-in-out'}} className='bg-blue-200 w-2 hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => setVisibleAddSurvey(true)} />
                         </div>
                         <DataTable value={refSurvey} style={{ minWidth: '50rem' }} paginator rows={15} rowsPerPageOptions={[5, 10, 15]}>
                             <Column key="Kode" field="Kode" header="Kode" className='w-2' />
@@ -143,11 +149,11 @@ const TambahSurveyPanel = () => {
                                     ))}
                                 </ul>
                             )} />
-                            <Column key="Update" field="Update" header="Update" body={(rowData) => (
-                                <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' onClick={() => handleEditSurvey(rowData.Kode)} />
+                            <Column key="Update" field="Update" header="Perbarui" body={(rowData) => (
+                                <Button icon="pi pi-pencil" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => handleEditSurvey(rowData.Kode)} />
                             )} />
-                            <Column key="Delete" field="Delete" header="Delete" body={(rowData) => (
-                                <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                            <Column key="Delete" field="Delete" header="Hapus" body={(rowData) => (
+                                <Button icon="pi pi-trash" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
                                     setSelectedRow(rowData);
                                     setVisible(true);
                                 }} />
@@ -182,6 +188,9 @@ const TambahSurveyPanel = () => {
                                                         {index === pilihanSurveyUpdate.length - 1 && (
                                                             <Button icon="pi pi-plus" onClick={addPilihanSurveyUpdate} />
                                                         )}
+                                                        {index !== 0 && (
+                                                            <Button icon="pi pi-minus" onClick={() => removePilihanSurveyUpdate(index)} />
+                                                        )}
                                                     </div>
                                                 ))}
                                                 <Button className='w-3 mt-2' type="submit" label="Simpan" icon="pi pi-check" />
@@ -212,6 +221,9 @@ const TambahSurveyPanel = () => {
                                                         />
                                                         {index === pilihanSurvey.length - 1 && (
                                                             <Button icon="pi pi-plus" onClick={addPilihanSurvey} />
+                                                        )}
+                                                        {index !== 0 && (
+                                                            <Button icon="pi pi-minus" onClick={() => removePilihanSurvey(index)} />
                                                         )}
                                                     </div>
                                                 ))}

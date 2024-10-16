@@ -19,13 +19,13 @@ import TambahDataDebiturPanel from './cmsdatadebitur/page';
 
 const TambahanAnalisaKredit = () => {
     // const [refTitleAspek, setRefTitleAspek] = useState([]);
-    
+
     // const [refJenisAgunan, setRefJenisAgunan] = useState([]);
     // const [refHakMilik, setRefHakMilik] = useState([]);
     // const [refTipe, setRefTipe] = useState([]);
     // const [refJenisPengikatan, setRefJenisPengikatan] = useState([]);
     // const [refHubunganPemilik, setRefHubunganPemilik] = useState([]);
-    
+
     // const [refSurvey, setRefSurvey] = useState([]);
     // const [visibleAddSurvey, setVisibleAddSurvey] = useState(false);
     // const [visibleUpdateSurvey, setVisibleUpdateSurvey] = useState(false);
@@ -34,7 +34,7 @@ const TambahanAnalisaKredit = () => {
     // const [pilihanSurvey, setPilihanSurvey] = useState(['']);
     // const [pilihanSurveyUpdate, setPilihanSurveyUpdate] = useState(['']);
     // const [selectedSurveyKode, setSelectedSurveyKode] = useState(null);
-    
+
     // const [refBidangUsaha, setRefBidangUsaha] = useState([]);
     // const [refSifatKredit, setRefSifatKredit] = useState([]);
     // const [refJenisAngsuran, setRefJenisAngsuran] = useState([]);
@@ -223,10 +223,12 @@ const TambahanAnalisaKredit = () => {
     // };
 
     return (
-        <TabView activeIndex={1}>
-            <Toast ref={toast} />
-            <TabPanel header="Tambah Aspek">
-                {/* {isLoading ? (
+        <div className="card">
+            <h2 className='text-2xl font-bold mb-4'>CMS Data</h2>
+            <TabView activeIndex={1}>
+                <Toast ref={toast} />
+                <TabPanel header="Tambah Aspek">
+                    {/* {isLoading ? (
                     <div className="flex justify-content-center align-items-center">
                         <ProgressSpinner style={{ width: '20px', height: '20px' }} strokeWidth="7" fill="var(--surface-ground)" animationDuration=".5s" />
                     </div>
@@ -245,10 +247,10 @@ const TambahanAnalisaKredit = () => {
                         inputLabel="Judul Aspek"
                     />
                 )} */}
-                <TambahAspekPanel/>
-            </TabPanel>
-            <TabPanel header="Tambah Jaminan">
-                {/* {isLoading ? (
+                    <TambahAspekPanel />
+                </TabPanel>
+                <TabPanel header="Tambah Jaminan">
+                    {/* {isLoading ? (
                     <div className="flex justify-content-center align-items-center">
                         <ProgressSpinner style={{ width: '20px', height: '20px' }} strokeWidth="7" fill="var(--surface-ground)" animationDuration=".5s" />
                     </div>
@@ -321,10 +323,10 @@ const TambahanAnalisaKredit = () => {
                         />
                     </>
                 )} */}
-                <TambahJaminanPanel/>
-            </TabPanel>
-            <TabPanel header="Tambah Survey">
-                {/* {isLoading ? (
+                    <TambahJaminanPanel />
+                </TabPanel>
+                <TabPanel header="Tambah Survey">
+                    {/* {isLoading ? (
                     <div className="flex justify-content-center align-items-center">
                         <ProgressSpinner style={{ width: '20px', height: '20px' }} strokeWidth="7" fill="var(--surface-ground)" animationDuration=".5s" />
                     </div>
@@ -416,10 +418,10 @@ const TambahanAnalisaKredit = () => {
                         </div>
                     </div>
                 )} */}
-                <TambahSurveyPanel/>
-            </TabPanel>
-            <TabPanel header="Tambah Pengajuan">
-                {/* {isLoading ? (
+                    <TambahSurveyPanel />
+                </TabPanel>
+                <TabPanel header="Tambah Pengajuan">
+                    {/* {isLoading ? (
                     <div className="flex justify-content-center align-items-center">
                         <ProgressSpinner style={{ width: '20px', height: '20px' }} strokeWidth="7" fill="var(--surface-ground)" animationDuration=".5s" />
                     </div>
@@ -475,10 +477,10 @@ const TambahanAnalisaKredit = () => {
                         />
                     </>
                 )} */}
-                <TambahPengajuanPanel/>
-            </TabPanel>
-            <TabPanel header="Tambah Data Debitur">
-                {/* {isLoading ? (
+                    <TambahPengajuanPanel />
+                </TabPanel>
+                <TabPanel header="Tambah Data Debitur">
+                    {/* {isLoading ? (
                     <div className="flex justify-content-center align-items-center">
                         <ProgressSpinner style={{ width: '20px', height: '20px' }} strokeWidth="7" fill="var(--surface-ground)" animationDuration=".5s" />
                     </div>
@@ -534,9 +536,10 @@ const TambahanAnalisaKredit = () => {
                         />
                     </>
                 )} */}
-                <TambahDataDebiturPanel/>
-            </TabPanel>
-        </TabView>
+                    <TambahDataDebiturPanel />
+                </TabPanel>
+            </TabView>
+        </div>
     );
 };
 

@@ -9,7 +9,7 @@ const AppSidebar = () => {
             <AppMenu />
             <Button
                 icon={<LogOut className="mr-2" size={16} />}
-                label="Logout"
+                label="Keluar"
                 className="p-button-rounded-sm p-button-danger p-button-text"
                 onClick={() => window.location.href='/auth/login'}
             />

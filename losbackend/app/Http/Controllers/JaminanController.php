@@ -16,8 +16,8 @@ class JaminanController extends Controller
     {
         $jenisAgunan = new RefJenisAgunan;
         $kodeTerakhir = RefJenisAgunan::max('Kode');
-        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $jenisAgunan->Kode = sprintf('A%07d', $nomorBaru);
+        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 2) + 1 : 1;
+        $jenisAgunan->Kode = sprintf('AG%07d', $nomorBaru);
         $jenisAgunan->Keterangan = $request->input('Keterangan');
         $jenisAgunan->save();
         

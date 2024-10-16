@@ -9,6 +9,7 @@ import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import React, { useEffect, useState } from 'react'
+import SearchFilter from '../../component/search/page';
 
 const Debiturpage = () => {
   const [data, setData] = useState([])
@@ -45,41 +46,40 @@ const Debiturpage = () => {
     return item.Nama.toLowerCase().includes(searchTerm.toLowerCase()) || item.KTP.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+  console.log(filteredData)
   return (
     <div>
       <div className="card">
-        <div className="p-input-icon-right flex justify-content-end mb-3">
-          <i className="pi pi-search" />
-          <InputText value={searchTerm} onChange={(e: any) => setSearchTerm(e.target.value)} placeholder="Cari..." />
-        </div>
+        <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Cari nama atau KTP..." />
         <DataTable value={filteredData} tableStyle={{ minWidth: '30rem' }}
           paginator={true} rows={5} rowsPerPageOptions={[5, 10, 20]}
-          className='cursor-pointer'
+          className='cursor-pointer mt-3'
           rowClassName={() => `hover:bg-gray-100`}
-          onRowClick={(e) => { router.push(`/admin/debitur/detail/${e.data.Cif}`); }}>
+          onRowClick={(e) => { router.push(`/pemohon/detail/${e.data.Cif}`); }}>
           {/* <Column field="id" header="ID" /> */}
           <Column field="Cif" header="CIF" />
           <Column field="Nama" header="Nama Lengkap" />
-          <Column field="Kelamin" header="Jenis Kelamin" />
+          <Column field="Kelamin" header="Jenis Kelamin" body={(rowData) => rowData.Kelamin === 'P' ? 'Perempuan' : 'Laki-Laki'} />
           {/* <Column field="StatusPerkawinan" header="Status Perkawinan" /> */}
           <Column field="KTP" header="No KTP" />
           <Column field="no_hp" header="No HP" />
           <Column field="Alamat" header="Alamat" />
-          {/* <Column field="nama_usaha" header="Nama Usaha" /> */}
-          <Column field="ref_profesi_sampingan.Keterangan" header="Profesi Sampingan" />
+          <Column field="nama_usaha" header="Nama Usaha" />
+
+          {/* <Column field="ref_profesi_sampingan.Keterangan" header="Profesi Sampingan" /> */}
           <Column className='flex justify-content-center' header="Pengajuan" body={(rowData) => (
             <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}`} passHref>
-              <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
+              <Button icon="pi pi-eye" style={{ background: "#FFBB62", color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}  />
             </Link>
           )} />
           {/* <Column header="Edit" body={(rowData) => (
             <Link href={`/pemohon/formpemohon/${rowData.Cif}`} passHref>
               <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
             </Link>
-          )} />
-          <Column header="Hapus" body={(rowData) => (
+          )} /> */}
+          {/* <Column header="Hapus" body={(rowData) => (
             <div className='flex justify-content-center'>
-              <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+              <Button icon="pi pi-trash" style={{ background: "#", color: '#000000' }} className='border-transparent' onClick={() => {
                 setSelectedRow(rowData);
                 setVisible(true);
               }} />

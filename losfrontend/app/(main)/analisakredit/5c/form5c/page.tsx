@@ -60,6 +60,7 @@ const FormLimaC = ({pengajuan}:{pengajuan:any}) => {
             setIsLoading(false)
             setVisible(true)
             resetForm()
+            window.location.href = '/pengajuan'
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false)

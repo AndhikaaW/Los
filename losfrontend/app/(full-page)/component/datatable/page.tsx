@@ -44,22 +44,22 @@ const DataTableWithCRUD = ({
     return (
         <div className='mb-5'>
             <div className='mb-2 flex justify-content-end'>
-                <Button label={addButtonLabel} icon="pi pi-plus" style={{ border: '1', color: '#333' }} className='bg-blue-200 w-2' onClick={() => setVisibleAdd(true)} />
+                <Button label={addButtonLabel} icon="pi pi-plus" style={{ border: 'none', color: '#333',  transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 w-2 hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => setVisibleAdd(true)} />
             </div>
             <DataTable value={data} style={{ minWidth: '50rem' }} paginator rows={5} rowsPerPageOptions={[5, 10]}>
                 <Column key="Kode" field="Kode" header="Kode" className='w-2'/>
                 {columns.map((col: any) => (
                     <Column key={col.field} field={col.field} header={col.header} className={columns.length === 1 ? 'w-7' : 'w-4'}/>
                 ))}
-                <Column header="Update" body={(rowData) => (
-                    <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' onClick={() => {
+                <Column header="Perbarui" body={(rowData) => (
+                    <Button icon="pi pi-pencil" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
                         setSelectedRow(rowData);
                         setEditValue(rowData[nameField]);
                         setVisibleEdit(true);
                     }} />
                 )} />
-                <Column header="Delete" body={(rowData) => (
-                    <Button icon="pi pi-trash" style={{ border: '1', color: '#333' }} className='bg-red-200' onClick={() => {
+                <Column header="Hapus" body={(rowData) => (
+                    <Button icon="pi pi-trash" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
                         setSelectedRow(rowData);
                         setVisibleDelete(true);
                         console.log(rowData);
@@ -80,7 +80,7 @@ const DataTableWithCRUD = ({
                             <label htmlFor="inputValue" className='font-bold'>{inputLabel}</label>
                             <div className='flex gap-3 align-items-center'>
                                 <InputText id="inputValue" value={inputValue} onChange={(e) => setInputValue(e.target.value)} required />
-                                <Button className='w-3' type="submit" label={addButtonLabel} icon="pi pi-check" />
+                                <Button className='w-3' type="submit" label="Simpan" icon="pi pi-check" />
                             </div>
                         </div>
                     </form>

@@ -13,7 +13,7 @@ import React, { useEffect, useState } from 'react'
 import { TabPanel, TabView } from 'primereact/tabview';
 import FormJaminan from '../../analisakredit/jaminan/formjaminan/page';
 import FormFinancial from '../../analisakredit/financial/formfinancial/page';
-import FormAspek from '../../analisakredit/aspekform/formaspek/page';
+import FormAspek from '../../analisakredit/aspek/formaspek/page';
 import FormSurvey from '../../analisakredit/survey/formsurvey/page';
 import FormLimaC from '../../analisakredit/5c/form5c/page';
 
@@ -71,7 +71,7 @@ const FormProduk = () => {
             const response = await axios.post(API_ENDPOINTS.ADDPRODUK, formPengajuan);
             console.log('Response from API:', response.data);
             setIsLoading(false);
-            setVisible(true);
+            // setVisible(true);
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false);
@@ -257,11 +257,11 @@ const FormProduk = () => {
                                 ) : (
                                     'Kirim'
                                 )}</Button>
-                            <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                            {/* <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                                 <p className="m-0">
                                     Terima Kasih telah mengisi form
                                 </p>
-                            </Dialog>
+                            </Dialog> */}
                         </div>
                     </form>
                 </TabPanel>
