@@ -111,9 +111,10 @@ const Pengajuandebitur = () => {
                 <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Cari no pengajuan..." />
                 <DataTable value={filteredData} tableStyle={{ minWidth: '30rem' }}
                     paginator rows={5} rowsPerPageOptions={[5, 10, 20]}
-                    // className='cursor-pointer mt-3'
-                    // rowClassName={() => `hover:bg-gray-100`}
+                    className='cursor-pointer mt-3'
+                    rowClassName={() => `hover:bg-gray-100`}
                     // onRowClick={(e) => { router.push(`/admin/debitur/pengajuandebitur/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}
+                    onRowClick={(e) => { router.push(`/pemohon/detail/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}
                     >
                     <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="CIF" />
