@@ -47,12 +47,4 @@ class LimaC_Controller extends Controller
 
         return response()->json($limaC);
     }
-
-    public function destroy(string $no_pengajuan)
-    {
-        $limaC = LimaC::where('no_pengajuan', $no_pengajuan)->firstOrFail();
-        $limaC->delete();
-
-        return response()->json(null, 204);
-    }
 }

@@ -125,9 +125,4 @@ class AspekFormController extends Controller
 
         return response()->json(['message' => 'Data berhasil diperbarui'], 200);
     }
-    public function destroy($no_pengajuan)
-    {
-        $aspek = OutAspekForm::where('no_pengajuan', $no_pengajuan)->delete();
-        return response()->json(null, 204);
-    }
 }

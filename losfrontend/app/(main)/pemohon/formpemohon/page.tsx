@@ -7,14 +7,16 @@ import { InputText } from 'primereact/inputtext';
 
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Dialog } from 'primereact/dialog';
-import { Copy } from 'lucide-react';
+import { Copy, Search } from 'lucide-react';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
+import { useRouter } from 'next/navigation';
 
 const FormPemohon = () => {
+    const router = useRouter();
     const [activeIndex, setActiveIndex] = useState(0);
     const [pemohon, setPemohon] = useState<any>([]);
     const [sektorEkonomi, setSektorEkonomi] = useState<any>([]);
@@ -35,7 +37,7 @@ const FormPemohon = () => {
     const [regenciesUsaha, setRegenciesUsaha] = useState([]);
     const [districtsUsaha, setDistrictsUsaha] = useState([]);
     const [villagesUsaha, setVillagesUsaha] = useState([]);
-    
+
     const [selectedProvince, setSelectedProvince] = useState<any>(null);
     const [selectedProvinceUsaha, setSelectedProvinceUsaha] = useState<any>(null);
     const [selectedRegency, setSelectedRegency] = useState<any>(null);
@@ -94,7 +96,7 @@ const FormPemohon = () => {
         fetchNasabah();
     }, []);
     useEffect(() => {
-        const fetchData = async (url:any, setter:any) => {
+        const fetchData = async (url: any, setter: any) => {
             try {
                 const response = await axios.get(url);
                 setter(response.data);
@@ -110,7 +112,7 @@ const FormPemohon = () => {
         fetchData(API_ENDPOINTS.GETPROFESISAMPAINGAN, setProfesiSampingan);
         fetchData(API_ENDPOINTS.GETSTATUSTEMPATTINGGAL, setStatusTempatTinggal);
     }, []);
-    
+
 
     const handleChange = async (e: any) => {
         const { name, value } = e.target;
@@ -163,6 +165,7 @@ const FormPemohon = () => {
             setVisible(true);
             console.log(formData)
             resetForm()
+            router.push('/pemohon')
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false);
@@ -226,7 +229,7 @@ const FormPemohon = () => {
                 console.error('Error fetching provinces:', error);
             }
         };
-        
+
         const fetchRegenciesUsaha = async (provinsiId: any) => {
             if (!provinsiId) return;
             try {
@@ -237,7 +240,7 @@ const FormPemohon = () => {
                 console.error('Error fetching regencies:', error);
             }
         };
-        
+
         const fetchDistrictsUsaha = async (regencyId: any) => {
             if (!regencyId) return;
             try {
@@ -248,7 +251,7 @@ const FormPemohon = () => {
                 console.error('Error fetching districts:', error);
             }
         };
-        
+
         const fetchVillagesUsaha = async (districtId: any) => {
             if (!districtId) return;
             try {
@@ -278,7 +281,7 @@ const FormPemohon = () => {
                 kelurahan_usaha: prevData.kelurahan,
             };
 
-            
+
             const provinceUsaha = provincesUsaha.find((p: any) => p.id === prevData.provinsi);
             const regencyUsaha = regenciesUsaha.find((r: any) => r.id === prevData.kota);
             const districtUsaha = districtsUsaha.find((d: any) => d.id === prevData.kecamatan);
@@ -304,7 +307,7 @@ const FormPemohon = () => {
     const districtOptionTemplate = (option: any) => template(option, {}, '');
     const selectedVillageTemplate = (option: any, props: any) => template(option, props, props.placeholder);
     const villageOptionTemplate = (option: any) => template(option, {}, '');
-    
+
     const sektorEkonomiOptions = sektorEkonomi.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const statusTempatUsahaOptions = statusTempatUsaha.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const profesiSampinganOptions = profesiSampingan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
@@ -355,7 +358,9 @@ const FormPemohon = () => {
                                     <label className="block text-900 font-medium mb-2">CIF Debitur</label>
                                     <div className='flex gap-2'>
                                         <InputText required name='Cif' type="text" placeholder='Isikan dengan nomor cif anda' className="p-inputtext p-component w-full" value={formData.Cif} onChange={handleChange} />
-                                        <Button icon="pi pi-search" onClick={() => setVisible(true)} style={{ backgroundColor: 'transparent', border: '1', color: '#333' }} />
+                                        <div className='flex align-items-center cursor-pointer border-1 border-gray-300 p-2 border-round' onClick={() => setVisible(true)}>
+                                            <Search style={{ backgroundColor: 'transparent', border: '1', color: '#333' }} />
+                                        </div>
                                     </div>
                                     <Dialog visible={visible} modal header={headerElement} style={{ width: '70rem' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                                         <div className='flex'>
@@ -418,7 +423,7 @@ const FormPemohon = () => {
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Profesi Sampingan</label>
-                                    <Dropdown name='profesi_sampingan' value={formData.profesi_sampingan} onChange={handleChange} options={profesiSampinganOptions} placeholder="Pilih profesi sampingan" className="w-full md:w-full"/>
+                                    <Dropdown name='profesi_sampingan' value={formData.profesi_sampingan} onChange={handleChange} options={profesiSampinganOptions} placeholder="Pilih profesi sampingan" className="w-full md:w-full" />
                                 </div>
                             </div>
                             <div className="col-12 md:col-6">
@@ -498,7 +503,7 @@ const FormPemohon = () => {
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Status Tempat Tinggal</label>
                                     {/* <InputText required name='status_tempat_tinggal' type="text" placeholder='Pilih status tempat tinggal' className="p-inputtext p-component w-full" value={formData.status_tempat_tinggal} onChange={handleChange} /> */}
-                                    <Dropdown name='status_tempat_tinggal' value={formData.status_tempat_tinggal} onChange={handleChange} options={statusTempatTinggalOptions} placeholder="Pilih status tempat tinggal" className="w-full md:w-full"/>
+                                    <Dropdown name='status_tempat_tinggal' value={formData.status_tempat_tinggal} onChange={handleChange} options={statusTempatTinggalOptions} placeholder="Pilih status tempat tinggal" className="w-full md:w-full" />
                                 </div>
                             </div>
                             <div className="col-12 md:col-6 mb-4">
@@ -542,7 +547,7 @@ const FormPemohon = () => {
                         </div>
                     </TabPanel>
                     <TabPanel header="Data Usaha">
-                    <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Data Usaha*/}
+                        <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Data Usaha*/}
                             <legend className="text-xl font-bold">Data Usaha</legend>
                             <div className="col-12 md:col-6">
                                 <div className="mb-2">

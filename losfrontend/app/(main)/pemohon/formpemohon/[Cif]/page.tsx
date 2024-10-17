@@ -7,15 +7,17 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Dialog } from 'primereact/dialog';
-import { Copy } from 'lucide-react';
+import { Copy, Search } from 'lucide-react';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const EditFormPemohon = () => {
+    const router = useRouter();
     const [activeIndex, setActiveIndex] = useState(0);
     const [pemohon, setPemohon] = useState<any>([]);
     const [sektorEkonomi, setSektorEkonomi] = useState<any>([]);
@@ -333,8 +335,9 @@ const EditFormPemohon = () => {
             }
             console.log('Response from API:', response.data);
             setIsLoading(false);
-            setVisible(true);
+            // setVisible(true);
             if (!Cif) resetForm();
+            router.push('/pemohon');
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false);
@@ -392,6 +395,7 @@ const EditFormPemohon = () => {
 
     const paginatedPemohon = filteredPemohon.slice(first, first + rows);
     console.log(formData)
+    console.log(visible)
     return (
         <div className="surface-card shadow-2 p-4 border-round">
             <form onSubmit={handleSubmit}>
@@ -404,7 +408,9 @@ const EditFormPemohon = () => {
                                     <label className="block text-900 font-medium mb-2">CIF Debitur</label>
                                     <div className='flex gap-2'>
                                         <InputText required name='Cif' type="text" placeholder='Isikan dengan nomor cif anda' className="p-inputtext p-component w-full" value={formData.Cif} onChange={handleChange} />
-                                        <Button icon="pi pi-search" onClick={() => setVisible(true)} style={{ backgroundColor: 'transparent', border: '1', color: '#333' }} />
+                                        <div className='flex align-items-center cursor-pointer border-1 border-gray-300 p-2 border-round' onClick={() => setVisible(true)}>
+                                            <Search style={{ backgroundColor: 'transparent', border: '1', color: '#333' }} />
+                                        </div>
                                     </div>
                                     <Dialog visible={visible} modal header={headerElement} style={{ width: '70rem' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                                         <div className='flex'>
@@ -774,11 +780,11 @@ const EditFormPemohon = () => {
                                 ) : (
                                     'Kirim'
                                 )}</Button>
-                            <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                            {/* <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                                 <p className="m-0">
                                     Terima Kasih telah mengisi form
                                 </p>
-                            </Dialog>
+                            </Dialog> */}
                         </div>
                     </TabPanel>
                 </TabView>

@@ -13,7 +13,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { TabView, TabPanel } from 'primereact/tabview';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
-const FormFinancial = ({pengajuan}:{pengajuan:any}) => {
+const FormFinancial= ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitSuccess: () => void }) => {
     const [formPengajuan] = useState<any>(pengajuan);
     const [activeIndex, setActiveIndex] = useState(0);
     const [visible, setVisible] = useState(false);
@@ -48,15 +48,7 @@ const FormFinancial = ({pengajuan}:{pengajuan:any}) => {
             [name]: value,
         }));
     };
-    // const validateForm = () => {
-    //     for (const [key, value] of Object.entries(formFinancial)) {
-    //         if (!value) {
-    //             window.alert(`${key.charAt(0).toUpperCase() + key.slice(1)} tidak boleh kosong!`);
-    //             return false; // Menghentikan pengiriman jika ada input yang kosong
-    //         }
-    //     }
-    //     return true; // Semua input valid
-    // };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true)
@@ -70,6 +62,7 @@ const FormFinancial = ({pengajuan}:{pengajuan:any}) => {
             setIsLoading(false)
             setVisible(true);
             resetForm();
+            onSubmitSuccess();
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false)
@@ -125,26 +118,9 @@ const FormFinancial = ({pengajuan}:{pengajuan:any}) => {
         { label: "Sub Jumlah Modal", field: "sub_jumlah_modal" },
         { label: "Jumlah Passiva", field: "jumlah_passiva" }
     ];
-    const handleAccountSelect = (account: any) => {
-        setFormFinancial((prevData: any) => ({
-            ...prevData,
-            NomorRekening: account.NomorRekening
-        }));
-    };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormFinancial((prevData: any) => ({
-            ...prevData,
-            NomorRekening: e.target.value
-        }));
-    };
     return (
         <div className="surface-card p-4 shadow-2 border-round">
-             {/* <SearchRekening 
-                onAccountSelect={handleAccountSelect}
-                value={formFinancial.NomorRekening}
-                onChange={handleSearchChange}
-            /> */}
             <form onSubmit={handleSubmit}>
                 <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                     <TabPanel header="info keuangan">

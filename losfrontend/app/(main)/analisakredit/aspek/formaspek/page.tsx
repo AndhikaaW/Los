@@ -6,7 +6,7 @@ import axios from 'axios';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import { Dialog } from 'primereact/dialog';
 
-const FormAspek = ({ pengajuan }: { pengajuan: any }) => {
+const FormAspek = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitSuccess: () => void }) => {
     const [formPengajuan] = useState<any>(pengajuan);
     const [titleAspek, settitleAspek] = useState<any>([])
     const [visible, setVisible] = useState(false);
@@ -59,6 +59,7 @@ const FormAspek = ({ pengajuan }: { pengajuan: any }) => {
             setIsLoading(false);
             setVisible(true);
             resetForm();
+            onSubmitSuccess();
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false);

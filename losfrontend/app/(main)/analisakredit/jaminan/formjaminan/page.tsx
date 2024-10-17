@@ -12,7 +12,7 @@ import SearchRekening from '@/app/(full-page)/component/searchRekening/page';
 import { Dialog } from 'primereact/dialog';
 
 
-const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
+const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitSuccess: () => void }) => {
     const [visible, setVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [jenisAgunan, setjenisAgunan] = useState<any>([]);
@@ -103,6 +103,7 @@ const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
             setIsLoading(false)
             setVisible(true)
             // resetForm();
+            onSubmitSuccess();
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false)
@@ -126,19 +127,6 @@ const FormJaminan = ({ pengajuan }: { pengajuan: any }) => {
         { label: 'Asuransi', type: 'input', name: 'asuransi' }
     ];
 
-    const handleAccountSelect = (account: any) => {
-        setformJaminan((prevData: any) => ({
-            ...prevData,
-            NomorRekening: account.NomorRekening
-        }));
-    };
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setformJaminan((prevData: any) => ({
-            ...prevData,
-            NomorRekening: e.target.value
-        }));
-    };
     console.log(formJaminan)
     return (
         <div className="jaminan-page">

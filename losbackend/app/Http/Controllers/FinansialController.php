@@ -122,12 +122,4 @@ class FinansialController extends Controller
 
         return response()->json($financial);
     }
-    public function destroy(string $no_pengajuan)
-    {
-        $financial = Finansial::where('no_pengajuan', $no_pengajuan)->firstOrFail();
-        $financial->delete();
-
-        return response()->json(null, 204);
-    }
-
 }

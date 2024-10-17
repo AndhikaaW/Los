@@ -9,7 +9,7 @@ import { API_ENDPOINTS } from "@/app/api/losbackend/api"
 import SearchRekening from "@/app/(full-page)/component/searchRekening/page"
 import { Dialog } from "primereact/dialog"
 
-const FormSurvey = ({pengajuan}) => {
+const FormSurvey = ({ pengajuan, onSubmitSuccess }) => {
   const [formPengajuan] = useState(pengajuan);
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,6 +51,7 @@ const FormSurvey = ({pengajuan}) => {
     setIsLoading(false)
     setVisible(true)
     resetForm()
+    onSubmitSuccess();
   }
   return (
     <div className="p-4">

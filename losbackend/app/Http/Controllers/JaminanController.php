@@ -230,12 +230,4 @@ class JaminanController extends Controller
 
         return response()->json($jaminan);
     }
-    public function destroy(string $no_pengajuan)
-    {
-        $jaminan = Jaminan::where('no_pengajuan', $no_pengajuan)->firstOrFail();
-        $jaminan->delete();
-
-        return response()->json(null, 204);
-    }
-    
 }

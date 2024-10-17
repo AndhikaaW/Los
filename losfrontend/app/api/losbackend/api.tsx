@@ -36,38 +36,37 @@ export const API_ENDPOINTS = {
   GETALLJAMINAN: `${api_url}/getalljaminan`,
   GETJAMINANBYID: (id: string) => `${api_url}/getjaminanbyid/${id}`,
   UPDATEJAMINANBYID: (no_pengajuan: string) => `${api_url}/updatejaminanbyid/${no_pengajuan}`,
-  DELETEJAMINANBYID: (no_pengajuan: string) => `${api_url}/deletejaminanbyid/${no_pengajuan}`,
   GETJAMINANBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getjaminanbyid/${no_pengajuan}`,
+  
   //finansial
   FINANCIAL: `${api_url}/finansial`,
   GETALLFINANCIAL: `${api_url}/getallfinansial`,
   GETFINANCIALBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getfinansialbynopengajuan/${no_pengajuan}`,
   GETFINANCIALBYCIF: (cif: string) => `${api_url}/getfinansialbycif/${cif}`,
   UPDATEFINANCIALBYID: (no_pengajuan: string) => `${api_url}/updatefinansialbyid/${no_pengajuan}`,
-  DELETEFINANCIALBYID: (no_pengajuan: string) => `${api_url}/deletefinansialbyid/${no_pengajuan}`,
+  
   //survey
   GETSURVEY: `${api_url}/getSurvey`,
   ADDSURVEY: `${api_url}/addSurvey`,
   GETALLSURVEY: `${api_url}/getallsurvey`,
   GETSURVEYBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getsurveybynopengajuan/${no_pengajuan}`,
   UPDATESURVEYBYID: (no_pengajuan: string) => `${api_url}/updatesurveybyid/${no_pengajuan}`,
-  DELETESURVEYBYID: (no_pengajuan: string) => `${api_url}/deleteSurveybyid/${no_pengajuan}`,
+
   //aspek
   ASPEKFORM: `${api_url}/aspek`,
   GETALLASPEK: `${api_url}/getallaspek`,
   GETASPEKBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getaspekbynopengajuan/${no_pengajuan}`,
   UPDATEASPEKBYID: (no_pengajuan: string) => `${api_url}/updateaspekbyid/${no_pengajuan}`,
-  DELETEASPEKBYID: (no_pengajuan: string) => `${api_url}/deleteaspekbyid/${no_pengajuan}`,
+  
   //limac
   LIMAC: `${api_url}/limac`,
   GETALLLIMAC: `${api_url}/getalllimac`,
   GETLIMACBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getlimacbynopengajuan/${no_pengajuan}`,
   UPDATELIMACBYID: (no_pengajuan: string) => `${api_url}/updatelimacbyid/${no_pengajuan}`,
-  DELETELIMACBYID: (no_pengajuan: string) => `${api_url}/deletelimacbyid/${no_pengajuan}`,
+  
 
   //pengajuan kredit
   GETGOLONGANKREDIT: `${api_url}/getgolongankredit`,
-
 
   //Master Aspek
   TAMBAHTITLEASPEK: `${api_url}/tambahTitleAspek`,

@@ -10,8 +10,10 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Paginator } from 'primereact/paginator';
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-const FormLimaC = ({pengajuan}:{pengajuan:any}) => {
+const FormLimaC = ({ pengajuan }: { pengajuan: any }) => {
+    const router = useRouter();
     const [visible, setVisible] = useState(false);
     const [formPengajuan] = useState<any>(pengajuan);
     const [Isloading, setIsLoading] = useState(false);
@@ -42,15 +44,6 @@ const FormLimaC = ({pengajuan}:{pengajuan:any}) => {
         }));
     };
 
-    const validateForm = () => {
-        for (const [key, value] of Object.entries(formLimac)) {
-            if (!value) {
-                window.alert(`${key.charAt(0).toUpperCase() + key.slice(1)} tidak boleh kosong!`);
-                return false;
-            }
-        }
-        return true;
-    };
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true)
@@ -60,26 +53,13 @@ const FormLimaC = ({pengajuan}:{pengajuan:any}) => {
             setIsLoading(false)
             setVisible(true)
             resetForm()
-            window.location.href = '/pengajuan'
+            router.push('/pengajuan')
         } catch (error) {
             console.error('Error submitting form:', error);
             setIsLoading(false)
             // Tampilkan pesan error ke pengguna di sini
         }
         console.log;
-    };
-    const handleAccountSelect = (account: any) => {
-        setformLimac(prevData => ({
-            ...prevData,
-            NomorRekening: account.NomorRekening
-        }));
-    };
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setformLimac(prevData => ({
-            ...prevData,
-            NomorRekening: e.target.value
-        }));
     };
     console.log(formLimac)
     return (

@@ -118,9 +118,4 @@ class SurveyController extends Controller
         }
         return response()->json(['message' => 'Data survei berhasil diperbarui'], 200);
     }
-    public function destroy($no_pengajuan)
-    {
-        $survey = OutSurvey::where('no_pengajuan', $no_pengajuan)->delete();
-        return response()->json(null, 204);
-    }
 }

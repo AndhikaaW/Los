@@ -129,7 +129,8 @@ const produk = () => {
                     paginator rows={5} rowsPerPageOptions={[5, 10, 20]}
                     className='cursor-pointer'
                     rowClassName={() => `hover:bg-gray-100`}
-                    onRowClick={(e) => { router.push(`/admin/debitur/pengajuandebitur/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}>
+                    onRowClick={(e) => { router.push(`/pemohon/detail/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}
+                    >
                     <Column field="no_pengajuan" header="No Pengajuan" />
                     <Column field="Cif" header="CIF" />
                     <Column field="pengajuan" header="Pengajuan" />
@@ -140,14 +141,9 @@ const produk = () => {
                     <Column field="status" header="Status Pengajuan" body={statusTemplate} />
                     <Column field="tujuan_penggunaan" header="Tujuan Penggunaan" />
                     {/* <Column field="detail_tujuan_penggunaan" header="Detail Tujuan Penggunaan" /> */}
-                    {/* <Column header="Analisa Kredit" body={(rowData) => (
-                        <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}/analisakredit/${rowData.no_pengajuan}`} passHref>
-                            <Button icon="pi pi-eye" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-                        </Link>
-                    )} /> */}
-                    {allproduk.some((row: any) => row.status === 0) && (
+                    {/* {allproduk.some((row: any) => row.status === 0) && (
                         <Column header="Edit" body={editTemplate} />
-                    )}
+                    )} */}
                     {allproduk.some((row: any) => row.status === 0) && (
                         <Column header="Hapus" body={deleteTemplate} />
                     )}

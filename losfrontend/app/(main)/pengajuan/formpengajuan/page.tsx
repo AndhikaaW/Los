@@ -133,6 +133,10 @@ const FormProduk = () => {
         setRows(event.rows);
     };
     const paginatedCif = filteredCif.slice(first, first + rows);
+    
+    const handleNextTab = () => {
+        setActiveIndex(prevIndex => prevIndex + 1);
+    };
     return (
         <div className='surface-card shadow-2 p-5 border-round'>
             <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
@@ -266,19 +270,19 @@ const FormProduk = () => {
                     </form>
                 </TabPanel>
                 <TabPanel header="Jaminan">
-                    <FormJaminan pengajuan={formPengajuan} />
+                    <FormJaminan pengajuan={formPengajuan} onSubmitSuccess={handleNextTab}/> 
                 </TabPanel>
                 <TabPanel header="Financial">
-                    <FormFinancial pengajuan={formPengajuan} />
+                    <FormFinancial pengajuan={formPengajuan} onSubmitSuccess={handleNextTab}/>
                 </TabPanel>
                 <TabPanel header="Survey">
-                    <FormSurvey pengajuan={formPengajuan} />
+                    <FormSurvey pengajuan={formPengajuan} onSubmitSuccess={handleNextTab}/>
                 </TabPanel>
                 <TabPanel header="Aspek Form">
-                    <FormAspek pengajuan={formPengajuan} />
+                    <FormAspek pengajuan={formPengajuan} onSubmitSuccess={handleNextTab}/>
                 </TabPanel>
                 <TabPanel header="5C">
-                    <FormLimaC pengajuan={formPengajuan} />
+                    <FormLimaC pengajuan={formPengajuan}/>
                 </TabPanel>
             </TabView>
         </div>
