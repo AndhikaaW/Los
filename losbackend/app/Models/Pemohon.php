@@ -38,7 +38,6 @@ class Pemohon extends Model
         'tanggal_mulai_usaha',
         'status_tempat_usaha',
         'surat_keterangan_usaha',
-        'sektor_ekonomi',
         'jumlah_karyawan',
         'jarak_lokasi_usaha',
         'masa_laku',
@@ -47,16 +46,12 @@ class Pemohon extends Model
         'provinsi_usaha',
         'kecamatan_usaha',
         'kota_usaha',
-        'kelurahan_usaha'
+        'kelurahan_usaha',
+        'foto_ktp'
     ];
     public function Produk()
     {
         return $this->hasMany(Produk::class, 'Cif', 'Cif');
-    }
-
-    public function RefSektorEkonomi()
-    {
-        return $this->belongsTo(RefSektorEkonomi::class, 'sektor_ekonomi', 'Kode');
     }
 
     public function RefProfesiSampingan()

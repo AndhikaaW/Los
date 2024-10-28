@@ -16,11 +16,13 @@ import FormFinancial from '../../analisakredit/financial/formfinancial/page';
 import FormAspek from '../../analisakredit/aspek/formaspek/page';
 import FormSurvey from '../../analisakredit/survey/formsurvey/page';
 import FormLimaC from '../../analisakredit/5c/form5c/page';
+import { Search } from 'lucide-react';
 
 const FormProduk = () => {
     const [pengajuan, setPengajuan] = useState<any>([]);
     const [sifatKredit, setSifatKredit] = useState<any>([]);
     const [bidangUsaha, setBidangUsaha] = useState<any>([]);
+    const [sektorEkonomi, setSektorEkonomi] = useState<any>([]);
     const [jenisPermohonan, setJenisPermohonan] = useState<any>([]);
     const [jenisAngsuran, setJenisAngsuran] = useState<any>([]);
 
@@ -92,6 +94,7 @@ const FormProduk = () => {
         };
         fetchOptions(API_ENDPOINTS.GETSIFATKREDIT, setSifatKredit);
         fetchOptions(API_ENDPOINTS.GETBIDANGUSAHA, setBidangUsaha);
+        fetchOptions(API_ENDPOINTS.GETSEKTOREKONOMI, setSektorEkonomi);
         fetchOptions(API_ENDPOINTS.GETJENISPERMOHONAN, setJenisPermohonan);
         fetchOptions(API_ENDPOINTS.GETJENISANGURAN, setJenisAngsuran);
         fetchOptions(API_ENDPOINTS.GETGOLONGANKREDIT, setPengajuan);
@@ -114,6 +117,7 @@ const FormProduk = () => {
     }));
     const SifatKreditOptions = mapOptions(sifatKredit);
     const BidangUsahaOptions = mapOptions(bidangUsaha);
+    const SektorEkonomiOptions = mapOptions(sektorEkonomi);
     const JenisPermohonanOptions = mapOptions(jenisPermohonan);
     const JenisAngsuranOptions = mapOptions(jenisAngsuran);
     const PengajuanOptions = pengajuan.map((item: any) => ({
@@ -133,22 +137,26 @@ const FormProduk = () => {
         setRows(event.rows);
     };
     const paginatedCif = filteredCif.slice(first, first + rows);
-    
+
     const handleNextTab = () => {
         setActiveIndex(prevIndex => prevIndex + 1);
     };
     return (
         <div className='surface-card shadow-2 p-5 border-round'>
+            <h4 className='text-2xl font-bold mb-4'>Tambah Pengajuan Kredit</h4>
+            <span className='flex justify-content-end gap-2'><strong>No Pengajuan :</strong>{formPengajuan.no_pengajuan}</span>
             <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                 <TabPanel header="Pengajuan">
                     <div className='flex gap-2 mb-4 justify-content-end'>
                         <InputText required name='Cif' type="text" placeholder='Masukkan Nomor Cif Anda' className="p-inputtext p-component w-3" value={formPengajuan.Cif || ''} onChange={handleChange} />
-                        <Button icon="pi pi-search" onClick={() => setVisibleSearch(true)} style={{ backgroundColor: 'transparent', border: '1', color: '#333' }} />
+                        <div className='flex align-items-center cursor-pointer border-1 border-gray-300 p-2 border-round' onClick={() => setVisibleSearch(true)}>
+                            <Search style={{ backgroundColor: 'transparent', border: '1', color: '#333' }} />
+                        </div>
                     </div>
-                    <Dialog visible={visiblesearch} onHide={() => setVisibleSearch(false)} header="Search Cif" style={{ width: '70vw' }}>
+                    <Dialog visible={visiblesearch} onHide={() => setVisibleSearch(false)} header="Cari Cif Pemohon" style={{ width: '70vw' }}>
                         <div className="p-inputgroup mb-3">
                             <span className="p-inputgroup-addon"><i className="pi pi-search"></i></span>
-                            <InputText placeholder="Search by account number or name" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className="w-full" />
+                            <InputText placeholder="Cari berdasarkan nomor no ktp atau nama" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className="w-full" />
                         </div>
                         <DataTable
                             value={paginatedCif}
@@ -159,6 +167,7 @@ const FormProduk = () => {
                             <Column field="Nama" header="Nama" />
                             <Column field="KTP" header="No Ktp" />
                             <Column field="Kelamin" header="Jenis Kelamin" />
+                            <Column field="Alamat" header="Alamat" />
                         </DataTable>
                         <Paginator
                             first={first}
@@ -171,13 +180,19 @@ const FormProduk = () => {
                     <form onSubmit={handleSubmit}>
                         <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Produk*/}
                             <legend className="text-xl font-bold">Pengajuan Kredit</legend>
-                            <div className="col-12 md:col-6">
+                            <div className="col-12 md:col-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Pengajuan</label>
                                     <Dropdown name='pengajuan' value={formPengajuan.pengajuan || ''} onChange={handleChange} options={PengajuanOptions} placeholder="Kredit UMKM Industri" className="w-full md:w-full" />
                                 </div>
                             </div>
-                            <div className="col-12 md:col-6">
+                            <div className="col-12 md:col-4">
+                                <div className="mb-2">
+                                    <label className="block text-900 font-medium mb-2">Sektor Ekonomi</label>
+                                    <Dropdown name='sektor_ekonomi' value={formPengajuan.sektor_ekonomi || ''} onChange={handleChange} options={SektorEkonomiOptions} placeholder="Pilih Sektor Ekonomi" className="w-full md:w-full" />
+                                </div>
+                            </div>
+                            <div className="col-12 md:col-4">
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Bidang Usaha</label>
                                     <Dropdown name='bidang_usaha' value={formPengajuan.bidang_usaha || ''} onChange={handleChange} options={BidangUsahaOptions} placeholder="Pilih Bidang Usaha" className="w-full md:w-full" />
@@ -270,19 +285,19 @@ const FormProduk = () => {
                     </form>
                 </TabPanel>
                 <TabPanel header="Jaminan">
-                    <FormJaminan pengajuan={formPengajuan} onSubmitSuccess={handleNextTab}/> 
+                    <FormJaminan pengajuan={formPengajuan} onSubmitSuccess={handleNextTab} />
                 </TabPanel>
                 <TabPanel header="Financial">
-                    <FormFinancial pengajuan={formPengajuan} onSubmitSuccess={handleNextTab}/>
+                    <FormFinancial pengajuan={formPengajuan} onSubmitSuccess={handleNextTab} />
                 </TabPanel>
                 <TabPanel header="Survey">
-                    <FormSurvey pengajuan={formPengajuan} onSubmitSuccess={handleNextTab}/>
+                    <FormSurvey pengajuan={formPengajuan} onSubmitSuccess={handleNextTab} />
                 </TabPanel>
                 <TabPanel header="Aspek Form">
-                    <FormAspek pengajuan={formPengajuan} onSubmitSuccess={handleNextTab}/>
+                    <FormAspek pengajuan={formPengajuan} onSubmitSuccess={handleNextTab} />
                 </TabPanel>
                 <TabPanel header="5C">
-                    <FormLimaC pengajuan={formPengajuan}/>
+                    <FormLimaC pengajuan={formPengajuan} />
                 </TabPanel>
             </TabView>
         </div>

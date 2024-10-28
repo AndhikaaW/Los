@@ -10,20 +10,20 @@ class Jaminan extends Model
     use HasFactory;
     protected $table = 'trx_jaminan';
     protected $fillable = [
+        'id',
         'no_pengajuan',
         'jenisAgunan',
-        'merek',
-        'buktiHakMilik',
-        'namaPemilikJaminan',
-        'lokasiAgunan',
+        'namaPemilikJaminan', 
         'nilaiTransaksi',
-        'jenisPengikatan',
-        'tipe',
-        'tahunPembuatan',
-        'noAgunan',
-        'hubunganDenganPemilik',
-        'informasiTambahan',
-        'asuransi',
+        'nilaiPasar',
+        'tanggalPembuatan',
+        'keterangan',
+        'jenis',
+        'noRekening',
+        'noBilyet',
+        'nominal',
+        'atasNama',
+        'alamat'
     ];
     public $timestamps = false;
 
@@ -31,20 +31,20 @@ class Jaminan extends Model
     {
         return $this->belongsTo(RefJenisAgunan::class, 'jenisAgunan', 'Kode');
     }
-    public function RefHakMilik()
-    {
-        return $this->belongsTo(RefHakMilik::class, 'buktiHakMilik', 'Kode');
-    }
-    public function RefTipe()
-    {
-        return $this->belongsTo(RefTipe::class, 'tipe', 'Kode');
-    }   
-    public function RefHubPemilik()
-    {
-        return $this->belongsTo(RefHubPemilik::class, 'hubunganDenganPemilik', 'Kode');
-    }
-    public function RefJenisPengikatan()
-    {
-        return $this->belongsTo(RefJenisPengikatan::class, 'jenisPengikatan', 'Kode');
-    }
+    // public function RefHakMilik()
+    // {
+    //     return $this->belongsTo(RefHakMilik::class, 'buktiHakMilik', 'Kode');
+    // }
+    // public function RefTipe()
+    // {
+    //     return $this->belongsTo(RefTipe::class, 'tipe', 'Kode');
+    // }   
+    // public function RefHubPemilik()
+    // {
+    //     return $this->belongsTo(RefHubPemilik::class, 'hubunganDenganPemilik', 'Kode');
+    // }
+    // public function RefJenisPengikatan()
+    // {
+    //     return $this->belongsTo(RefJenisPengikatan::class, 'jenisPengikatan', 'Kode');
+    // }
 }

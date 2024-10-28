@@ -131,8 +131,8 @@ const produk = () => {
                     rowClassName={() => `hover:bg-gray-100`}
                     onRowClick={(e) => { router.push(`/pemohon/detail/${e.data.Cif}/analisakredit/${e.data.no_pengajuan}`); }}
                     >
-                    <Column field="no_pengajuan" header="No Pengajuan" />
-                    <Column field="Cif" header="CIF" />
+                    <Column field="no_pengajuan" header="No Pengajuan" className='text-blue-600'/>
+                    <Column field="Cif" header="CIF"/>
                     <Column field="pengajuan" header="Pengajuan" />
                     <Column field="ref_bidang_usaha.Keterangan" header="Bidang Usaha" />
                     <Column field="ref_sifat_kredit.Keterangan" header="Sifat Kredit" />

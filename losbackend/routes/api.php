@@ -163,3 +163,5 @@ Route::put('/updatepengajuanbyid/{no_pengajuan}', [ProdukController::class, 'upd
 Route::put('/updatestatuspengajuanbyid/{no_pengajuan}', [ProdukController::class, 'updateStatusPengajuan']); //update status pengajuan
 Route::delete('/deleteprodukbyid/{NomorRekening}', [ProdukController::class, 'destroy']); //delete data
 Route::get('/getlastpengajuan', [ProdukController::class, 'getLastPengajuan']); //get last pengajuan
+
+Route::get('/check-cif/{cif}', [PemohonController::class, 'checkCif']);

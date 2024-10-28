@@ -14,6 +14,7 @@ class Produk extends Model
         'no_pengajuan',
         'Cif',
         'pengajuan',
+        'sektor_ekonomi',
         'bidang_usaha',
         'NomorRekening',
         'plafon_kredit',
@@ -55,7 +56,7 @@ class Produk extends Model
 
     public function jaminan()
     {
-        return $this->hasOne(Jaminan::class, 'no_pengajuan', 'no_pengajuan');
+        return $this->hasMany(Jaminan::class, 'no_pengajuan', 'no_pengajuan');
     }
 
 
@@ -63,6 +64,11 @@ class Produk extends Model
     public function RefBidangUsaha()
     {
         return $this->belongsTo(RefBidangUsaha::class, 'bidang_usaha', 'Kode');
+    }
+
+    public function RefSektorEkonomi()
+    {
+        return $this->belongsTo(RefSektorEkonomi::class, 'sektor_ekonomi', 'Kode');
     }
 
     public function RefSifatKredit()

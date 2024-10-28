@@ -39,45 +39,52 @@ const Dashboard = () => {
         <div>
             <h4><strong>Overview</strong></h4>
             <div className='grid justify-content-between'>
-                <div className="col-12 lg:col-6 xl:col-4 ">
-                    <div className="card w-12 mb-0 ">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Diajukan</span>
-                                <div className="text-900 font-medium text-xl">{statusCount[1] || 0}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <i className="pi pi-file-pdf text-blue-500 text-xl" />
+                <div className="col-4 lg:col-6 xl:col-4 ">
+                    <div className="border-round w-12 mb-0 bg-white border-1 border-blue-300">
+                        <span className="block border-round-top p-3 bg-blue-100 text-500 font-medium mb-3">Diajukan</span>
+                        <div className="mb-3 p-2">
+                            <div className="text-900 font-medium text-xl flex justify-content-between align-items-center">
+                                <div className='ml-4'>
+                                    {statusCount[1] || 0}
+                                </div>
+                                <div className="hidden md:flex align-items-center justify-content-center bg-blue-100 border-round mr-2" style={{ width: '3rem', height: '3rem' }}>
+                                    <img src="/demo/images/approvel/diajukan.png" alt="diajukan" width={30} height={30} />
+                                </div>
                             </div>
                         </div>
                         {/* <span className="text-green-500 font-medium">24 new </span>
                         <span className="text-500">since last visit</span> */}
                     </div>
                 </div>
-                <div className="col-12 lg:col-6 xl:col-4">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Disetujui</span>
-                                <div className="text-900 font-medium text-xl">{statusCount[2] || 0}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <i className="pi pi-check-circle text-cyan-500 text-xl" />
+
+                <div className="col-4 lg:col-6 xl:col-4">
+                    <div className="border-round w-12 mb-0 bg-white border-1 border-green-300">
+                        <span className="block border-round-top p-3 bg-green-100 text-500 font-medium mb-3">Disetujui</span>
+                        <div className="mb-3 p-2">
+                            <div className="text-900 font-medium text-xl flex justify-content-between align-items-center">
+                                <div className='ml-4'>
+                                    {statusCount[2] || 0}
+                                </div>
+                                <div className="hidden md:flex align-items-center justify-content-center bg-green-100 border-round mr-2" style={{ width: '3rem', height: '3rem' }}>
+                                    <img src="/demo/images/approvel/disetujui.png" alt="disetujui" width={30} height={30} />
+                                </div>
                             </div>
                         </div>
                         {/* <span className="text-green-500 font-medium">%52+ </span>
                         <span className="text-500">since last week</span> */}
                     </div>
                 </div>
-                <div className="col-12 lg:col-6 xl:col-4">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Ditolak</span>
-                                <div className="text-900 font-medium text-xl">{statusCount[3] || 0}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <i className="pi pi-times-circle text-orange-500 text-xl" />
+                <div className="col-4 lg:col-6 xl:col-4">
+                    <div className="border-round w-12 mb-0 bg-white border-1 border-red-300">
+                        <span className="block border-round-top p-3 bg-red-100 text-500 font-medium mb-3">Ditolak</span>
+                        <div className="mb-3 p-2">
+                            <div className="text-900 font-medium text-xl flex justify-content-between align-items-center">
+                                <div className='ml-4'>
+                                    {statusCount[3] || 0}
+                                </div>
+                                <div className="hidden md:flex align-items-center justify-content-center bg-red-100 border-round mr-2" style={{ width: '3rem', height: '3rem' }}>
+                                    <img src="/demo/images/approvel/ditolak.png" alt="ditolak" width={30} height={30} />
+                                </div>
                             </div>
                         </div>
                         {/* <span className="text-green-500 font-medium">520 </span>

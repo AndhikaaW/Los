@@ -15,12 +15,12 @@ import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { FileUpload } from 'primereact/fileupload';
 
 const EditFormPemohon = () => {
     const router = useRouter();
     const [activeIndex, setActiveIndex] = useState(0);
     const [pemohon, setPemohon] = useState<any>([]);
-    const [sektorEkonomi, setSektorEkonomi] = useState<any>([]);
     const [statusTempatUsaha, setStatusTempatUsaha] = useState<any>([]);
     const [statusTempatTinggal, setStatusTempatTinggal] = useState<any>([]);
     const [profesiSampingan, setProfesiSampingan] = useState<any>([]);
@@ -88,7 +88,7 @@ const EditFormPemohon = () => {
         //form alamat pemohon
         Alamat: '', kode_pos: '', provinsi: '', kecamatan: '', telepon: '', status_tempat_tinggal: '', kota: '', kelurahan: '', fax: '', lama_tinggal: '',
         //form data usaha
-        nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', sektor_ekonomi: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
+        nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
     });
     const resetForm = () => {
         setFormData({
@@ -97,7 +97,7 @@ const EditFormPemohon = () => {
             //form alamat pemohon
             Alamat: '', kode_pos: '', provinsi: '', kecamatan: '', telepon: '', status_tempat_tinggal: '', kota: '', kelurahan: '', fax: '', lama_tinggal: '',
             //form data usaha
-            nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', sektor_ekonomi: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
+            nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
         });
     };
 
@@ -267,7 +267,6 @@ const EditFormPemohon = () => {
             }
         };
 
-        fetchData(API_ENDPOINTS.GETSEKTOREKONOMI, setSektorEkonomi);
         fetchData(API_ENDPOINTS.GETSTATUSUSAHA, setStatusTempatUsaha);
         fetchData(API_ENDPOINTS.GETPROFESISAMPAINGAN, setProfesiSampingan);
         fetchData(API_ENDPOINTS.GETSTATUSTEMPATTINGGAL, setStatusTempatTinggal);
@@ -358,7 +357,6 @@ const EditFormPemohon = () => {
 
 
 
-    const sektorEkonomiOptions = sektorEkonomi.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const statusTempatUsahaOptions = statusTempatUsaha.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const profesiSampinganOptions = profesiSampingan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const statusTempatTinggalOptions = statusTempatTinggal.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
@@ -394,6 +392,61 @@ const EditFormPemohon = () => {
     };
 
     const paginatedPemohon = filteredPemohon.slice(first, first + rows);
+
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleImageChange = (event: any) => {
+        const file = event.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setSelectedImage(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    const handleUpload = async () => {
+        if (!selectedImage) {
+            return;
+        }
+
+        setIsUploading(true);
+
+        try {
+            setFormData(prevData => ({
+                ...prevData,
+                foto_ktp: selectedImage
+            }));
+            // const response = await fetch('/api/upload-foto-ktp', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({ image: selectedImage }),
+            // });
+
+            // if (response.ok) {
+            //     const result = await response.json();
+                
+            //     // toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Foto KTP berhasil diunggah', life: 3000 });
+            // } else {
+            //     throw new Error('Gagal mengunggah foto');
+            // }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            // toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengunggah foto KTP', life: 3000 });
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedImage) {
+            handleUpload();
+        }
+    }, [selectedImage]);
     console.log(formData)
     console.log(visible)
     return (
@@ -475,6 +528,21 @@ const EditFormPemohon = () => {
                                     <label className="block text-900 font-medium mb-2">Profesi Sampingan</label>
                                     {/* <InputText required name='profesi_sampingan' type="text" placeholder='Pilih profesi sampingan' className="p-inputtext p-component w-full" value={formData.profesi_sampingan} onChange={handleChange} /> */}
                                     <Dropdown name='profesi_sampingan' value={formData.profesi_sampingan} onChange={handleChange} options={profesiSampinganOptions} placeholder="Pilih profesi sampingan" className="w-full md:w-full" />
+                                </div>
+                                <div className="mb-2">
+                                    <label className="block text-900 font-medium mb-2">Foto KTP</label>
+                                    <FileUpload
+                                        name="foto_ktp"
+                                        accept="image/*"
+                                        maxFileSize={1000000}
+                                        onSelect={handleImageChange}
+                                        emptyTemplate={<p className="m-0">Seret dan lepas file KTP di sini atau klik untuk memilih.</p>}
+                                        chooseLabel="Pilih"
+                                        uploadLabel="Unggah"
+                                        cancelLabel="Batal"
+                                        customUpload
+                                        uploadHandler={handleUpload}
+                                    />
                                 </div>
                             </div>
                             <div className="col-12 md:col-6">
@@ -643,10 +711,6 @@ const EditFormPemohon = () => {
                                 </div>
                             </div>
                             <div className="col-12 md:col-6 mb-4">
-                                <div className="mb-2">
-                                    <label className="block text-900 font-medium mb-2">Sektor Ekonomi OJK</label>
-                                    <Dropdown name='sektor_ekonomi' value={formData.sektor_ekonomi} onChange={handleChange} options={sektorEkonomiOptions} placeholder="Pilih sektor ekonomi" className="w-full md:w-full" />
-                                </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Jumlah Karyawan</label>
                                     <div className='flex gap-2 align-items-center'>

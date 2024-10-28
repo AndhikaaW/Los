@@ -14,12 +14,13 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 import { useRouter } from 'next/navigation';
+import { FileUpload } from 'primereact/fileupload';
+import { Avatar } from 'primereact/avatar';
 
 const FormPemohon = () => {
     const router = useRouter();
     const [activeIndex, setActiveIndex] = useState(0);
     const [pemohon, setPemohon] = useState<any>([]);
-    const [sektorEkonomi, setSektorEkonomi] = useState<any>([]);
     const [statusTempatUsaha, setStatusTempatUsaha] = useState<any>([]);
     const [statusTempatTinggal, setStatusTempatTinggal] = useState<any>([]);
     const [profesiSampingan, setProfesiSampingan] = useState<any>([]);
@@ -57,7 +58,9 @@ const FormPemohon = () => {
         //form alamat pemohon
         Alamat: '', kode_pos: '', provinsi: '', kecamatan: '', telepon: '', status_tempat_tinggal: '', kota: '', kelurahan: '', fax: '', lama_tinggal: '',
         //form data usaha
-        nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', sektor_ekonomi: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
+        nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: '',
+        //form foto ktp
+        pictures: ''
     });
     const resetForm = () => {
         setFormData({
@@ -68,7 +71,9 @@ const FormPemohon = () => {
             //form alamat pemohon
             Alamat: '', kode_pos: '', provinsi: '', kecamatan: '', telepon: '', status_tempat_tinggal: '', kota: '', kelurahan: '', fax: '', lama_tinggal: '',
             //form data usaha
-            nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', sektor_ekonomi: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: ''
+            nama_usaha: '', tanggal_mulai_usaha: '', status_tempat_usaha: '', surat_keterangan_usaha: '', jumlah_karyawan: '', jarak_lokasi_usaha: '', masa_laku: '', alamat_usaha: '', kode_pos_usaha: '', provinsi_usaha: '', kecamatan_usaha: '', kota_usaha: '', kelurahan_usaha: '',
+            //form foto ktp
+            pictures: ''
         });
     };
 
@@ -106,8 +111,6 @@ const FormPemohon = () => {
                 setIsLoading(false);
             }
         };
-
-        fetchData(API_ENDPOINTS.GETSEKTOREKONOMI, setSektorEkonomi);
         fetchData(API_ENDPOINTS.GETSTATUSUSAHA, setStatusTempatUsaha);
         fetchData(API_ENDPOINTS.GETPROFESISAMPAINGAN, setProfesiSampingan);
         fetchData(API_ENDPOINTS.GETSTATUSTEMPATTINGGAL, setStatusTempatTinggal);
@@ -149,9 +152,6 @@ const FormPemohon = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // if (!validateForm()) {
-        //   return;
-        // }
         if (!formData.Cif) {
             window.alert('Cif tidak boleh kosong!');
             setIsLoading(false);
@@ -159,6 +159,15 @@ const FormPemohon = () => {
         }
         setIsLoading(true);
         try {
+            // Periksa apakah CIF sudah ada
+            const checkResponse = await axios.get(API_ENDPOINTS.CHECKCIF(formData.Cif));
+            if (checkResponse.data.exists) {
+                window.alert('CIF sudah ada dalam database!');
+                setIsLoading(false);
+                return;
+            }
+
+            // Jika CIF belum ada, lanjutkan dengan pengiriman data
             const response = await axios.post(API_ENDPOINTS.PEMOHON, formData);
             console.log('Response from API:', response.data);
             setIsLoading(false);
@@ -308,7 +317,6 @@ const FormPemohon = () => {
     const selectedVillageTemplate = (option: any, props: any) => template(option, props, props.placeholder);
     const villageOptionTemplate = (option: any) => template(option, {}, '');
 
-    const sektorEkonomiOptions = sektorEkonomi.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const statusTempatUsahaOptions = statusTempatUsaha.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const profesiSampinganOptions = profesiSampingan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const statusTempatTinggalOptions = statusTempatTinggal.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
@@ -346,8 +354,66 @@ const FormPemohon = () => {
 
     const paginatedPemohon = filteredPemohon.slice(first, first + rows);
     console.log(formData)
+
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleImageChange = (event: any) => {
+        const file = event.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setSelectedImage(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    const handleUpload = async () => {
+        if (!selectedImage) {
+            return;
+        }
+
+        setIsUploading(true);
+
+        try {
+            setFormData(prevData => ({
+                ...prevData,
+                foto_ktp: selectedImage
+            }));
+            // const response = await fetch('/api/upload-foto-ktp', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({ image: selectedImage }),
+            // });
+
+            // if (response.ok) {
+            //     const result = await response.json();
+                
+            //     // toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Foto KTP berhasil diunggah', life: 3000 });
+            // } else {
+            //     throw new Error('Gagal mengunggah foto');
+            // }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            // toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengunggah foto KTP', life: 3000 });
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedImage) {
+            handleUpload();
+        }
+    }, [selectedImage]);
+    console.log(selectedImage)
+
     return (
         <div className="surface-card shadow-2 p-4 border-round">
+            <h4 className='text-2xl font-bold mb-4'>Tambah Data Pemohon</h4>
             <form onSubmit={handleSubmit}>
                 <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                     <TabPanel header="Data Pemohon">
@@ -425,6 +491,21 @@ const FormPemohon = () => {
                                     <label className="block text-900 font-medium mb-2">Profesi Sampingan</label>
                                     <Dropdown name='profesi_sampingan' value={formData.profesi_sampingan} onChange={handleChange} options={profesiSampinganOptions} placeholder="Pilih profesi sampingan" className="w-full md:w-full" />
                                 </div>
+                                <div className="mb-2">
+                                    <label className="block text-900 font-medium mb-2">Foto KTP</label>
+                                    <FileUpload
+                                        name="foto_ktp"
+                                        accept="image/*"
+                                        maxFileSize={1000000}
+                                        onSelect={handleImageChange}
+                                        emptyTemplate={<p className="m-0">Seret dan lepas file KTP di sini atau klik untuk memilih.</p>}
+                                        chooseLabel="Pilih"
+                                        uploadLabel="Unggah"
+                                        cancelLabel="Batal"
+                                        customUpload
+                                        uploadHandler={handleUpload}
+                                    />
+                                </div>
                             </div>
                             <div className="col-12 md:col-6">
                                 <div className="mb-2">
@@ -464,11 +545,11 @@ const FormPemohon = () => {
                         <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Alamat pemohon*/}
                             <legend className="text-xl font-bold">Alamat Pemohon</legend>
                             <div className="col-12 grid md:justify-content-between ">
-                                <div className=" col-12 md:col-10">
+                                <div className=" col-4 md:col-10">
                                     <label className="block text-900 font-medium mb-2">Alamat</label>
                                     <InputText required name='Alamat' type="text" placeholder='Isikan alamat rumah/lokasi tempat usaha/kantor debitur' className="p-inputtext p-component w-full" value={formData.Alamat} onChange={handleChange} />
                                 </div>
-                                <div className=" col-12 md:col-2">
+                                <div className=" col-2 md:col-2">
                                     <label className="block text-900 font-medium mb-2">Kode Pos</label>
                                     <InputText required name='kode_pos' type="number" placeholder='contoh 61254' className="p-inputtext p-component w-full" value={formData.kode_pos} onChange={handleChange} />
                                 </div>
@@ -568,10 +649,6 @@ const FormPemohon = () => {
                                 </div>
                             </div>
                             <div className="col-12 md:col-6 mb-4">
-                                <div className="mb-2">
-                                    <label className="block text-900 font-medium mb-2">Sektor Ekonomi OJK</label>
-                                    <Dropdown name='sektor_ekonomi' value={formData.sektor_ekonomi} onChange={handleChange} options={sektorEkonomiOptions} placeholder="Pilih sektor ekonomi" className="w-full md:w-full" />
-                                </div>
                                 <div className="mb-2">
                                     <label className="block text-900 font-medium mb-2">Jumlah Karyawan</label>
                                     <div className='flex gap-2 align-items-center'>
@@ -714,6 +791,32 @@ const FormPemohon = () => {
                     </TabPanel>
                 </TabView>
             </form>
+            {/* <div className="mt-4 flex flex-column align-items-center" style={{ maxWidth: '350px' }}>
+                <h3>Unggah Gambar</h3>
+                <FileUpload
+                    mode="basic"
+                    name="demo[]"
+                    accept="image/*"
+                    maxFileSize={1000000}
+                    onSelect={handleImageChange}
+                    auto
+                    chooseLabel="Pilih Gambar"
+                />
+                <div className="mt-3 flex justify-content-center align-items-center" style={{ width: '200px', height: '200px' }}>
+                    <Avatar
+                        image={selectedImage || formData.pictures || '/path/to/default/image.png'}
+                        shape="circle"
+                        size="xlarge"
+                    />
+                </div>
+                <Button
+                    label={isUploading ? 'Mengunggah...' : 'Simpan Perubahan'}
+                    icon="pi pi-check"
+                    className="mt-3"
+                    onClick={handleImageUpload}
+                    disabled={isUploading || !selectedImage}
+                />
+            </div> */}
         </div>
     )
 }

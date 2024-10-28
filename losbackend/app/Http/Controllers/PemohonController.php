@@ -10,6 +10,8 @@ use App\Models\RefStatusUsaha;
 use App\Models\RegisterNasabah;
 use App\Models\SektorEkonomi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PemohonController extends Controller
 {
@@ -168,7 +170,6 @@ class PemohonController extends Controller
         $pemohon->tanggal_mulai_usaha = $req->input('tanggal_mulai_usaha');
         $pemohon->status_tempat_usaha = $req->input('status_tempat_usaha');
         $pemohon->surat_keterangan_usaha = $req->input('surat_keterangan_usaha');
-        $pemohon->sektor_ekonomi = $req->input('sektor_ekonomi');
         $pemohon->jumlah_karyawan = $req->input('jumlah_karyawan');
         $pemohon->jarak_lokasi_usaha = $req->input('jarak_lokasi_usaha');
         $pemohon->masa_laku = $req->input('masa_laku');
@@ -178,6 +179,7 @@ class PemohonController extends Controller
         $pemohon->kecamatan_usaha = $req->input('kecamatan_usaha');
         $pemohon->kota_usaha = $req->input('kota_usaha');
         $pemohon->kelurahan_usaha = $req->input('kelurahan_usaha');
+        $pemohon->foto_ktp = $req->input('foto_ktp');
         $pemohon->save();
         return $pemohon;
     }
@@ -194,7 +196,7 @@ class PemohonController extends Controller
     }
     public function index()
     {
-        $data = Pemohon::with(["Produk.LimaC","Produk.Financial","Produk.aspekForm","Produk.jaminan","Produk.survey","RefProfesiSampingan","RefStatusTempatTinggal","RefStatusUsaha","RefSektorEkonomi"])
+        $data = Pemohon::with(["Produk.LimaC","Produk.Financial","Produk.aspekForm","Produk.jaminan","Produk.survey","RefProfesiSampingan","RefStatusTempatTinggal","RefStatusUsaha"])
         ->get();
         return response()->json($data);
     }
@@ -213,10 +215,6 @@ class PemohonController extends Controller
             'Produk.jaminan' => function ($query) {
                 $query->with([
                     'RefJenisAgunan', 
-                    'RefHakMilik', 
-                    'RefTipe', 
-                    'RefJenisPengikatan', 
-                    'RefHubPemilik'
                 ]);
             }, 
             'Produk.survey' => function ($query) {
@@ -226,7 +224,6 @@ class PemohonController extends Controller
             'RefProfesiSampingan', 
             'RefStatusTempatTinggal', 
             'RefStatusUsaha', 
-            'RefSektorEkonomi', 
             'Produk.RefSifatKredit', 
             'Produk.RefJenisPermohonan', 
             'Produk.RefJenisAngsuran', 
@@ -268,7 +265,6 @@ class PemohonController extends Controller
             'tanggal_mulai_usaha' => 'required|date',
             'status_tempat_usaha' => 'required|string',
             'surat_keterangan_usaha' => 'required|string',
-            'sektor_ekonomi' => 'required|string',
             'jumlah_karyawan' => 'required|numeric',
             'jarak_lokasi_usaha' => 'required|string',
             'masa_laku' => 'required|date',
@@ -278,6 +274,7 @@ class PemohonController extends Controller
             'kecamatan_usaha' => 'required|string',
             'kota_usaha' => 'required|string',
             'kelurahan_usaha' => 'required|string',
+            'foto_ktp' => 'required|string',
         ]);
 
         $pemohon->update($validatedData);
@@ -290,5 +287,11 @@ class PemohonController extends Controller
         $pemohon->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function checkCif($cif)
+    {
+        $pemohon = Pemohon::where('Cif', $cif)->first();
+        return response()->json(['exists' => !!$pemohon]);
     }
 }

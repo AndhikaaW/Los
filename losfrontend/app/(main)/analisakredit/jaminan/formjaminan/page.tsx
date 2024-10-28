@@ -10,51 +10,94 @@ import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 import axios from 'axios';
 import SearchRekening from '@/app/(full-page)/component/searchRekening/page';
 import { Dialog } from 'primereact/dialog';
+import KendaraanBermotorPage from '../jenis_agunan/Kendaraan Bermotor/page';
+import SBIPage from '../jenis_agunan/SBI/page';
+import TabunganDepositoKoperasiBankLainPage from '../jenis_agunan/Tabungan Deposito Koperasi Bank Lain/page';
+import PersediaanBarangPage from '../jenis_agunan/Persediaan Barang/page';
+import PerhiasanEmasDanLogamMuliaPage from '../jenis_agunan/Perhiasan Emas dan Logam Mulia/page';
+import SertifikatHajiPage from '../jenis_agunan/Sertifikat Haji/page';
+import TanahDanBangunanPage from '../jenis_agunan/Tanah dan Bangunan/page';
+import TabunganDepositoKoperasiYBSPage from '../jenis_agunan/Tabungan Deposito Koperasi YBS/page';
+import TanpaAgunanPage from '../jenis_agunan/Tanpa Agunan/page';
 
 
 const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitSuccess: () => void }) => {
     const [visible, setVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [jenisAgunan, setjenisAgunan] = useState<any>([]);
-    const [tipe, setTipe] = useState<any>([]);
-    const [hubunganPemilik, setHubunganPemilik] = useState<any>([]);
-    const [hakMilik, setHakMilik] = useState<any>([]);
-    const [jenisPengikatan, setJenisPengikatan] = useState<any>([]);
+    // const [tipe, setTipe] = useState<any>([]);
+    // const [hubunganPemilik, setHubunganPemilik] = useState<any>([]);
+    // const [hakMilik, setHakMilik] = useState<any>([]);
+    // const [jenisPengikatan, setJenisPengikatan] = useState<any>([]);
     const [formPengajuan] = useState<any>(pengajuan);
+
+    const fetchPemohon = async () => {
+        try {
+            const response = await axios.get(API_ENDPOINTS.GETPEMOHONBYCIF(formPengajuan?.Cif));
+            const pemohonData = response.data;
+            // console.log(pemohonData)
+            setformJaminan((prevState: any) => ({
+                ...prevState,
+                namaPemilikJaminan: pemohonData.Nama
+            }));
+        } catch (error) {
+            console.error('Error mengambil data pemohon:', error);
+        }
+    };
     const [formJaminan, setformJaminan] = useState<any>({
         no_pengajuan: formPengajuan?.no_pengajuan || '',
+        cif: formPengajuan?.Cif || '',
+        tanggalPembuatan: '',
         jenisAgunan: '',
-        merek: '',
-        buktiHakMilik: '',
-        namaPemilikJaminan: '',
-        lokasiAgunan: '',
-        nilaiTransaksi: '',
-        jenisPengikatan: '',
-        tipe: '',
-        tahunPembuatan: '',
-        noAgunan: '',
-        hubunganDenganPemilik: '',
-        informasiTambahan: '',
-        asuransi: ''
+        nilaiPasar:'',
+        nilaiYangDiagunkan:''
     });
-    const resetForm = () => { 
+    // console.log(formJaminan)
+    const resetForm = () => {
         setformJaminan({
             no_pengajuan: formPengajuan?.no_pengajuan || '',
+            cif: formPengajuan?.Cif || '',
+            tanggalPembuatan: '',
             jenisAgunan: '',
-            merek: '',
-            buktiHakMilik: '',
-            namaPemilikJaminan: '',
-            lokasiAgunan: '',
-            nilaiTransaksi: '',
-            jenisPengikatan: '',
-            tipe: '',
-            tahunPembuatan: '',
-            noAgunan: '',
-            hubunganDenganPemilik: '',
-            informasiTambahan: '',
-            asuransi: ''
+            nilaiPasar:'',
+            nilaiYangDiagunkan:''
         });
     };
+    
+    const [formJaminanList, setFormJaminanList] = useState<any[]>([
+        {
+            mainForm: {
+                ...formJaminan,
+                namaPemilikJaminan: ''
+            },
+            specificForm: {
+                jenis: '',
+                noRekening: '',
+                noBilyet: '',
+                nominal: '',
+                atasNama: '',
+                alamat: '',
+                keterangan: ''
+            }
+        }
+    ]);
+
+    useEffect(() => {
+        fetchPemohon();
+    }, []);
+
+    useEffect(() => {
+        if (formJaminan.namaPemilikJaminan) {
+            setFormJaminanList(prevList => prevList.map(item => ({
+                ...item,
+                mainForm: {
+                    ...item.mainForm,
+                    namaPemilikJaminan: formJaminan.namaPemilikJaminan
+                }
+                
+            })));
+        }
+    }, [formJaminan.namaPemilikJaminan]);
 
     useEffect(() => {
         const fetchOptions = async (endpoint: any, setter: any) => {
@@ -66,10 +109,10 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
             }
         };
         fetchOptions(API_ENDPOINTS.GETJENISAGUNAN, setjenisAgunan);
-        fetchOptions(API_ENDPOINTS.GETTIPE, setTipe);
-        fetchOptions(API_ENDPOINTS.GETHAKMILIK, setHakMilik);
-        fetchOptions(API_ENDPOINTS.GETJENISPENGIKATAN, setJenisPengikatan);
-        fetchOptions(API_ENDPOINTS.GETHUBUNGANPEMILIK, setHubunganPemilik);
+        // fetchOptions(API_ENDPOINTS.GETTIPE, setTipe);
+        // fetchOptions(API_ENDPOINTS.GETHAKMILIK, setHakMilik);
+        // fetchOptions(API_ENDPOINTS.GETJENISPENGIKATAN, setJenisPengikatan);
+        // fetchOptions(API_ENDPOINTS.GETHUBUNGANPEMILIK, setHubunganPemilik);
     },
         []);
     const options = (data: any) => data.map((item: any, index: any) => ({
@@ -77,91 +120,147 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
         value: item.Kode
     }));
     const JenisAgunanOptions = options(jenisAgunan);
-    const TipeOptions = options(tipe);
-    const HakMilikOptions = options(hakMilik);
-    const HubunganPemilikOptions = options(hubunganPemilik);
-    const JenisPengikatanOptions = options(jenisPengikatan);
+    // const TipeOptions = options(tipe);
+    // const HakMilikOptions = options(hakMilik);
+    // const HubunganPemilikOptions = options(hubunganPemilik);
+    // const JenisPengikatanOptions = options(jenisPengikatan);
 
 
-    const handleInputChange = async (e: any) => {
-        setformJaminan((prevData: any) => ({
-            ...prevData,
-            [e.target.name]: e.target.value,
-        }));
+    const getEmptyForm = () => ({
+        mainForm: {
+            no_pengajuan: formPengajuan?.no_pengajuan || '',
+            cif: formPengajuan?.Cif || '',
+            namaPemilikJaminan: formJaminan?.namaPemilikJaminan || '',
+            tanggalPembuatan: formJaminan?.tanggalPembuatan || '',
+            jenisAgunan: '',
+            nilaiPasar: '',
+            nilaiYangDiagunkan: '',
+        },
+        specificForm: {
+            jenis: '',
+            noRekening: '',
+            noBilyet: '',
+            nominal: '',
+            atasNama: '',
+            alamat: '',
+            keterangan: ''
+        }
+    });
+
+    const handleDuplicateForm = () => {
+        const newForm = getEmptyForm();
+        setFormJaminanList([...formJaminanList, newForm]);
+    };
+
+    const handleInputChange = async (e: any, index: number) => {
+        const { name, value } = e.target;
+        const updatedForms = [...formJaminanList];
+        updatedForms[index] = {
+            ...updatedForms[index],
+            mainForm: {
+                ...updatedForms[index].mainForm,
+                [name]: value,
+            }
+        };
+
+        if (name === 'jenisAgunan') {
+            updatedForms[index].specificForm = {
+                jenis: '',
+                noRekening: '',
+                noBilyet: '',
+                nominal: '',
+                atasNama: '',
+                alamat: '',
+                keterangan: ''
+            };
+        }
+
+        setFormJaminanList(updatedForms);
+    };
+
+    const handleSpecificFormChange = (index: number, specificFormData: any) => {
+        const updatedForms = [...formJaminanList];
+        updatedForms[index].specificForm = {
+            ...updatedForms[index].specificForm,
+            ...specificFormData
+        };
+        setFormJaminanList(updatedForms);
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (formJaminan.no_pengajuan === "") {
-            alert("No Pengajuan tidak tersedia!");
-            return;
-        }
-        setIsLoading(true)
+        setIsLoading(true);
+        // console.log(formJaminanList)
         try {
-            const response = await axios.post(API_ENDPOINTS.ADDJAMINAN, formJaminan);
-            console.log('Response from API:', response.data);
-            setIsLoading(false)
-            setVisible(true)
-            // resetForm();
+            const response = await axios.post(API_ENDPOINTS.ADDJAMINAN, formJaminanList);
+            console.log('Response dari API:', response.data);
+            setIsLoading(false);
+            setVisible(true);
             onSubmitSuccess();
         } catch (error) {
-            console.error('Error submitting form:', error);
-            setIsLoading(false)
+            console.error('Error saat mengirim form:', error);
+            setIsLoading(false);
         }
     };
-    // console.log(formJaminan)
-    
+    // console.log(formJaminanList)
+
     const jaminanFields = [
-        { label: 'Jenis Agunan', type: 'dropdown', options: ['1', '2'], name: 'jenisAgunan' },
-        { label: 'Merek', type: 'input', name: 'merek' },
-        { label: 'Bukti Hak Milik', type: 'dropdown', options: ['1', '2'], name: 'buktiHakMilik' },
+        { label: 'Cif', type: 'input', name: 'cif' },
         { label: 'Nama Pemilik Jaminan', type: 'input', name: 'namaPemilikJaminan' },
-        { label: 'Lokasi Agunan', type: 'input', name: 'lokasiAgunan' },
-        { label: 'Nilai Transaksi', type: 'input', name: 'nilaiTransaksi' },
-        { label: 'Jenis Pengikatan', type: 'dropdown', options: ['1', '2'], name: 'jenisPengikatan' },
-        { label: 'Tipe', type: 'dropdown', options: ['1', '2'], name: 'tipe' },
-        { label: 'Tahun Pembuatan', type: 'calendar', name: 'tahunPembuatan' },
-        { label: 'No. Agunan', type: 'input', name: 'noAgunan' },
-        { label: 'Hubungan dengan Pemilik', type: 'dropdown', options: ['1', '2'], name: 'hubunganDenganPemilik' },
-        { label: 'Informasi Tambahan', type: 'input', name: 'informasiTambahan' },
-        { label: 'Asuransi', type: 'input', name: 'asuransi' }
+        { label: 'Tanggal Pembuatan', type: 'calendar', name: 'tanggalPembuatan' },
+        { label: 'Jenis Agunan', type: 'dropdown', options: ['1', '2'], name: 'jenisAgunan' },
+        { label: 'Nilai Pasar', type: 'input', name: 'nilaiPasar' },
+        { label: 'Nilai Yang Diagunkan', type: 'input', name: 'nilaiYangDiagunkan' },
     ];
 
-    console.log(formJaminan)
+    // console.log(formJaminan)
     return (
         <div className="jaminan-page">
             <div className="surface-card p-4 border-round">
                 <form onSubmit={handleSubmit}>
-                    <fieldset className="mb-4 p-4 border-round">
-                        <legend className="text-xl font-bold">Jaminan</legend>
-                        <div className="grid md:justify-content-between">
-                            <div className="col-12 md:col-6">
-                                {jaminanFields.slice(0, 7).map((field, index) => (
-                                    <div className="my-2" key={index}>
-                                        <label className="block text-900 font-medium mb-2">{field.label}</label>
-                                        {field.type === 'dropdown' && field.name === 'jenisAgunan' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={JenisAgunanOptions} placeholder="Pilih Jenis Agunan" className="w-full md:w-full" />}
-                                        {field.type === 'dropdown' && field.name === 'buktiHakMilik' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={HakMilikOptions} placeholder="Pilih Bukti Hak Milik" className="w-full md:w-full" />}
-                                        {field.type === 'dropdown' && field.name === 'jenisPengikatan' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={JenisPengikatanOptions} placeholder="Pilih Jenis Pengikatan" className="w-full md:w-full" />}
-                                        {field.type === 'input' && <InputText required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} className="w-full" />}
-                                        {field.type === 'calendar' && <InputText required type='date' name={field.name} onChange={handleInputChange} className="w-full" />}
-                                    </div>
-                                ))}
+                    {formJaminanList.map((form, index) => (
+                        <fieldset key={index} className="mb-4 p-4 border-round">
+                            <legend className="text-xl font-bold">Jaminan {index + 1}</legend>
+                            <div className="grid w-full mb-4">
+                                <div className="flex flex-row justify-content-between w-full">
+                                    {jaminanFields.slice(0, 3).map((field, fieldIndex) => (
+                                        <div className="col-12 md:col-4" key={fieldIndex}>
+                                            <label className="block text-900 font-medium mb-2">{field.label}</label>
+                                            {field.type === 'input' && field.name === 'cif' && (<InputText required name={field.name} value={form.mainForm[field.name]} onChange={(e) => handleInputChange(e, index)} className="w-full" disabled />)}
+                                            {field.type === 'input' && field.name === 'namaPemilikJaminan' && (<InputText required name={field.name} value={form.mainForm[field.name]} onChange={(e) => handleInputChange(e, index)} className="w-full" disabled />)}
+                                            {field.type === 'calendar' && <InputText required type='date' name={field.name} onChange={(e) => handleInputChange(e, index)} className="w-full" />}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex flex-row justify-content-between w-full">
+                                    {jaminanFields.slice(3).map((field, fieldIndex) => (
+                                        <div className="col-12 md:col-4" key={fieldIndex}>
+                                            <label className="block text-900 font-medium mb-2">{field.label}</label>
+                                            {field.type === 'dropdown' && field.name === 'jenisAgunan' && <Dropdown required name={field.name} value={form.mainForm[field.name]} onChange={(e) => handleInputChange(e, index)} options={JenisAgunanOptions} placeholder="Pilih Jenis Agunan" className="w-full md:w-full" />}
+                                            {field.type === 'input' && <InputText required name={field.name} value={form.mainForm[field.name]} onChange={(e) => handleInputChange(e, index)} className="w-full" placeholder={`Isikan ${field.label}`} />}
+                                        </div>
+                                    ))}
+                                </div>
+                                {/* </div> */}
                             </div>
-                            <div className="col-12 md:col-6">
-                                {jaminanFields.slice(7).map((field, index) => (
-                                    <div className="my-2" key={index}>
-                                        <label className="block text-900 font-medium mb-2">{field.label}</label>
-                                        {field.type === 'dropdown' && field.name === 'tipe' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={TipeOptions} placeholder="Pilih Tipe" className="w-full md:w-full" />}
-                                        {field.type === 'dropdown' && field.name === 'hubunganDenganPemilik' && <Dropdown required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} options={HubunganPemilikOptions} placeholder="Pilih Hubungan dengan Pemilik" className="w-full md:w-full" />}
-                                        {field.type === 'input' && <InputText required name={field.name} value={formJaminan[field.name]} onChange={handleInputChange} className="w-full" />}
-                                        {field.type === 'calendar' && <InputText required type='date' name={field.name} onChange={handleInputChange} className="w-full" />}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </fieldset>
-                    <div className='flex justify-content-end'>
-                        <div className='flex gap-4'> {/*Button*/}
+                            {/* Render specific agunan forms based on the selected jenisAgunan */}
+                            {form.mainForm.jenisAgunan === 'AG0000001' && <SBIPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                            {form.mainForm.jenisAgunan === 'AG0000002' && <TabunganDepositoKoperasiYBSPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                            {/* {form.mainForm.jenisAgunan === 'AG0000003' && <TabunganDepositoKoperasiBankLainPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />} */}
+                            {/* {form.mainForm.jenisAgunan === 'AG0000004' && <PerhiasanEmasDanLogamMuliaPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />} */}
+                            {/* {form.mainForm.jenisAgunan === 'AG0000005' && <KendaraanBermotorPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />} */}
+                            {/* {form.mainForm.jenisAgunan === 'AG0000006' && <TanahDanBangunanPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />} */}
+                            {form.mainForm.jenisAgunan === 'AG0000007' && <TanpaAgunanPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                            {form.mainForm.jenisAgunan === 'AG0000008' && <PersediaanBarangPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                            {form.mainForm.jenisAgunan === 'AG0000009' && <SertifikatHajiPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                        </fieldset>
+                    ))}
+
+                    <div className='flex justify-content-between'>
+                        <Button type="button" onClick={handleDuplicateForm} className='text-white bg-[#007bff]'>
+                            Tambah Jaminan
+                        </Button>
+                        <div className='flex gap-4'>
                             <Button onClick={resetForm} className=''>Reset</Button>
                             <Button type="submit" className='text-white bg-[#61AB5B] w-auto' disabled={isLoading}>
                                 {isLoading ? (
@@ -171,14 +270,15 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
                                     </div>
                                 ) : (
                                     'Kirim'
-                                )}</Button>
-                            <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
-                                <p className="m-0">
-                                    Terima Kasih telah mengisi form
-                                </p>
-                            </Dialog>
+                                )}
+                            </Button>
                         </div>
                     </div>
+                    <Dialog header="Success" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                        <p className="m-0">
+                            Terima Kasih telah mengisi form
+                        </p>
+                    </Dialog>
                 </form>
             </div>
         </div>

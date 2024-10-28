@@ -1,4 +1,4 @@
-export const api_url = 'http://192.168.200.100:8000/api';
+export const api_url = 'http://192.168.1.74:8000/api';
 // const api_url ='https://e5b1-125-166-8-202.ngrok-free.app/api';
 
 export const API_ENDPOINTS = {
@@ -33,8 +33,8 @@ export const API_ENDPOINTS = {
 
   //jaminan
   ADDJAMINAN: `${api_url}/jaminan`,
-  GETALLJAMINAN: `${api_url}/getalljaminan`,
-  GETJAMINANBYID: (id: string) => `${api_url}/getjaminanbyid/${id}`,
+  // GETALLJAMINAN: `${api_url}/getalljaminan`,
+  // GETJAMINANBYID: (id: string) => `${api_url}/getjaminanbyid/${id}`,
   UPDATEJAMINANBYID: (no_pengajuan: string) => `${api_url}/updatejaminanbyid/${no_pengajuan}`,
   GETJAMINANBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getjaminanbyid/${no_pengajuan}`,
   
@@ -136,4 +136,5 @@ export const API_ENDPOINTS = {
   TAMBAHPROFESISAMPAINGAN: `${api_url}/tambahProfesiSampingan`,
   UPDATEPROFESISAMPAINGAN: (Kode: string) => `${api_url}/updateprofesisampinganbyid/${Kode}`,
   DELETEPROFESISAMPAINGAN: (Kode: string) => `${api_url}/deleteprofesisampinganbyid/${Kode}`,
+  CHECKCIF: (cif: string) => `${api_url}/check-cif/${cif}`,
 };

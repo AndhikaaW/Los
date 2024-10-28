@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Panel } from 'primereact/panel';
 import { Button } from 'primereact/button';
 import formatToRupiah from '@/app/(full-page)/component/formatRupiah/page';
+import { Dialog } from 'primereact/dialog';
 
 interface Location {
     id: string;
@@ -26,6 +27,8 @@ const DetailPemohon = () => {
     const [regenciesUsaha, setRegenciesUsaha] = useState<Location[]>([]);
     const [districtsUsaha, setDistrictsUsaha] = useState<Location[]>([]);
     const [villagesUsaha, setVillagesUsaha] = useState<Location[]>([]);
+    const [showFotoKTPDialog, setShowFotoKTPDialog] = useState(false);
+
     const userStatus = JSON.parse(localStorage.getItem('user-info') || '{}').status;
     const params = useParams();
     const Cif = params?.Cif;
@@ -186,15 +189,15 @@ const DetailPemohon = () => {
         return <div>Memuat...</div>;
     }
 
-    const InfoItem = ({ label, value }: { label: string; value: string }) => (
-        <div className="flex justify-between py-2">
-            <span className="text-gray-600 flex flex-column">
-                <span className='text-gray-800 font-bold'>{label}:</span>
-                <br />
-                {value}
-            </span>
-        </div>
-    );
+    // const InfoItem = ({ label, value }: { label: string; value: string }) => (
+    //     <div className="flex justify-between py-2">
+    //         <span className="text-gray-600 flex flex-column">
+    //             <span className='text-gray-800 font-bold'>{label}:</span>
+    //             <br />
+    //             {value}
+    //         </span>
+    //     </div>
+    // );
 
     const header = (icon: React.ReactNode, title: string) => (
         <div className="flex align-items-center">
@@ -203,71 +206,96 @@ const DetailPemohon = () => {
         </div>
     );
 
+    const InfoItem = ({ label, value }: { label: string; value: any }) => (
+        <div className="flex justify-content-between items-center">
+            <div className='flex-column col-5 text-left'>
+                <span className="text-gray-800 font-bold">{label}</span>
+            </div>
+            <div className='flex-column col-1 text-right'>
+                <span>:</span>
+            </div>
+            <div className='flex-column col-7 text-left'>
+                <span>{value}</span>
+            </div>
+        </div>
+    );
+
     console.log(pemohon);
     return (
         <div className="surface-card shadow-2 border-round p-4">
             <h2 className="text-2xl font-bold mb-4">Detail Debitur</h2>
-            <TabView>
-                <TabPanel header="Pemohon">
-                    <div className="grid">
-                        <div className="col-12 md:col-4">
-                            <div>
-                                <Panel header={header(<User />, "Data Diri Pemohon")}>
-                                    <InfoItem label="CIF" value={pemohon.Cif} />
-                                    <InfoItem label="Nama" value={pemohon.Nama} />
-                                    <InfoItem label="Tempat Lahir" value={pemohon.TempatLahir} />
-                                    <InfoItem label="Tanggal Lahir" value={pemohon.TglLahir} />
-                                    <InfoItem label="Jenis Kelamin" value={pemohon.Kelamin === 'L' ? 'Laki-laki' : 'Perempuan'} />
-                                    <InfoItem label="Status Perkawinan" value={pemohon.StatusPerkawinan} />
-                                    <InfoItem label="KTP" value={pemohon.KTP} />
-                                    <InfoItem label="Nama Ibu Kandung" value={pemohon.nama_ibu_kandung} />
-                                    <InfoItem label="Jumlah Tanggungan" value={pemohon.jumlah_tanggungan + ' Orang'} />
-                                    <InfoItem label="KTP Berlaku" value={pemohon.ktp_berlaku} />
-                                    <InfoItem label="No HP" value={pemohon.no_hp} />
-                                    <InfoItem label="Profesi Sampingan" value={pemohon.ref_profesi_sampingan.Keterangan} />
-                                </Panel>
-                            </div>
-                        </div>
-                        <div className="col-12 md:col-4">
-                            <div>
-                                <Panel header={header(<Home />, "Alamat Pemohon")}>
-                                    <InfoItem label="Alamat" value={pemohon.Alamat} />
-                                    <InfoItem label="Kota/Kabupaten" value={getLocationName(pemohon.kota, regencies)} />
-                                    <InfoItem label="Provinsi" value={getLocationName(pemohon.provinsi, provinces)} />
-                                    <InfoItem label="Kode Pos" value={pemohon.kode_pos} />
-                                    <InfoItem label="Telepon" value={pemohon.telepon} />
-                                    <InfoItem label="Status Tempat Tinggal" value={pemohon.ref_status_tempat_tinggal.Keterangan} />
-                                    <InfoItem label="Kecamatan" value={getLocationName(pemohon.kecamatan, districts)} />
-                                    <InfoItem label="Kelurahan/Desa" value={getLocationName(pemohon.kelurahan, villages)} />
-                                    <InfoItem label="Fax" value={pemohon.fax} />
-                                    <InfoItem label="Lama Tinggal" value={pemohon.lama_tinggal + ' Tahun'} />
-                                </Panel>
-                            </div>
-                        </div>
-
-                        <div className="col-12 md:col-4">
-                            <div>
-                                <Panel header={header(<Briefcase />, "Data Usaha")}>
-                                    <InfoItem label="Nama Usaha" value={pemohon.nama_usaha} />
-                                    <InfoItem label="Tanggal Mulai Usaha" value={pemohon.tanggal_mulai_usaha} />
-                                    <InfoItem label="Status Tempat Usaha" value={pemohon.ref_status_usaha.Keterangan} />
-                                    <InfoItem label="Surat Keterangan Usaha" value={pemohon.surat_keterangan_usaha} />
-                                    <InfoItem label="Sektor Ekonomi" value={pemohon.ref_sektor_ekonomi.Keterangan} />
-                                    <InfoItem label="Jumlah Karyawan" value={pemohon.jumlah_karyawan + ' Orang'} />
-                                    <InfoItem label="Jarak Lokasi Usaha" value={pemohon.jarak_lokasi_usaha + ' Km'} />
-                                    <InfoItem label="Masa Laku" value={pemohon.masa_laku} />
-                                    <InfoItem label="Alamat Usaha" value={pemohon.alamat_usaha} />
-                                    <InfoItem label="Kode Pos Usaha" value={pemohon.kode_pos_usaha} />
-                                    <InfoItem label="Provinsi Usaha" value={getLocationName(pemohon.provinsi_usaha, provincesUsaha)} />
-                                    <InfoItem label="Kota Usaha" value={getLocationName(pemohon.kota_usaha, regenciesUsaha)} />
-                                    <InfoItem label="Kecamatan Usaha" value={getLocationName(pemohon.kecamatan_usaha, districtsUsaha)} />
-                                    <InfoItem label="Kelurahan Usaha" value={getLocationName(pemohon.kelurahan_usaha, villagesUsaha)} />
-                                </Panel>
-                            </div>
-                        </div>
+            <div className="grid p-4">
+                <div className="col-12 md:col-4">
+                    <div>
+                        <Panel header={header(<User />, "Data Diri Pemohon")}>
+                            <InfoItem label="CIF" value={pemohon.Cif} />
+                            <InfoItem label="Nama" value={pemohon.Nama} />
+                            <InfoItem label="Tempat Lahir" value={pemohon.TempatLahir} />
+                            <InfoItem label="Tanggal Lahir" value={pemohon.TglLahir} />
+                            <InfoItem label="Jenis Kelamin" value={pemohon.Kelamin === 'L' ? 'Laki-laki' : 'Perempuan'} />
+                            <InfoItem label="Status Perkawinan" value={pemohon.StatusPerkawinan} />
+                            <InfoItem label="KTP" value={pemohon.KTP} />
+                            <InfoItem label="Nama Ibu Kandung" value={pemohon.nama_ibu_kandung} />
+                            <InfoItem label="Jumlah Tanggungan" value={pemohon.jumlah_tanggungan + ' Orang'} />
+                            <InfoItem label="KTP Berlaku" value={pemohon.ktp_berlaku} />
+                            <InfoItem label="No HP" value={pemohon.no_hp} />
+                            <InfoItem label="Profesi Sampingan" value={pemohon.ref_profesi_sampingan.Keterangan} />
+                            <InfoItem label="Foto KTP" value={<a href="#" onClick={() => setShowFotoKTPDialog(true)}>Lihat Foto KTP</a>} />
+                            <Dialog visible={showFotoKTPDialog} onHide={() => setShowFotoKTPDialog(false)} header="Foto KTP">
+                                <div style={{ width: '600px', height: '400px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #ccc', marginTop: '20px', background: '#ccc' }}>
+                                    {pemohon.foto_ktp ? (
+                                        <img
+                                            src={`${pemohon.foto_ktp}`}
+                                            alt="foto_ktp"
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                    ) : (
+                                        <div className="avatar-fallback">img</div>
+                                    )}
+                                </div>
+                            </Dialog>
+                            
+                        </Panel>
                     </div>
-                </TabPanel>
-            </TabView>
+                </div>
+                <div className="col-12 md:col-4">
+                    <div>
+                        <Panel header={header(<Home />, "Alamat Pemohon")}>
+                            <InfoItem label="Alamat" value={pemohon.Alamat} />
+                            <InfoItem label="Kode Pos" value={pemohon.kode_pos} />
+                            <InfoItem label="Provinsi" value={getLocationName(pemohon.provinsi, provinces)} />
+                            <InfoItem label="Kota/Kabupaten" value={getLocationName(pemohon.kota, regencies)} />
+                            <InfoItem label="Kecamatan" value={getLocationName(pemohon.kecamatan, districts)} />
+                            <InfoItem label="Kelurahan/Desa" value={getLocationName(pemohon.kelurahan, villages)} />
+                            <InfoItem label="Telepon" value={pemohon.telepon} />
+                            <InfoItem label="Fax" value={pemohon.fax} />
+                            <InfoItem label="Status Tempat Tinggal" value={pemohon.ref_status_tempat_tinggal.Keterangan} />
+                            <InfoItem label="Lama Tinggal" value={pemohon.lama_tinggal + ' Tahun'} />
+                        </Panel>
+                    </div>
+                </div>
+
+                <div className="col-12 md:col-4">
+                    <div>
+                        <Panel header={header(<Briefcase />, "Data Usaha")}>
+                            <InfoItem label="Nama Usaha" value={pemohon.nama_usaha} />
+                            <InfoItem label="Tanggal Mulai Usaha" value={pemohon.tanggal_mulai_usaha} />
+                            <InfoItem label="Status Tempat Usaha" value={pemohon.ref_status_usaha.Keterangan} />
+                            <InfoItem label="Surat Keterangan Usaha" value={pemohon.surat_keterangan_usaha} />
+                            <InfoItem label="Jumlah Karyawan" value={pemohon.jumlah_karyawan + ' Orang'} />
+                            <InfoItem label="Jarak Lokasi Usaha" value={pemohon.jarak_lokasi_usaha + ' Km'} />
+                            <InfoItem label="Masa Laku" value={pemohon.masa_laku} />
+                            <InfoItem label="Alamat Usaha" value={pemohon.alamat_usaha} />
+                            <InfoItem label="Kode Pos Usaha" value={pemohon.kode_pos_usaha} />
+                            <InfoItem label="Provinsi Usaha" value={getLocationName(pemohon.provinsi_usaha, provincesUsaha)} />
+                            <InfoItem label="Kota Usaha" value={getLocationName(pemohon.kota_usaha, regenciesUsaha)} />
+                            <InfoItem label="Kecamatan Usaha" value={getLocationName(pemohon.kecamatan_usaha, districtsUsaha)} />
+                            <InfoItem label="Kelurahan Usaha" value={getLocationName(pemohon.kelurahan_usaha, villagesUsaha)} />
+                            {/* <InfoItem label="Foto KTP" value={fotoKtpUrl} /> */}
+                        </Panel>
+                    </div>
+                </div>
+            </div>
         </div >
     );
 };

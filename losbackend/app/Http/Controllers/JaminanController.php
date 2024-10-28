@@ -43,191 +43,87 @@ class JaminanController extends Controller
         $jenisAgunan->delete();
         return response()->json(['message' => 'Data berhasil dihapus']);
     }
-    public function tambahhakmilik(Request $request)
-    {
-        $hakMilik = new RefHakMilik;
-        $kodeTerakhir = RefHakMilik::max('Kode');
-        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $hakMilik->Kode = sprintf('H%07d', $nomorBaru);
-        $hakMilik->Keterangan = $request->input('Keterangan');
-        $hakMilik->save();
-        
-        return response()->json($hakMilik);
-    }
-    public function gethakmilik()
-    {
-        $hakmilik = RefHakMilik::all();
-        return response()->json($hakmilik);
-    }
-    public function updateHakMilik(Request $request, string $id)
-    {
-        $hakMilik = RefHakMilik::where('Kode', $id)->firstOrFail();
-        $hakMilik->update($request->all());
-        return response()->json($hakMilik);
-    }
-    public function deleteHakMilik($id)
-    {
-        $hakMilik = RefHakMilik::where('Kode', $id)->first();
-        if (!$hakMilik) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
-        }
-        $hakMilik->delete();
-        return response()->json(['message' => 'Data berhasil dihapus']);
-    }
-    public function tambahTipe(Request $request)
-    {
-        $tipe = new RefTipe;
-        $kodeTerakhir = RefTipe::max('Kode');
-        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $tipe->Kode = sprintf('T%07d', $nomorBaru);
-        $tipe->Keterangan = $request->input('Keterangan');
-        $tipe->save();
-        
-        return response()->json($tipe);
-    }
-    public function getTipe()
-    {
-        $tipe = RefTipe::all();
-        return response()->json($tipe);
-    }
-    public function updateTipe(Request $request, string $id)
-    {
-        $tipe = RefTipe::where('Kode', $id)->firstOrFail();
-        $tipe->update($request->all());
-        return response()->json($tipe);
-    }
-    public function deleteTipe($id)
-    {
-        $tipe = RefTipe::where('Kode', $id)->first();
-        if (!$tipe) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
-        }
-        $tipe->delete();
-        return response()->json(['message' => 'Data berhasil dihapus']);
-    }
-    public function tambahJenisPengikatan(Request $request)
-    {
-        $jenisPengikatan = new RefJenisPengikatan;
-        $kodeTerakhir = RefJenisPengikatan::max('Kode');
-        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 1) + 1 : 1;
-        $jenisPengikatan->Kode = sprintf('P%07d', $nomorBaru);
-        $jenisPengikatan->Keterangan = $request->input('Keterangan');
-        $jenisPengikatan->save();
-        
-        return response()->json($jenisPengikatan);
-    }
-    public function getJenisPengikatan()
-    {
-        $jenisPengikatan = RefJenisPengikatan::all();
-        return response()->json($jenisPengikatan);
-    }
-    public function updateJenisPengikatan(Request $request, string $id)
-    {
-        $jenisPengikatan = RefJenisPengikatan::where('Kode', $id)->firstOrFail();
-        $jenisPengikatan->update($request->all());
-        return response()->json($jenisPengikatan);
-    }
-    public function deleteJenisPengikatan($id)
-    {
-        $jenisPengikatan = RefJenisPengikatan::where('Kode', $id)->first();
-        if (!$jenisPengikatan) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
-        }
-        $jenisPengikatan->delete();
-        return response()->json(['message' => 'Data berhasil dihapus']);
-    }
-    public function tambahHubunganPemilik(Request $request)
-    {
-        $hubunganPemilik = new RefHubPemilik;
-        $kodeTerakhir = RefHubPemilik::max('Kode');
-        $nomorBaru = $kodeTerakhir ? (int)substr($kodeTerakhir, 2) + 1 : 1;
-        $hubunganPemilik->Kode = sprintf('HP%07d', $nomorBaru);
-        $hubunganPemilik->Keterangan = $request->input('Keterangan');
-        $hubunganPemilik->save();
-        
-        return response()->json($hubunganPemilik);
-    }
 
-    public function getHubunganPemilik()
-    {
-        $hubunganPemilik = RefHubPemilik::all();
-        return response()->json($hubunganPemilik);
-    }
-
-    public function updateHubunganPemilik(Request $request, string $id)
-    {
-        $hubunganPemilik = RefHubPemilik::where('Kode', $id)->firstOrFail();
-        $hubunganPemilik->update($request->all());
-        return response()->json($hubunganPemilik);
-    }
-
-    public function deleteHubunganPemilik($id)
-    {
-        $hubunganPemilik = RefHubPemilik::where('Kode', $id)->first();
-        if (!$hubunganPemilik) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
-        }
-        $hubunganPemilik->delete();
-        return response()->json(['message' => 'Data berhasil dihapus']);
-    }
-
-
-    public function getalljaminan()
-    {
-        $jaminan = Jaminan::with(['RefJenisAgunan', 'RefHakMilik', 'RefTipe', 'RefJenisPengikatan', 'RefHubPemilik'])->get();
-        return response()->json($jaminan);
-    }
+    // public function getalljaminan()
+    // {
+    //     $jaminan = Jaminan::with(['RefJenisAgunan'])->get();
+    //     return response()->json($jaminan);
+    // }
     public function jaminan(Request $request)
     {
-        $jaminan = new Jaminan;
-        $jaminan->no_pengajuan = $request->input('no_pengajuan');
-        $jaminan->jenisAgunan = $request->input('jenisAgunan');
-        $jaminan->merek = $request->input('merek');
-        $jaminan->buktiHakMilik = $request->input('buktiHakMilik');
-        $jaminan->namaPemilikJaminan = $request->input('namaPemilikJaminan');
-        $jaminan->lokasiAgunan = $request->input('lokasiAgunan');
-        $jaminan->nilaiTransaksi = $request->input('nilaiTransaksi');
-        $jaminan->jenisPengikatan = $request->input('jenisPengikatan');
-        $jaminan->tipe = $request->input('tipe');
-        $jaminan->tahunPembuatan = $request->input('tahunPembuatan');
-        $jaminan->noAgunan = $request->input('noAgunan');
-        $jaminan->hubunganDenganPemilik = $request->input('hubunganDenganPemilik');
-        $jaminan->informasiTambahan = $request->input('informasiTambahan');
-        $jaminan->asuransi = $request->input('asuransi');
-        $jaminan->save();
-        return response()->json($jaminan);
+        $data = $request->json()->all();
+        
+        $jaminanData = [];
+        foreach ($data as $item) {
+            $mainForm = $item['mainForm'];
+            $specificForm = $item['specificForm'];
+            
+            $jaminan = new Jaminan;
+            $jaminan->no_pengajuan = $mainForm['no_pengajuan'];
+            $jaminan->jenisAgunan = $mainForm['jenisAgunan'];
+            $jaminan->namaPemilikJaminan = $mainForm['namaPemilikJaminan'];
+            $jaminan->tanggalPembuatan = $mainForm['tanggalPembuatan'];
+            $jaminan->nilaiTransaksi = $mainForm['nilaiYangDiagunkan'];
+            $jaminan->nilaiPasar = $mainForm['nilaiPasar'];
+            
+            $jaminan->jenis = $specificForm['jenis'];
+            $jaminan->noRekening = $specificForm['noRekening'];
+            $jaminan->noBilyet = $specificForm['noBilyet'];
+            $jaminan->nominal = $specificForm['nominal'];
+            $jaminan->atasNama = $specificForm['atasNama'];
+            $jaminan->alamat = $specificForm['alamat'];
+            $jaminan->keterangan = $specificForm['keterangan'];
+            
+            $jaminan->save();
+            $jaminanData[] = $jaminan;
+        }
+        
+        return response()->json($jaminanData);
     }
     
     public function getJaminanByNoPengajuan(string $no_pengajuan)
     {
-        $jaminan = Jaminan::with(['RefJenisAgunan', 'RefHakMilik', 'RefTipe', 'RefJenisPengikatan', 'RefHubPemilik'])->where('no_pengajuan', $no_pengajuan)->get();
+        $jaminan = Jaminan::with(['RefJenisAgunan'])->where('no_pengajuan', $no_pengajuan)->get();
         return response()->json($jaminan);
     }
     
-    public function update(Request $request, string $no_pengajuan)
+    public function update(Request $request)
     {
-        $jaminan = Jaminan::where('no_pengajuan', $no_pengajuan)->firstOrFail();
+        $data = $request->json()->all();
+        
+        if (empty($data)) {
+            return response()->json(['error' => 'Data tidak boleh kosong'], 400);
+        }
 
-        $validatedData = $request->validate([
-            'id' => 'required|numeric',
-            'no_pengajuan' => 'required|string',
-            'jenisAgunan' => 'required|string',
-            'merek' => 'required|string',
-            'buktiHakMilik' => 'required|string',
-            'namaPemilikJaminan' => 'required|string',
-            'lokasiAgunan' => 'required|string',
-            'nilaiTransaksi' => 'required|string',
-            'jenisPengikatan' => 'required|string',
-            'tipe' => 'required|string',
-            'tahunPembuatan' => 'required|date',
-            'noAgunan' => 'required|string',
-            'hubunganDenganPemilik' => 'required|string',
-            'informasiTambahan' => 'required|string',
-            'asuransi' => 'required|string',
-        ]);
-
-        $jaminan->update($validatedData);
-
-        return response()->json($jaminan);
+        $jaminanData = [];
+        
+        foreach ($data as $item) {
+            $jaminan = Jaminan::find($item['id']);
+            
+            if ($jaminan) {
+                $jaminan->no_pengajuan = $item['no_pengajuan'];
+                $jaminan->jenisAgunan = $item['jenisAgunan'];
+                $jaminan->namaPemilikJaminan = $item['namaPemilikJaminan'];
+                $jaminan->tanggalPembuatan = $item['tanggalPembuatan'];
+                $jaminan->nilaiTransaksi = $item['nilaiTransaksi'];
+                $jaminan->nilaiPasar = $item['nilaiPasar'];
+                
+                $jaminan->jenis = $item['jenis'];
+                $jaminan->noRekening = $item['noRekening'];
+                $jaminan->noBilyet = $item['noBilyet'];
+                $jaminan->nominal = $item['nominal'];
+                $jaminan->atasNama = $item['atasNama'];
+                $jaminan->alamat = $item['alamat'];
+                $jaminan->keterangan = $item['keterangan'];
+                
+                $jaminan->save();
+                
+              
+                $jaminan->load('RefJenisAgunan');
+                $jaminanData[] = $jaminan;
+            }
+        }
+        
+        return response()->json($jaminanData);
     }
 }

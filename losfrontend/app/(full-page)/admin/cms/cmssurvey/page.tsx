@@ -134,46 +134,46 @@ const TambahSurveyPanel = () => {
                     <ProgressSpinner style={{ width: '20px', height: '20px' }} strokeWidth="7" fill="var(--surface-ground)" animationDuration=".5s" />
                 </div>
             ) : (
-                <div>
+                <div className="responsive-container">
                     <div className='mb-5'>
                         <div className='mb-2 flex justify-content-end'>
-                            <Button label="Tambah" icon="pi pi-plus" style={{ border: 'none', color: '#333',  transition: 'transform 0.3s ease-in-out'}} className='bg-blue-200 w-2 hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => setVisibleAddSurvey(true)} />
+                            <Button label="Tambah" icon="pi pi-plus" style={{ border: 'none', color: '#333',  transition: 'transform 0.3s ease-in-out'}} className='bg-blue-200 w-full sm:w-auto hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => setVisibleAddSurvey(true)} />
                         </div>
-                        <DataTable value={refSurvey} style={{ minWidth: '50rem' }} paginator rows={15} rowsPerPageOptions={[5, 10, 15]}>
-                            <Column key="Kode" field="Kode" header="Kode" className='w-2' />
-                            <Column key="Keterangan" field="Keterangan" header="Judul Survey" className='w-3' />
+                        <DataTable value={refSurvey} responsiveLayout="stack" breakpoint="960px" paginator rows={15} rowsPerPageOptions={[5, 10, 15]}>
+                            <Column key="Kode" field="Kode" header="Kode" className='w-full sm:w-2' />
+                            <Column key="Keterangan" field="Keterangan" header="Judul Survey" className='w-full sm:w-3' />
                             <Column key="pilihan_survey" field="pilihan_survey" header="Pilihan Survey" body={(rowData) => (
-                                <ul>
+                                <ul className="responsive-list">
                                     {rowData.pilihan_survey.map((pilihan: any, index: any) => (
                                         <li key={index}>{pilihan.pertanyaan}</li>
                                     ))}
                                 </ul>
                             )} />
                             <Column key="Update" field="Update" header="Perbarui" body={(rowData) => (
-                                <Button icon="pi pi-pencil" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => handleEditSurvey(rowData.Kode)} />
+                                <Button icon="pi pi-pencil" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 border-transparent hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => handleEditSurvey(rowData.Kode)} />
                             )} />
                             <Column key="Delete" field="Delete" header="Hapus" body={(rowData) => (
-                                <Button icon="pi pi-trash" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
+                                <Button icon="pi pi-trash" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
                                     setSelectedRow(rowData);
                                     setVisible(true);
                                 }} />
                             )} />
                         </DataTable>
-                        <Dialog header={`Hapus Data ${selectedRow.Keterangan}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+                        <Dialog header={`Hapus Data ${selectedRow.Keterangan}`} visible={visible} style={{ width: '90vw', maxWidth: '500px' }} onHide={() => { if (!visible) return; setVisible(false); }}>
                             <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
                             <div className='flex justify-content-end mt-3'>
                                 <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
                                 <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDeleteSurvey(selectedRow.Kode); setVisible(false); }} />
                             </div>
                         </Dialog>
-                        <Dialog header="Update" visible={visibleUpdateSurvey} style={{ width: '50vw' }} onHide={() => setVisibleUpdateSurvey(false)}>
+                        <Dialog header="Update" visible={visibleUpdateSurvey} style={{ width: '90vw', maxWidth: '500px' }} onHide={() => setVisibleUpdateSurvey(false)}>
                             <div className="p-fluid mb-5">
                                 <form onSubmit={handleUpdateSurvey}>
                                     <div className="field">
                                         <label htmlFor="judulSurveyUpdate" className='font-bold'>Judul Survey</label>
                                         <div className='flex flex-column gap-5'>
                                             <div className='flex gap-3 align-items-center'>
-                                                <InputText id="judulSurveyUpdate" value={judulSurveyUpdate} onChange={(e) => setJudulSurveyUpdate(e.target.value)} required />
+                                                <InputText id="judulSurveyUpdate" value={judulSurveyUpdate} onChange={(e) => setJudulSurveyUpdate(e.target.value)} required className="w-full" />
                                             </div>
                                             <div className='flex flex-column gap-2'>
                                                 <label htmlFor="pertanyaanUpdate" className='font-bold'>Pilihan Survey</label>
@@ -184,30 +184,35 @@ const TambahSurveyPanel = () => {
                                                             value={pilihan}
                                                             onChange={(e) => handlePilihanSurveyUpdateChange(index, e.target.value)}
                                                             required
+                                                            className="w-full"
                                                         />
                                                         {index === pilihanSurveyUpdate.length - 1 && (
-                                                            <Button icon="pi pi-plus" onClick={addPilihanSurveyUpdate} />
+                                                            <span className="p-2 bg-blue-100 hover:bg-blue-200 border-round cursor-pointer transition-colors duration-200 inline-flex align-items-center justify-content-center" onClick={addPilihanSurveyUpdate}>
+                                                                <i className="pi pi-plus text-blue-600" />
+                                                            </span>
                                                         )}
                                                         {index !== 0 && (
-                                                            <Button icon="pi pi-minus" onClick={() => removePilihanSurveyUpdate(index)} />
+                                                            <span className="p-2 bg-red-100 hover:bg-red-200 border-round cursor-pointer transition-colors duration-200 inline-flex align-items-center justify-content-center" onClick={() => removePilihanSurveyUpdate(index)}>
+                                                                <i className="pi pi-minus text-red-600" />
+                                                            </span>
                                                         )}
                                                     </div>
                                                 ))}
-                                                <Button className='w-3 mt-2' type="submit" label="Simpan" icon="pi pi-check" />
+                                                <Button className='w-full mt-2' type="submit" label="Simpan" icon="pi pi-check" />
                                             </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </Dialog>
-                        <Dialog header="Tambah" visible={visibleAddSurvey} style={{ width: '50vw' }} onHide={() => setVisibleAddSurvey(false)}>
+                        <Dialog header="Tambah" visible={visibleAddSurvey} style={{ width: '90vw', maxWidth: '500px' }} onHide={() => setVisibleAddSurvey(false)}>
                             <div className="p-fluid mb-5">
                                 <form onSubmit={handleSubmitSurvey}>
                                     <div className="field">
                                         <label htmlFor="judulSurvey" className='font-bold'>Judul Survey</label>
                                         <div className='flex flex-column gap-5'>
                                             <div className='flex gap-3 align-items-center'>
-                                                <InputText id="judulSurvey" value={judulSurvey} onChange={(e) => setJudulSurvey(e.target.value)} required />
+                                                <InputText id="judulSurvey" value={judulSurvey} onChange={(e) => setJudulSurvey(e.target.value)} required className="w-full" />
                                             </div>
                                             <div className='flex flex-column gap-2'>
                                                 <label htmlFor="pertanyaan" className='font-bold'>Pilihan Survey</label>
@@ -218,16 +223,17 @@ const TambahSurveyPanel = () => {
                                                             value={pilihan}
                                                             onChange={(e) => handlePilihanSurveyChange(index, e.target.value)}
                                                             required
+                                                            className="w-full"
                                                         />
                                                         {index === pilihanSurvey.length - 1 && (
-                                                            <Button icon="pi pi-plus" onClick={addPilihanSurvey} />
+                                                            <Button icon="pi pi-plus" onClick={addPilihanSurvey} className="p-button-rounded p-button-text" />
                                                         )}
                                                         {index !== 0 && (
-                                                            <Button icon="pi pi-minus" onClick={() => removePilihanSurvey(index)} />
+                                                            <Button icon="pi pi-minus" onClick={() => removePilihanSurvey(index)} className="p-button-rounded p-button-text p-button-danger" />
                                                         )}
                                                     </div>
                                                 ))}
-                                                <Button className='w-3 mt-2' type="submit" label="Simpan" icon="pi pi-check" />
+                                                <Button className='w-full mt-2' type="submit" label="Simpan" icon="pi pi-check" />
                                             </div>
                                         </div>
                                     </div>

@@ -91,8 +91,8 @@ const pemohon = () => {
     <div>
       <div className="card">
         <h2 className='text-2xl font-bold mb-4'>Data Pemohon</h2>
-        <div className='flex align-items-center justify-content-end mb-2'>
-          <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Cari nama atau KTP..." />
+        <div className='flex align-items-center justify-content-end mb-2 '>
+          <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Cari nama atau KTP..."/>
           <Link href={'/pemohon/formpemohon'} passHref style={{transition: 'transform 0.3s ease-in-out'}} className='ml-2 p-2 bg-blue-200 border-round hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
             <Plus size={20} style={{ color: '#333' }} />
           </Link>

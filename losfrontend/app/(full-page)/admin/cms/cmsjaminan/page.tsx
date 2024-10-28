@@ -23,23 +23,23 @@ const TambahJaminanPanel = () => {
         try {
             const [
                 agunanResponse,
-                hakMilikResponse,
-                tipeResponse,
-                pengikatanResponse,
-                hubunganPemilikResponse
+                // hakMilikResponse,
+                // tipeResponse,
+                // pengikatanResponse,
+                // hubunganPemilikResponse
             ] = await Promise.all([
                 axios.get(API_ENDPOINTS.GETJENISAGUNAN),
-                axios.get(API_ENDPOINTS.GETHAKMILIK),
-                axios.get(API_ENDPOINTS.GETTIPE),
-                axios.get(API_ENDPOINTS.GETJENISPENGIKATAN),
-                axios.get(API_ENDPOINTS.GETHUBUNGANPEMILIK)
+                // axios.get(API_ENDPOINTS.GETHAKMILIK),
+                // axios.get(API_ENDPOINTS.GETTIPE),
+                // axios.get(API_ENDPOINTS.GETJENISPENGIKATAN),
+                // axios.get(API_ENDPOINTS.GETHUBUNGANPEMILIK)
             ]);
             
             setRefJenisAgunan(agunanResponse.data);
-            setRefHakMilik(hakMilikResponse.data);
-            setRefTipe(tipeResponse.data);
-            setRefJenisPengikatan(pengikatanResponse.data);
-            setRefHubunganPemilik(hubunganPemilikResponse.data);
+            // setRefHakMilik(hakMilikResponse.data);
+            // setRefTipe(tipeResponse.data);
+            // setRefJenisPengikatan(pengikatanResponse.data);
+            // setRefHubunganPemilik(hubunganPemilikResponse.data);
         } catch (error) {
             console.error("Error fetching data:", error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengambil data', life: 3000 });
@@ -102,7 +102,7 @@ const TambahJaminanPanel = () => {
                         nameField="Keterangan"
                         inputLabel="Jenis Agunan"
                     />
-                    <DataTableWithCRUD
+                    {/* <DataTableWithCRUD
                         data={refHakMilik}
                         columns={[
                             { field: 'Keterangan', header: 'Hak Milik' }
@@ -149,7 +149,7 @@ const TambahJaminanPanel = () => {
                         idField="Kode"
                         nameField="Keterangan"
                         inputLabel="Hubungan Pemilik"
-                    />
+                    /> */}
                 </>
             )}
         </>

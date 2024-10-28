@@ -49,50 +49,51 @@ const Debiturpage = () => {
   console.log(filteredData)
   return (
     <div>
-      <div className="card">
-        <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Cari nama atau KTP..." />
-        <DataTable value={filteredData} tableStyle={{ minWidth: '30rem' }}
-          paginator={true} rows={5} rowsPerPageOptions={[5, 10, 20]}
+      <div className="card ">
+        <div className='flex justify-content-end'>
+          <SearchFilter searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Cari nama atau KTP..." />
+        </div>
+        <DataTable value={filteredData}
+          paginator={true}
+          rows={5}
+          rowsPerPageOptions={[5, 10, 20]}
           className='cursor-pointer mt-3'
           rowClassName={() => `hover:bg-gray-100`}
-          onRowClick={(e) => { router.push(`/pemohon/detail/${e.data.Cif}`); }}>
-          {/* <Column field="id" header="ID" /> */}
-          <Column field="Cif" header="CIF" />
+          onRowClick={(e) => { router.push(`/pemohon/detail/${e.data.Cif}`); }}
+          responsiveLayout="stack"
+          breakpoint="960px">
+          <Column field="Cif" header="CIF" className='text-blue-600' />
           <Column field="Nama" header="Nama Lengkap" />
           <Column field="Kelamin" header="Jenis Kelamin" body={(rowData) => rowData.Kelamin === 'P' ? 'Perempuan' : 'Laki-Laki'} />
-          {/* <Column field="StatusPerkawinan" header="Status Perkawinan" /> */}
           <Column field="KTP" header="No KTP" />
           <Column field="no_hp" header="No HP" />
           <Column field="Alamat" header="Alamat" />
           <Column field="nama_usaha" header="Nama Usaha" />
-
-          {/* <Column field="ref_profesi_sampingan.Keterangan" header="Profesi Sampingan" /> */}
-          <Column className='flex justify-content-center' header="Pengajuan" body={(rowData) => (
+          <Column header="Pengajuan" body={(rowData) => (
             <Link href={`/admin/debitur/pengajuandebitur/${rowData.Cif}`} passHref>
-              <Button icon="pi pi-eye" style={{ background: "#FFBB62", color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='border-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}  />
+              <Button icon="pi pi-eye"
+                style={{
+                  background: "#FFBB62",
+                  color: '#000000',
+                  transition: 'transform 0.3s ease-in-out'
+                }}
+                className='border-transparent hover:scale-110'
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              />
             </Link>
           )} />
-          {/* <Column header="Edit" body={(rowData) => (
-            <Link href={`/pemohon/formpemohon/${rowData.Cif}`} passHref>
-              <Button icon="pi pi-pencil" style={{ border: '1', color: '#333' }} className='bg-blue-200' />
-            </Link>
-          )} /> */}
-          {/* <Column header="Hapus" body={(rowData) => (
-            <div className='flex justify-content-center'>
-              <Button icon="pi pi-trash" style={{ background: "#", color: '#000000' }} className='border-transparent' onClick={() => {
-                setSelectedRow(rowData);
-                setVisible(true);
-              }} />
-            </div>
-          )} /> */}
         </DataTable>
-        <Dialog header={`Hapus Data ${selectedRow.Nama}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
+        {/* <Dialog header={`Hapus Data ${selectedRow.Nama}`} 
+          visible={visible} 
+          style={{ width: '90vw', maxWidth: '500px' }}  // Menggunakan lebar relatif dengan batas maksimum
+          onHide={() => { if (!visible) return; setVisible(false); }}>
           <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
           <div className='flex justify-content-end mt-3'>
-            <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+            <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text mr-2" />
             <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.Cif); setVisible(false); }} />
           </div>
-        </Dialog>
+        </Dialog> */}
       </div>
     </div>
   )

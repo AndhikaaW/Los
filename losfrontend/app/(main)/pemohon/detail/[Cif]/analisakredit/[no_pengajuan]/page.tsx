@@ -48,10 +48,17 @@ const DetailPengajuan = () => {
                 ...response.data,
                 tanggal_aplikasi: formatDate(response.data.tanggal_aplikasi),
                 tanggal_permohonan: formatDate(response.data.tanggal_permohonan),
-                jaminan: response.data.jaminan ? {
-                    ...response.data.jaminan,
-                    tahunPembuatan: formatDate(response.data.jaminan.tahunPembuatan)
-                } : null
+                jaminan: response.data.jaminan ?
+                    Object.keys(response.data.jaminan).reduce((acc: any, key: any) => {
+                        if (key !== 'tanggalPembuatan') {
+                            acc[key] = {
+                                ...response.data.jaminan[key],
+                                tanggalPembuatan: formatDate(response.data.jaminan[key].tanggalPembuatan)
+                            };
+                        }
+                        return acc;
+                    }, {})
+                    : null
             };
             setPengajuan(formattedData);
             console.log(response.data);
@@ -68,21 +75,21 @@ const DetailPengajuan = () => {
     //         console.error('Kesalahan saat menghapus formulir pemohon:', error);
     //     }
     // };
-    
+
 
     if (!pengajuan) {
         return <div>Memuat...</div>;
     }
 
-    const InfoItem = ({ label, value }: { label: string; value: string }) => (
-        <div className="flex justify-between py-2">
-            <span className="text-gray-600 flex flex-column">
-                <span className='text-gray-800 font-bold'>{label}:</span>
-                <br />
-                {value}
-            </span>
-        </div>
-    );
+    // const InfoItem = ({ label, value }: { label: string; value: string }) => (
+    //     <div className="flex justify-between py-2">
+    //         <span className="text-gray-600 flex flex-column">
+    //             <span className='text-gray-800 font-bold'>{label}:</span>
+    //             <br />
+    //             {value}
+    //         </span>
+    //     </div>
+    // );
 
     // console.log(selectedRow);
     const header = (icon: React.ReactNode, title: string, path: string) => (
@@ -97,19 +104,7 @@ const DetailPengajuan = () => {
                         <Link href={`/analisakredit/${path}/form${path}/${pengajuan.no_pengajuan}`}>
                             <Button icon="pi pi-pencil" style={{ border: '1', color: '#000000', borderColor: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} />
                         </Link>
-                        {/* <div className='flex justify-content-center'>
-                            <Button icon="pi pi-trash" style={{ border: '1', color: '#333', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-none hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
-                                setSelectedRow(pengajuan.aspek_form[0]);
-                                setVisible(true);
-                            }} />
-                            <Dialog header={`Hapus Data ${selectedRow.no_pengajuan}`} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
-                                <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
-                                <div className='flex justify-content-end mt-3'>
-                                    <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
-                                    <Button label="Yes" icon="pi pi-check" autoFocus onClick={() => { handleDelete(selectedRow.no_pengajuan); setVisible(false); }} />
-                                </div>
-                            </Dialog>
-                        </div> */}
+
                     </div>
                 ) : (
                     <span></span>
@@ -117,68 +112,94 @@ const DetailPengajuan = () => {
             </div>
         </div>
     );
+    const InfoPengajuan = ({ label, value }: { label: string; value: string }) => (
+        <div className="flex justify-content-between items-center">
+            <div className='flex-column col-7 text-left '>
+                <span className="text-gray-800 font-bold">{label}</span>
+            </div>
+            <div className='flex-column col-1 text-left'>
+                <span>:</span>
+            </div>
+            <div className='flex-column col-7 text-left'>
+                <span>{value}</span>
+            </div>
+        </div>
+    );
+
+    const InfoItem = ({ label, value }: { label: string; value: string }) => (
+        <div className="flex justify-content-between items-center">
+            <div className='flex-column col-5 text-left'>
+                <span className="text-gray-800 font-bold">{label}</span>
+            </div>
+            <div className='flex-column col-1 text-right'>
+                <span>:</span>
+            </div>
+            <div className='flex-column col-7 text-left'>
+                <span>{value}</span>
+            </div>
+        </div>
+    );
+    const InfoItemSurvey = ({ label, value }: { label: string; value: string }) => (
+        <div className="flex justify-content-between items-center">
+            <div className='flex-column col-3 text-left'>
+                <span className="text-gray-800 font-bold">{label}</span>
+            </div>
+            <div className='flex-column col-1 text-right'>
+                <span>:</span>
+            </div>
+            <div className='flex-column col-8 text-left'>
+                <span>{value}</span>
+            </div>
+        </div>
+    );
+    const InfoItemAspek = ({ label, value }: { label: string; value: string }) => (
+        <div className="flex justify-content-between items-center">
+            <div className='flex-column col-2 text-left '>
+                <span className="text-gray-800 font-bold">{label}</span>
+            </div>
+            <div className='flex-column col-1 text-right'>
+                <span>:</span>
+            </div>
+            <div className='flex-column col-9 text-left'>
+                <span>{value}</span>
+            </div>
+        </div>
+    );
+
 
     console.log(pengajuan);
     return (
         <div className="surface-card shadow-2 border-round p-4">
             <h2 className="text-2xl mb-5 ml-2">Detail Pengajuan {pengajuan?.no_pengajuan}</h2>
-            <div key={pengajuan.id} >
-                <div className="p-4 bg-gray-100 border-round-lg flex justify-content-between">
-                    <div className="flex gap-6">
-                        <div>
-                            <div className="mb-4">
-                                <strong>No Pengajuan :</strong> {pengajuan.no_pengajuan}
-                            </div>
-                            <div className="mb-4">
-                                <strong>CIF :</strong> {pengajuan.Cif}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Tanggal Aplikasi :</strong> {pengajuan.tanggal_aplikasi}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Tanggal Permohonan :</strong> {pengajuan.tanggal_permohonan}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Pengajuan :</strong> {pengajuan.pengajuan}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Bidang Usaha :</strong> {pengajuan.ref_bidang_usaha?.Keterangan}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Sifat Kredit :</strong> {pengajuan.ref_sifat_kredit?.Keterangan}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Plafon Kredit :</strong> {pengajuan.plafon_kredit}
-                            </div>
+            <div key={pengajuan.id}>
+                <div className="p-4 bg-gray-100 border-round-lg flex flex-column md:flex-row justify-content-between">
+                    <div className="flex flex-column md:flex-row gap-0 md:gap-6">
+                        <div className="mb-4 md:mb-0">
+                            <InfoPengajuan label="CIF" value={pengajuan.Cif} />
+                            <InfoPengajuan label="No Pengajuan" value={pengajuan.no_pengajuan} />
+                            <InfoPengajuan label="Pengajuan" value={pengajuan.pengajuan} />
+                            <InfoPengajuan label="Tanggal Permohonan" value={pengajuan.tanggal_permohonan} />
+                            <InfoPengajuan label="Nomor Rekening" value={pengajuan.NomorRekening} />
+                            <InfoPengajuan label="Sektor Ekonomi" value={pengajuan.ref_sektor_ekonomi?.Keterangan} />
+                            <InfoPengajuan label="Bidang Usaha" value={pengajuan.ref_bidang_usaha?.Keterangan} />
+                            <InfoPengajuan label="Sifat Kredit" value={pengajuan.ref_sifat_kredit?.Keterangan} />
+                            <InfoPengajuan label="Plafon Kredit" value={pengajuan.plafon_kredit} />
                         </div>
-                        <div>
-                            <div className="mb-4">
-                                <strong>Suku Bunga :</strong> {pengajuan.suku_bunga} %
-                            </div>
-                            <div className="mb-4">
-                                <strong>Jangka Waktu :</strong> {pengajuan.jangka_waktu} Bulan
-                            </div>
-                            <div className="mb-4">
-                                <strong>No Aplikasi Sebelumnya :</strong> {pengajuan.no_aplikasi_sebelumnya}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Jenis Permohonan :</strong> {pengajuan.ref_jenis_permohonan?.Keterangan}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Jenis Angsuran :</strong> {pengajuan.ref_jenis_angsuran?.Keterangan}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Tujuan Penggunaan :</strong> {pengajuan.tujuan_penggunaan}
-                            </div>
-                            <div className="mb-4">
-                                <strong>Detail Tujuan Penggunaan :</strong> {pengajuan.detail_tujuan_penggunaan}
-                            </div>
+                        <div className='ml-8'>
+                            <InfoPengajuan label="Tanggal Aplikasi" value={pengajuan.tanggal_aplikasi} />
+                            <InfoPengajuan label="Suku Bunga" value={pengajuan.suku_bunga} />
+                            <InfoPengajuan label="Jangka Waktu" value={pengajuan.jangka_waktu} />
+                            <InfoPengajuan label="No Aplikasi Sebelumnya" value={pengajuan.no_aplikasi_sebelumnya} />
+                            <InfoPengajuan label="Jenis Permohonan" value={pengajuan.ref_jenis_permohonan?.Keterangan} />
+                            <InfoPengajuan label="Jenis Angsuran" value={pengajuan.ref_jenis_angsuran?.Keterangan} />
+                            <InfoPengajuan label="Tujuan Penggunaan" value={pengajuan.tujuan_penggunaan} />
+                            <InfoPengajuan label="Detail Tujuan Penggunaan" value={pengajuan.detail_tujuan_penggunaan} />
                         </div>
                     </div>
-                    <div className='flex justify-content-end '>
+                    <div className='flex justify-content-end mt-4 md:mt-0'>
                         {(userStatus === 1 || userStatus === 3) && pengajuan.status === 0 ? (
                             <Link href={`/pengajuan/formpengajuan/${pengajuan.no_pengajuan}`}>
-                                <Button icon="pi pi-pencil" style={{ border: '1', color: '#000000', borderColor: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-transparent hover:scale-110 ' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} />
+                                <Button icon="pi pi-pencil" style={{ border: '1', color: '#000000', borderColor: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-transparent hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} />
                             </Link>
                         ) : (
                             <span></span>
@@ -189,25 +210,31 @@ const DetailPengajuan = () => {
                     <TabPanel header="Jaminan">
                         {pengajuan?.jaminan ? (
                             <Panel headerTemplate={header(<FileText />, "Jaminan", 'jaminan')}>
-                                <div className='flex col-12 '>
-                                    <div className='col-6'>
-                                        <InfoItem label="Jenis Agunan" value={pengajuan.jaminan.ref_jenis_agunan.Keterangan} />
-                                        <InfoItem label="Merek" value={pengajuan.jaminan.merek} />
-                                        <InfoItem label="Bukti Hak Milik" value={pengajuan.jaminan.ref_hak_milik.Keterangan} />
-                                        <InfoItem label="Nama Pemilik Jaminan" value={pengajuan.jaminan.namaPemilikJaminan} />
-                                        <InfoItem label="Lokasi Agunan" value={pengajuan.jaminan.lokasiAgunan} />
-                                        <InfoItem label="Nilai Transaksi" value={formatToRupiah(pengajuan.jaminan.nilaiTransaksi)} />
-                                    </div>
-                                    <div className='col-6'>
-                                        <InfoItem label="Jenis Pengikatan" value={pengajuan.jaminan.ref_jenis_pengikatan.Keterangan} />
-                                        <InfoItem label="Tipe" value={pengajuan.jaminan.ref_tipe.Keterangan} />
-                                        <InfoItem label="Tahun Pembuatan" value={pengajuan.jaminan.tahunPembuatan} />
-                                        <InfoItem label="No Agunan" value={pengajuan.jaminan.noAgunan} />
-                                        <InfoItem label="Hubungan dengan Pemilik" value={pengajuan.jaminan.ref_hub_pemilik.Keterangan} />
-                                        <InfoItem label="Informasi Tambahan" value={pengajuan.jaminan.informasiTambahan} />
-                                        <InfoItem label="Asuransi" value={pengajuan.jaminan.asuransi} />
-                                    </div>
-                                </div>
+                                {Object.values(pengajuan.jaminan).map((jaminan: any, index: number) => (
+                                    jaminan.id && (
+                                        <div key={index} className='flex flex-column mb-4'>
+                                            <p className='col-12 text-xl font-bold'>Jaminan {index + 1}</p>
+                                            <div className='flex flex-column md:flex-row'>
+                                                <div className='col-6 mb-4 md:mb-0'>
+                                                    <InfoItem label="Nama Pemilik Jaminan" value={jaminan.namaPemilikJaminan} />
+                                                    <InfoItem label="Tanggal Pembuatan" value={jaminan.tanggalPembuatan} />
+                                                    <InfoItem label="Jenis Agunan" value={jaminan.ref_jenis_agunan?.Keterangan} />
+                                                    <InfoItem label="Nilai Pasar" value={formatToRupiah(jaminan.nilaiPasar)} />
+                                                    <InfoItem label="Nilai Yang Diagunkan" value={formatToRupiah(jaminan.nilaiTransaksi)} />
+                                                </div>
+                                                <div className='col-6 mb-4 md:mb-0 '>
+                                                    {jaminan.keterangan && <InfoItem label="Keterangan" value={jaminan.keterangan} />}
+                                                    {jaminan.jenis && <InfoItem label="Jenis" value={jaminan.jenis} />}
+                                                    {jaminan.noRekening && <InfoItem label="No Rekening" value={jaminan.noRekening} />}
+                                                    {jaminan.noBilyet && <InfoItem label="No Bilyet" value={jaminan.noBilyet} />}
+                                                    {jaminan.nominal && <InfoItem label="Nominal" value={jaminan.nominal} />}
+                                                    {jaminan.atasNama && <InfoItem label="Atas Nama" value={jaminan.atasNama} />}
+                                                    {jaminan.alamat && <InfoItem label="Alamat" value={jaminan.alamat} />}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                ))}
                             </Panel>
                         ) : (
                             <p>Tidak ada data Jaminan.</p>
@@ -216,8 +243,8 @@ const DetailPengajuan = () => {
                     <TabPanel header="Financial">
                         {pengajuan?.financial ? (
                             <Panel headerTemplate={header(<FileText />, "Financial", 'financial')}>
-                                <div className='flex col-12'>
-                                    <div className='col-4'>
+                                <div className='flex flex-column md:flex-row'>
+                                    <div className='w-full md:w-4 mb-4 md:mb-0'>
                                         <InfoItem label="Omset Ramai" value={formatToRupiah(pengajuan.financial.oms_ramai)} />
                                         <InfoItem label="Omset Normal" value={formatToRupiah(pengajuan.financial.oms_normal)} />
                                         <InfoItem label="Omset Sepi" value={formatToRupiah(pengajuan.financial.oms_sepi)} />
@@ -234,7 +261,7 @@ const DetailPengajuan = () => {
                                         <InfoItem label="Biaya Lainnya" value={formatToRupiah(pengajuan.financial.b_Lainnya)} />
                                         <InfoItem label="Bukti Pendapatan" value={pengajuan.financial.bukti_pendapatan} />
                                     </div>
-                                    <div className='col-4'>
+                                    <div className='w-full md:w-4 mb-4 ml-4 md:mb-0'>
                                         <InfoItem label="Bukti Biaya" value={pengajuan.financial.bukti_biaya} />
                                         <InfoItem label="Bank Non-Bank" value={formatToRupiah(pengajuan.financial.bank_nonbank)} />
                                         <InfoItem label="Koperasi" value={formatToRupiah(pengajuan.financial.koperasi)} />
@@ -251,7 +278,7 @@ const DetailPengajuan = () => {
                                         <InfoItem label="Kendaraan" value={formatToRupiah(pengajuan.financial.kendaraan)} />
                                         <InfoItem label="Aktiva Tetap Lainnya" value={formatToRupiah(pengajuan.financial.atv_tetap_lainnya)} />
                                     </div>
-                                    <div className='col-4'>
+                                    <div className='w-full md:w-4 mb-4 ml-4 md:mb-0'>
                                         <InfoItem label="Sub Aktiva Tetap" value={formatToRupiah(pengajuan.financial.sub_atv_tetap)} />
                                         <InfoItem label="Jumlah Aktiva" value={formatToRupiah(pengajuan.financial.jumlah_atv)} />
                                         <InfoItem label="Total BDP Jangka Pendek" value={formatToRupiah(pengajuan.financial.tot_bdp_jangka_pendek)} />
@@ -276,7 +303,7 @@ const DetailPengajuan = () => {
                         {pengajuan?.survey.length > 0 ? (
                             <Panel headerTemplate={header(<FileText />, "Survey", 'survey')}>
                                 {pengajuan.survey.map((survey: any, index: any) => (
-                                    <InfoItem key={index} label={survey.Keterangan} value={survey.Pilihan} />
+                                    <InfoItemSurvey key={index} label={survey.Keterangan} value={survey.Pilihan} />
                                 ))}
                             </Panel>
                         ) : (
@@ -287,7 +314,7 @@ const DetailPengajuan = () => {
                         {pengajuan?.aspek_form.length > 0 ? (
                             <Panel headerTemplate={header(<FileText />, "Aspek Form", 'aspek')}>
                                 {pengajuan.aspek_form.map((aspekForm: any, index: any) => (
-                                    <InfoItem key={index} label={aspekForm.Keterangan} value={aspekForm.jawaban} />
+                                    <InfoItemAspek key={index} label={aspekForm.Keterangan} value={aspekForm.jawaban} />
                                 ))}
                             </Panel>
                         ) : (
@@ -297,11 +324,11 @@ const DetailPengajuan = () => {
                     <TabPanel header="Lima C">
                         {pengajuan?.lima_c ? (
                             <Panel headerTemplate={header(<FileText />, "Lima C", '5c')}>
-                                <InfoItem label="Characters" value={pengajuan.lima_c.characters} />
-                                <InfoItem label="Capacity" value={pengajuan.lima_c.capacity} />
-                                <InfoItem label="Capital" value={pengajuan.lima_c.capital} />
-                                <InfoItem label="Collateral" value={pengajuan.lima_c.collateral} />
-                                <InfoItem label="Conditions" value={pengajuan.lima_c.conditions} />
+                                <InfoItemAspek label="Characters" value={pengajuan.lima_c.characters} />
+                                <InfoItemAspek label="Capacity" value={pengajuan.lima_c.capacity} />
+                                <InfoItemAspek label="Capital" value={pengajuan.lima_c.capital} />
+                                <InfoItemAspek label="Collateral" value={pengajuan.lima_c.collateral} />
+                                <InfoItemAspek label="Conditions" value={pengajuan.lima_c.conditions} />
                             </Panel>
                         ) : (
                             <p>Tidak ada data Lima C.</p>
@@ -309,7 +336,7 @@ const DetailPengajuan = () => {
                     </TabPanel>
                 </TabView>
             </div>
-        </div >
+        </div>
     );
 };
 

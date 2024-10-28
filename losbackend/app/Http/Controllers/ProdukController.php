@@ -10,7 +10,7 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produk = Produk::with(['financial', 'LimaC', 'aspekForm', 'jaminan', 'survey', 'RefSifatKredit', 'RefJenisPermohonan', 'RefJenisAngsuran', 'RefBidangUsaha'])->get();
+        $produk = Produk::with(['financial', 'LimaC', 'aspekForm', 'jaminan', 'survey', 'RefSifatKredit', 'RefJenisPermohonan', 'RefJenisAngsuran', 'RefBidangUsaha', 'RefSektorEkonomi'])->get();
         return response()->json($produk);
     }
     function produk(Request $req)
@@ -20,6 +20,7 @@ class ProdukController extends Controller
         $produk->Cif = $req->input('Cif');
         $produk->pengajuan = $req->input('pengajuan');
         $produk->bidang_usaha = $req->input('bidang_usaha');
+        $produk->sektor_ekonomi = $req->input('sektor_ekonomi');
         $produk->NomorRekening = $req->input('NomorRekening');
         $produk->tanggal_aplikasi = $req->input('tanggal_aplikasi');
         $produk->tanggal_permohonan = $req->input('tanggal_permohonan');
@@ -47,10 +48,6 @@ class ProdukController extends Controller
                 'jaminan' => function ($query) {
                     $query->with([
                         'RefJenisAgunan',
-                        'RefHakMilik',
-                        'RefTipe',
-                        'RefJenisPengikatan',
-                        'RefHubPemilik'
                     ]);
                 },
                 'survey' => function ($query) {
@@ -60,7 +57,8 @@ class ProdukController extends Controller
                 'RefSifatKredit',
                 'RefJenisPermohonan',
                 'RefJenisAngsuran',
-                'RefBidangUsaha'
+                'RefBidangUsaha',
+                'RefSektorEkonomi'
             ]
         )->where('no_pengajuan', $no_pengajuan)->firstOrFail();
         return response()->json($produk);
@@ -73,6 +71,7 @@ class ProdukController extends Controller
         $validatedData = $request->validate([
             'Cif' => 'required|numeric',
             'pengajuan' => 'required|string',
+            'sektor_ekonomi' => 'required|string',
             'bidang_usaha' => 'required|string',
             'NomorRekening' => 'required|string',
             'plafon_kredit' => 'required|numeric',
@@ -109,7 +108,7 @@ class ProdukController extends Controller
 
     public function getProdukByCif(string $cif)
     {
-        $produk = Produk::with(['RefSifatKredit', 'RefJenisPermohonan', 'RefJenisAngsuran', 'RefBidangUsaha'])->where('Cif', $cif)->get();
+        $produk = Produk::with(['RefSifatKredit', 'RefJenisPermohonan', 'RefJenisAngsuran', 'RefBidangUsaha', 'RefSektorEkonomi'])->where('Cif', $cif)->get();
 
         if (!$produk) {
             return response()->json(['message' => 'Produk not found'], 404);

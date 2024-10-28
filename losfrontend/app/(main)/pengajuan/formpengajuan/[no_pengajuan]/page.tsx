@@ -21,6 +21,7 @@ const EditFormPengajuan = () => {
     const [bidangUsaha, setBidangUsaha] = useState<any>([]);
     const [jenisPermohonan, setJenisPermohonan] = useState<any>([]);
     const [jenisAngsuran, setJenisAngsuran] = useState<any>([]);
+    const [sektorEkonomi, setSektorEkonomi] = useState<any>([]);
     const [pengajuan, setPengajuan] = useState<any>([]);
     const [visiblesearch, setVisibleSearch] = useState(false);
     const [searchValue, setSearchValue] = useState('');
@@ -58,12 +59,12 @@ const EditFormPengajuan = () => {
     };
     const [formData, setFormData] = useState({
         Cif: '',
-        pengajuan: '', bidang_usaha: '', NomorRekening: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: ''
+        pengajuan: '', sektor_ekonomi: '', bidang_usaha: '', NomorRekening: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: ''
     });
     const resetForm = () => {
         setFormData({
             Cif: '',
-            pengajuan: '', bidang_usaha: '', NomorRekening: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: ''
+            pengajuan: '',sektor_ekonomi:'' , bidang_usaha: '', NomorRekening: '', tanggal_aplikasi: '', tanggal_permohonan: '', plafon_kredit: '', suku_bunga: '', jangka_waktu: '', sifat_kredit: '', jenis_permohonan: '', jenis_angsuran: '', no_aplikasi_sebelumnya: '', tujuan_penggunaan: '', detail_tujuan_penggunaan: ''
         });
     };
 
@@ -108,6 +109,7 @@ const EditFormPengajuan = () => {
         fetchOptions(API_ENDPOINTS.GETBIDANGUSAHA, setBidangUsaha);
         fetchOptions(API_ENDPOINTS.GETJENISPERMOHONAN, setJenisPermohonan);
         fetchOptions(API_ENDPOINTS.GETJENISANGURAN, setJenisAngsuran);
+        fetchOptions(API_ENDPOINTS.GETSEKTOREKONOMI, setSektorEkonomi);
         fetchOptions(API_ENDPOINTS.GETGOLONGANKREDIT, setPengajuan);
         fetchOptions(API_ENDPOINTS.GETALLPEMOHON, setCif);
     }, []);
@@ -126,6 +128,7 @@ const EditFormPengajuan = () => {
     const BidangUsahaOptions = bidangUsaha.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const JenisPermohonanOptions = jenisPermohonan.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const JenisAngsuranOptions = jenisAngsuran.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
+    const SektorEkonomiOptions = sektorEkonomi.map((item: any) => ({ label: item.Keterangan, value: item.Kode }));
     const PengajuanOptions = pengajuan.map((item: any) => ({ label: item.Keterangan, value: item.Keterangan }));
     console.log(PengajuanOptions);
     const onRowClick = (e: any) => {
@@ -172,14 +175,20 @@ const EditFormPengajuan = () => {
             <form onSubmit={handleSubmit}>
                 <fieldset className='grid md:justify-content-between border-round p-4 mb-4'> {/*Produk*/}
                     <legend className="text-xl font-bold">Pengajuan Kredit</legend>
-                    <div className="col-12 md:col-6">
+                    <div className="col-12 md:col-4">
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Pengajuan</label>
                             {/* <InputText required name='pengajuan' type="text" placeholder='Isikan dengan angka' className="p-inputtext p-component w-full" value={formData.pengajuan} onChange={handleChange} /> */}
                             <Dropdown name='pengajuan' value={formData.pengajuan} onChange={handleChange} options={PengajuanOptions} placeholder="Kredit UMKM Industri" className="w-full md:w-full" />
                         </div>
                     </div>
-                    <div className="col-12 md:col-6">
+                    <div className="col-12 md:col-4">
+                                <div className="mb-2">
+                                    <label className="block text-900 font-medium mb-2">Sektor Ekonomi</label>
+                                    <Dropdown name='sektor_ekonomi' value={formData.sektor_ekonomi || ''} onChange={handleChange} options={SektorEkonomiOptions} placeholder="Pilih Sektor Ekonomi" className="w-full md:w-full" />
+                                </div>
+                            </div>
+                    <div className="col-12 md:col-4">
                         <div className="mb-2">
                             <label className="block text-900 font-medium mb-2">Bidang Usaha</label>
                             <Dropdown name='bidang_usaha' value={formData.bidang_usaha} onChange={handleChange} options={BidangUsahaOptions} placeholder="Pilih Bidang Usaha" className="w-full md:w-full" />
