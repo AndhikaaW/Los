@@ -119,26 +119,63 @@ const DetailPengajuan = () => {
                     <TabView>
                         <TabPanel header="Jaminan">
                             {formData?.jaminan ? (
-                                <Panel header={header(<FileText />, "Jaminan")}>
-                                    <div className='flex col-12 '>
-                                        <div className='col-6'>
-                                            <InfoItem label="Jenis Agunan" value={formData.jaminan.ref_jenis_agunan.Keterangan} />
-                                            <InfoItem label="Merek" value={formData.jaminan.merek} />
-                                            <InfoItem label="Bukti Hak Milik" value={formData.jaminan.ref_hak_milik.Keterangan} />
-                                            <InfoItem label="Nama Pemilik Jaminan" value={formData.jaminan.namaPemilikJaminan} />
-                                            <InfoItem label="Lokasi Agunan" value={formData.jaminan.lokasiAgunan} />
-                                            <InfoItem label="Nilai Transaksi" value={formatToRupiah(formData.jaminan.nilaiTransaksi)} />
-                                        </div>
-                                        <div className='col-6'>
-                                            <InfoItem label="Jenis Pengikatan" value={formData.jaminan.ref_jenis_pengikatan.Keterangan} />
-                                            <InfoItem label="Tipe" value={formData.jaminan.ref_tipe.Keterangan} />
-                                            <InfoItem label="Tahun Pembuatan" value={formData.jaminan.tahunPembuatan} />
-                                            <InfoItem label="No Agunan" value={formData.jaminan.noAgunan} />
-                                            <InfoItem label="Hubungan dengan Pemilik" value={formData.jaminan.ref_hub_pemilik.Keterangan} />
-                                            <InfoItem label="Informasi Tambahan" value={formData.jaminan.informasiTambahan} />
-                                            <InfoItem label="Asuransi" value={formData.jaminan.asuransi} />
-                                        </div>
-                                    </div>
+                                <Panel headerTemplate={header(<FileText />, "Jaminan")}>
+                                    {Object.values(formData.jaminan).map((jaminan: any, index: number) => (
+                                        jaminan.id && (
+                                            <div key={index} className='flex flex-column mb-4'>
+                                                <p className='col-12 text-xl font-bold'>Jaminan {index + 1}</p>
+                                                <div className='flex flex-column md:flex-row'>
+                                                    <div className='col-6 mb-4 md:mb-0'>
+                                                        <InfoItem label="Nama Pemilik Jaminan" value={jaminan.namaPemilikJaminan} />
+                                                        <InfoItem label="Tanggal Pembuatan" value={jaminan.tanggalPembuatan} />
+                                                        <InfoItem label="Jenis Agunan" value={jaminan.ref_jenis_agunan?.Keterangan} />
+                                                        <InfoItem label="Nilai Pasar" value={formatToRupiah(jaminan.nilaiPasar)} />
+                                                        <InfoItem label="Nilai Yang Diagunkan" value={formatToRupiah(jaminan.nilaiTransaksi)} />
+                                                    </div>
+                                                    <div className='col-6 mb-4 md:mb-0 '>
+                                                        {jaminan.keterangan && <InfoItem label="Keterangan" value={jaminan.keterangan} />}
+                                                        {jaminan.jenis && <InfoItem label="Jenis" value={jaminan.jenis} />}
+                                                        {jaminan.noRekening && <InfoItem label="No Rekening" value={jaminan.noRekening} />}
+                                                        {jaminan.noBilyet && <InfoItem label="No Bilyet" value={jaminan.noBilyet} />}
+                                                        {jaminan.nominal && <InfoItem label="Nominal" value={jaminan.nominal} />}
+                                                        {jaminan.atasNama && <InfoItem label="Atas Nama" value={jaminan.atasNama} />}
+                                                        {jaminan.alamat && <InfoItem label="Alamat" value={jaminan.alamat} />}
+                                                        {jaminan.uraian && <InfoItem label="Uraian" value={jaminan.uraian} />}
+                                                        {jaminan.berat && <InfoItem label="Berat" value={jaminan.berat} />}
+                                                        {jaminan.jumlah && <InfoItem label="Jumlah" value={jaminan.jumlah} />}
+                                                        {jaminan.kadar && <InfoItem label="Kadar" value={jaminan.kadar} />}
+                                                        {jaminan.noMesin && <InfoItem label="No Mesin" value={jaminan.noMesin} />}
+                                                        {jaminan.merk && <InfoItem label="Merk" value={jaminan.merk} />}
+                                                        {jaminan.tipe && <InfoItem label="Tipe" value={jaminan.tipe} />}
+                                                        {jaminan.tahun && <InfoItem label="Tahun" value={jaminan.tahun} />}
+                                                        {jaminan.masaPajak && <InfoItem label="Masa Pajak" value={jaminan.masaPajak} />}
+                                                        {jaminan.noRangka && <InfoItem label="No Rangka" value={jaminan.noRangka} />}
+                                                        {jaminan.jumlahRoda && <InfoItem label="Jumlah Roda" value={jaminan.jumlahRoda} />}
+                                                        {jaminan.noSTNK && <InfoItem label="No STNK" value={jaminan.noSTNK} />}
+                                                        {jaminan.noPolisi && <InfoItem label="No Polisi" value={jaminan.noPolisi} />}
+                                                        {jaminan.noBPKB && <InfoItem label="No BPKB" value={jaminan.noBPKB} />}
+                                                        {jaminan.noRegBPKB && <InfoItem label="No Reg BPKB" value={jaminan.noRegBPKB} />}
+                                                        {jaminan.silinder && <InfoItem label="Silinder" value={jaminan.silinder} />}
+                                                        {jaminan.warna && <InfoItem label="Warna" value={jaminan.warna} />}
+                                                        {jaminan.noSHM && <InfoItem label="No SHM" value={jaminan.noSHM} />}
+                                                        {jaminan.noGS && <InfoItem label="No GS" value={jaminan.noGS} />}
+                                                        {jaminan.noNIB && <InfoItem label="No NIB" value={jaminan.noNIB} />}
+                                                        {jaminan.jenisHakMilik && <InfoItem label="Jenis Hak Milik" value={jaminan.jenisHakMilik} />}
+                                                        {jaminan.jenisSurat && <InfoItem label="Jenis Surat" value={jaminan.jenisSurat} />}
+                                                        {jaminan.luas && <InfoItem label="Luas" value={jaminan.luas} />}
+                                                        {jaminan.tanggalGS && <InfoItem label="Tanggal GS" value={jaminan.tanggalGS} />}
+                                                        {jaminan.kota && <InfoItem label="Kota" value={jaminan.kota} />}
+                                                        {jaminan.provinsi && <InfoItem label="Provinsi" value={jaminan.provinsi} />}
+                                                        {jaminan.keadaanJaminan && <InfoItem label="Keadaan Jaminan" value={jaminan.keadaanJaminan} />}
+                                                        {jaminan.batasUtara && <InfoItem label="Batas Utara" value={jaminan.batasUtara} />}
+                                                        {jaminan.batasTimur && <InfoItem label="Batas Timur" value={jaminan.batasTimur} />}
+                                                        {jaminan.batasSelatan && <InfoItem label="Batas Selatan" value={jaminan.batasSelatan} />}
+                                                        {jaminan.batasBarat && <InfoItem label="Batas Barat" value={jaminan.batasBarat} />}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    ))}
                                 </Panel>
                             ) : (
                                 <p>Tidak ada data Jaminan.</p>

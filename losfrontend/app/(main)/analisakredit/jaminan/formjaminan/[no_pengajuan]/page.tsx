@@ -67,6 +67,19 @@ const EditFormJaminan = () => {
         });
     };
 
+    const handleDeleteForm = async (index: number) => {
+        if (jaminanList.length > 1) {
+            try {
+                const jaminanToDelete = jaminanList[index];
+                await axios.delete(API_ENDPOINTS.DELETEJAMINANBYID(jaminanToDelete.no_pengajuan, jaminanToDelete.jenisAgunan));
+                
+                const updatedForms = jaminanList.filter((_, i) => i !== index);
+                setJaminanList(updatedForms);
+            } catch (error) {
+                console.error('Error deleting jaminan:', error);
+            }
+        }
+    };
     const handleSpecificFormChange = (index: number, specificFormData: any) => {
         setJaminanList(prevList => {
             const newList = [...prevList];
@@ -100,7 +113,38 @@ const EditFormJaminan = () => {
                     noBilyet: item.noBilyet, 
                     nominal: item.nominal,
                     atasNama: item.atasNama,
-                    alamat: item.alamat
+                    alamat: item.alamat,
+                    uraian: item.uraian,
+                    jumlah: item.jumlah,
+                    berat: item.berat,
+                    kadar: item.kadar,
+                    noMesin: item.noMesin,
+                    jumlahRoda: item.jumlahRoda,
+                    merk: item.merk,
+                    tipe: item.tipe,
+                    tahun: item.tahun,
+                    masaPajak: item.masaPajak,
+                    noRangka: item.noRangka,
+                    noSTNK: item.noSTNK,
+                    noPolisi: item.noPolisi,
+                    noBPKB: item.noBPKB,
+                    noRegBPKB: item.noRegBPKB,
+                    silinder: item.silinder,
+                    warna: item.warna,
+                    noSHM: item.noSHM,
+                    noGS: item.noGS,
+                    noNIB: item.noNIB,
+                    jenisHakMilik: item.jenisHakMilik,
+                    jenisSurat: item.jenisSurat,
+                    luas: item.luas,
+                    tanggalGS: item.tanggalGS,
+                    kota: item.kota,
+                    provinsi: item.provinsi,
+                    keadaanJaminan: item.keadaanJaminan,
+                    batasUtara: item.batasUtara,
+                    batasTimur: item.batasTimur,
+                    batasSelatan: item.batasSelatan,
+                    batasBarat: item.batasBarat
                 };
 
                 return formattedItem;
@@ -178,21 +222,23 @@ const EditFormJaminan = () => {
                             {/* Specific Agunan Forms */}
                             {jaminan.jenisAgunan === 'AG0000001' && <SBIPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{keterangan: jaminan.keterangan}} />}
                             {jaminan.jenisAgunan === 'AG0000002' && <TabunganDepositoKoperasiYBSPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{noRekening: jaminan.noRekening, noBilyet: jaminan.noBilyet, nominal: jaminan.nominal, atasNama: jaminan.atasNama, jenis: jaminan.jenis, alamat: jaminan.alamat, keterangan: jaminan.keterangan}} />}
-                            {/* {jaminan.jenisAgunan === 'AG0000003' && <TabunganDepositoKoperasiBankLainPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{noRekening: jaminan.noRekening, noBilyet: jaminan.noBilyet, nominal: jaminan.nominal, atasNama: jaminan.atasNama}} />} */}
-                            {/* {jaminan.jenisAgunan === 'AG0000004' && <PerhiasanEmasDanLogamMuliaPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={jaminan.keterangan} />} */}
-                            {/* {jaminan.jenisAgunan === 'AG0000005' && <KendaraanBermotorPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={jaminan.keterangan} />} */}
-                            {/* {jaminan.jenisAgunan === 'AG0000006' && <TanahDanBangunanPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{keterangan: jaminan.keterangan, alamat: jaminan.alamat}} />} */}
+                            {jaminan.jenisAgunan === 'AG0000003' && <TabunganDepositoKoperasiBankLainPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{noRekening: jaminan.noRekening, noBilyet: jaminan.noBilyet, nominal: jaminan.nominal, atasNama: jaminan.atasNama, jenis: jaminan.jenis, alamat: jaminan.alamat, keterangan: jaminan.keterangan}} />}
+                            {jaminan.jenisAgunan === 'AG0000004' && <PerhiasanEmasDanLogamMuliaPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{uraian: jaminan.uraian, berat: jaminan.berat, jumlah: jaminan.jumlah, kadar: jaminan.kadar, atasNama: jaminan.atasNama, alamat: jaminan.alamat}} />}
+                            {jaminan.jenisAgunan === 'AG0000005' && <KendaraanBermotorPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{keterangan: jaminan.keterangan, noMesin: jaminan.noMesin, merk: jaminan.merk, tipe: jaminan.tipe, tahun: jaminan.tahun, masaPajak: jaminan.masaPajak, noRangka: jaminan.noRangka, warna: jaminan.warna, noSTNK: jaminan.noSTNK, silinder: jaminan.silinder, noPolisi: jaminan.noPolisi, noBPKB: jaminan.noBPKB, noRegBPKB: jaminan.noRegBPKB, atasNama: jaminan.atasNama, alamat: jaminan.alamat, jumlahRoda: jaminan.jumlahRoda}} />}
+                            {jaminan.jenisAgunan === 'AG0000006' && <TanahDanBangunanPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{noSHM: jaminan.noSHM, noGS: jaminan.noGS, noNIB: jaminan.noNIB, jenisHakMilik: jaminan.jenisHakMilik, jenisSurat: jaminan.jenisSurat, luas: jaminan.luas, tanggalGS: jaminan.tanggalGS, atasNama: jaminan.atasNama, alamat: jaminan.alamat, kota: jaminan.kota, provinsi: jaminan.provinsi, keterangan: jaminan.keterangan, keadaanJaminan: jaminan.keadaanJaminan, batasUtara: jaminan.batasUtara, batasTimur: jaminan.batasTimur, batasSelatan: jaminan.batasSelatan, batasBarat: jaminan.batasBarat}} />}
                             {jaminan.jenisAgunan === 'AG0000007' && <TanpaAgunanPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{keterangan: jaminan.keterangan}} />}
                             {jaminan.jenisAgunan === 'AG0000008' && <PersediaanBarangPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{keterangan: jaminan.keterangan}} />}
                             {jaminan.jenisAgunan === 'AG0000009' && <SertifikatHajiPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={{keterangan: jaminan.keterangan}} />}
-                            {/* {jaminan.jenisAgunan === 'AG0000002' && <TabunganDepositoKoperasiYBSPage onChange={(data) => handleSpecificFormChange(index, data)} initialData={jaminan.agunan} />}
-                            {jaminan.jenisAgunan === 'AG0000003' && <TabunganDepositoKoperasiBankLainPage onChange={(data) => handleSpecificFormChange(index, data)} initialData={jaminan.agunan} />}
-                            {jaminan.jenisAgunan === 'AG0000004' && <PerhiasanEmasDanLogamMuliaPage onChange={(data) => handleSpecificFormChange(index, data)} initialData={jaminan.agunan} />}
-                            {jaminan.jenisAgunan === 'AG0000005' && <KendaraanBermotorPage onChange={(data) => handleSpecificFormChange(index, data)} initialData={jaminan.agunan} />}
-                            {jaminan.jenisAgunan === 'AG0000006' && <TanahDanBangunanPage onChange={(data) => handleSpecificFormChange(index, data)} initialData={jaminan.agunan} />}
-                            {jaminan.jenisAgunan === 'AG0000007' && <TanpaAgunanPage onChange={(data) => handleSpecificFormChange(index, data)} initialData={jaminan.agunan} />}
-                            {jaminan.jenisAgunan === 'AG0000008' && <PersediaanBarangPage onChange={(data) => handleSpecificFormChange(index, data)} initialData={jaminan.agunan} />}
-                            {jaminan.jenisAgunan === 'AG0000009' && <SertifikatHajiPage onChange={(data) => handleSpecificFormChange(index, data)} initialData={jaminan.agunan} />} */}
+                            <div className="flex justify-content-end align-items-center">
+                                {jaminanList.length > 1 && (
+                                    <Button
+                                        icon="pi pi-trash"
+                                        className="p-button-danger "
+                                        onClick={() => handleDeleteForm(index)}
+                                        type="button"
+                                    />
+                                )}
+                            </div>
                         </fieldset>
                     ))}
                     

@@ -230,6 +230,37 @@ const DetailPengajuan = () => {
                                                     {jaminan.nominal && <InfoItem label="Nominal" value={jaminan.nominal} />}
                                                     {jaminan.atasNama && <InfoItem label="Atas Nama" value={jaminan.atasNama} />}
                                                     {jaminan.alamat && <InfoItem label="Alamat" value={jaminan.alamat} />}
+                                                    {jaminan.uraian && <InfoItem label="Uraian" value={jaminan.uraian} />}
+                                                    {jaminan.berat && <InfoItem label="Berat" value={jaminan.berat} />}
+                                                    {jaminan.jumlah && <InfoItem label="Jumlah" value={jaminan.jumlah} />}
+                                                    {jaminan.kadar && <InfoItem label="Kadar" value={jaminan.kadar} />}
+                                                    {jaminan.noMesin && <InfoItem label="No Mesin" value={jaminan.noMesin} />}
+                                                    {jaminan.merk && <InfoItem label="Merk" value={jaminan.merk} />}
+                                                    {jaminan.tipe && <InfoItem label="Tipe" value={jaminan.tipe} />}
+                                                    {jaminan.tahun && <InfoItem label="Tahun" value={jaminan.tahun} />}
+                                                    {jaminan.masaPajak && <InfoItem label="Masa Pajak" value={jaminan.masaPajak} />}
+                                                    {jaminan.noRangka && <InfoItem label="No Rangka" value={jaminan.noRangka} />}
+                                                    {jaminan.jumlahRoda && <InfoItem label="Jumlah Roda" value={jaminan.jumlahRoda} />}
+                                                    {jaminan.noSTNK && <InfoItem label="No STNK" value={jaminan.noSTNK} />}
+                                                    {jaminan.noPolisi && <InfoItem label="No Polisi" value={jaminan.noPolisi} />}
+                                                    {jaminan.noBPKB && <InfoItem label="No BPKB" value={jaminan.noBPKB} />}
+                                                    {jaminan.noRegBPKB && <InfoItem label="No Reg BPKB" value={jaminan.noRegBPKB} />}
+                                                    {jaminan.silinder && <InfoItem label="Silinder" value={jaminan.silinder} />}
+                                                    {jaminan.warna && <InfoItem label="Warna" value={jaminan.warna} />}
+                                                    {jaminan.noSHM && <InfoItem label="No SHM" value={jaminan.noSHM} />}
+                                                    {jaminan.noGS && <InfoItem label="No GS" value={jaminan.noGS} />}
+                                                    {jaminan.noNIB && <InfoItem label="No NIB" value={jaminan.noNIB} />}
+                                                    {jaminan.jenisHakMilik && <InfoItem label="Jenis Hak Milik" value={jaminan.jenisHakMilik} />}
+                                                    {jaminan.jenisSurat && <InfoItem label="Jenis Surat" value={jaminan.jenisSurat} />}
+                                                    {jaminan.luas && <InfoItem label="Luas" value={jaminan.luas} />}
+                                                    {jaminan.tanggalGS && <InfoItem label="Tanggal GS" value={jaminan.tanggalGS} />}
+                                                    {jaminan.kota && <InfoItem label="Kota" value={jaminan.kota} />}
+                                                    {jaminan.provinsi && <InfoItem label="Provinsi" value={jaminan.provinsi} />}
+                                                    {jaminan.keadaanJaminan && <InfoItem label="Keadaan Jaminan" value={jaminan.keadaanJaminan} />}
+                                                    {jaminan.batasUtara && <InfoItem label="Batas Utara" value={jaminan.batasUtara} />}
+                                                    {jaminan.batasTimur && <InfoItem label="Batas Timur" value={jaminan.batasTimur} />}
+                                                    {jaminan.batasSelatan && <InfoItem label="Batas Selatan" value={jaminan.batasSelatan} />}
+                                                    {jaminan.batasBarat && <InfoItem label="Batas Barat" value={jaminan.batasBarat} />}
                                                 </div>
                                             </div>
                                         </div>

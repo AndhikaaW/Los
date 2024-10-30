@@ -35,7 +35,7 @@ Route::post('/jaminan', [JaminanController::class, 'jaminan']); //tambah data
 Route::get('/getalljaminan', [JaminanController::class, 'getalljaminan']); //get all data
 Route::put('/updatejaminanbyid/{no_pengajuan}', [JaminanController::class, 'update']); //update data
 Route::get('/getjaminanbyid/{no_pengajuan}', [JaminanController::class, 'getJaminanByNoPengajuan']); //get data by nomor rekening
-
+Route::delete('/deletejaminanbyid/{no_pengajuan}/{jenisAgunan}', [JaminanController::class, 'delete']); //delete data
 //finansial
 Route::post('/finansial', [FinansialController::class, 'finansial']); //tambah data
 Route::get('/getallfinansial', [FinansialController::class, 'getAllFinansial']); //get all data
@@ -165,3 +165,6 @@ Route::delete('/deleteprodukbyid/{NomorRekening}', [ProdukController::class, 'de
 Route::get('/getlastpengajuan', [ProdukController::class, 'getLastPengajuan']); //get last pengajuan
 
 Route::get('/check-cif/{cif}', [PemohonController::class, 'checkCif']);
+
+//verify user
+Route::post('/verify-user', [UserController::class, 'verifyUser']); //verify user

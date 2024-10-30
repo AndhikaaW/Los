@@ -1,4 +1,4 @@
-export const api_url = 'http://192.168.1.74:8000/api';
+export const api_url = 'http://192.168.200.100:8000/api';
 // const api_url ='https://e5b1-125-166-8-202.ngrok-free.app/api';
 
 export const API_ENDPOINTS = {
@@ -7,6 +7,8 @@ export const API_ENDPOINTS = {
   REGISTER: `${api_url}/register`,
   LOGIN: `${api_url}/login`,
   UPDATE_USER: (id: string) => `${api_url}/updateuserbyid/${id}`,
+  VERIFY_USER: `${api_url}/verify-user`,
+
   //sidebar
   SYNC_SIDEBAR: `${api_url}/sync-user-sidebars`,
   GETSIDEBAR: `${api_url}/getallusersidebar`,
@@ -37,6 +39,7 @@ export const API_ENDPOINTS = {
   // GETJAMINANBYID: (id: string) => `${api_url}/getjaminanbyid/${id}`,
   UPDATEJAMINANBYID: (no_pengajuan: string) => `${api_url}/updatejaminanbyid/${no_pengajuan}`,
   GETJAMINANBYNOPENGAJUAN: (no_pengajuan: string) => `${api_url}/getjaminanbyid/${no_pengajuan}`,
+  DELETEJAMINANBYID: (no_pengajuan: string, jenisAgunan: string) => `${api_url}/deletejaminanbyid/${no_pengajuan}/${jenisAgunan}`,
   
   //finansial
   FINANCIAL: `${api_url}/finansial`,

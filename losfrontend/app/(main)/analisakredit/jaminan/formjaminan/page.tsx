@@ -49,8 +49,8 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
         cif: formPengajuan?.Cif || '',
         tanggalPembuatan: '',
         jenisAgunan: '',
-        nilaiPasar:'',
-        nilaiYangDiagunkan:''
+        nilaiPasar: '',
+        nilaiYangDiagunkan: ''
     });
     // console.log(formJaminan)
     const resetForm = () => {
@@ -59,11 +59,11 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
             cif: formPengajuan?.Cif || '',
             tanggalPembuatan: '',
             jenisAgunan: '',
-            nilaiPasar:'',
-            nilaiYangDiagunkan:''
+            nilaiPasar: '',
+            nilaiYangDiagunkan: ''
         });
     };
-    
+
     const [formJaminanList, setFormJaminanList] = useState<any[]>([
         {
             mainForm: {
@@ -94,7 +94,7 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
                     ...item.mainForm,
                     namaPemilikJaminan: formJaminan.namaPemilikJaminan
                 }
-                
+
             })));
         }
     }, [formJaminan.namaPemilikJaminan]);
@@ -143,13 +143,51 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
             nominal: '',
             atasNama: '',
             alamat: '',
-            keterangan: ''
+            keterangan: '',
+            uraian: '',
+            jumlah: '',
+            berat: '',
+            kadar: '',
+            noMesin: '',
+            jumlahRoda: '',
+            merk: '',
+            tipe: '',
+            tahun: '',
+            masaPajak: '',
+            noRangka: '',
+            noSTNK: '',
+            noPolisi: '',
+            noBPKB: '',
+            noRegBPKB: '',
+            silinder: '',
+            warna: '',
+            noSHM: '',
+            noGS: '',
+            noNIB: '',
+            jenisHakMilik: '',
+            jenisSurat: '',
+            luas: '',
+            tanggalGS: '',
+            kota: '',
+            provinsi: '',
+            keadaanJaminan: '',
+            batasUtara: '',
+            batasTimur: '',
+            batasSelatan: '',
+            batasBarat: ''
         }
     });
 
     const handleDuplicateForm = () => {
         const newForm = getEmptyForm();
         setFormJaminanList([...formJaminanList, newForm]);
+    };
+
+    const handleDeleteForm = (index: number) => {
+        if (formJaminanList.length > 1) {
+            const updatedForms = formJaminanList.filter((_, i) => i !== index);
+            setFormJaminanList(updatedForms);
+        }
     };
 
     const handleInputChange = async (e: any, index: number) => {
@@ -171,7 +209,38 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
                 nominal: '',
                 atasNama: '',
                 alamat: '',
-                keterangan: ''
+                keterangan: '',
+                uraian: '',
+                berat: '',
+                jumlah: '',
+                kadar: '',
+                noMesin: '',
+                jumlahRoda: '',
+                merk: '',
+                tipe: '',
+                tahun: '',
+                masaPajak: '',
+                noRangka: '',
+                noSTNK: '',
+                noPolisi: '',
+                noBPKB: '',
+                noRegBPKB: '',
+                silinder: '',
+                warna: '',
+                noSHM: '',
+                noGS: '',
+                noNIB: '',
+                jenisHakMilik: '',
+                jenisSurat: '',
+                luas: '',
+                tanggalGS: '',
+                kota: '',
+                provinsi: '',
+                keadaanJaminan: '',
+                batasUtara: '',
+                batasTimur: '',
+                batasSelatan: '',
+                batasBarat: ''
             };
         }
 
@@ -246,13 +315,23 @@ const FormJaminan = ({ pengajuan, onSubmitSuccess }: { pengajuan: any, onSubmitS
                             {/* Render specific agunan forms based on the selected jenisAgunan */}
                             {form.mainForm.jenisAgunan === 'AG0000001' && <SBIPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
                             {form.mainForm.jenisAgunan === 'AG0000002' && <TabunganDepositoKoperasiYBSPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
-                            {/* {form.mainForm.jenisAgunan === 'AG0000003' && <TabunganDepositoKoperasiBankLainPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />} */}
-                            {/* {form.mainForm.jenisAgunan === 'AG0000004' && <PerhiasanEmasDanLogamMuliaPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />} */}
-                            {/* {form.mainForm.jenisAgunan === 'AG0000005' && <KendaraanBermotorPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />} */}
-                            {/* {form.mainForm.jenisAgunan === 'AG0000006' && <TanahDanBangunanPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />} */}
+                            {form.mainForm.jenisAgunan === 'AG0000003' && <TabunganDepositoKoperasiBankLainPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                            {form.mainForm.jenisAgunan === 'AG0000004' && <PerhiasanEmasDanLogamMuliaPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                            {form.mainForm.jenisAgunan === 'AG0000005' && <KendaraanBermotorPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                            {form.mainForm.jenisAgunan === 'AG0000006' && <TanahDanBangunanPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
                             {form.mainForm.jenisAgunan === 'AG0000007' && <TanpaAgunanPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
                             {form.mainForm.jenisAgunan === 'AG0000008' && <PersediaanBarangPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
                             {form.mainForm.jenisAgunan === 'AG0000009' && <SertifikatHajiPage onChange={(data) => handleSpecificFormChange(index, data)} defaultValue={form.specificForm} />}
+                            <div className="flex justify-content-end align-items-center">
+                                {formJaminanList.length > 1 && (
+                                    <Button
+                                        icon="pi pi-trash"
+                                        className="p-button-danger "
+                                        onClick={() => handleDeleteForm(index)}
+                                        type="button"
+                                    />
+                                )}
+                            </div>
                         </fieldset>
                     ))}
 

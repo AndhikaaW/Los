@@ -167,5 +167,42 @@ class UserController extends Controller
         }
     }
 
+    public function verifyUser(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
 
+            $user = User::where('email', $validatedData['email'])
+                       ->where('status', 2)
+                       ->first();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User tidak ditemukan atau tidak memiliki akses approval'
+                ], 401);
+            }
+
+            if (!Hash::check($validatedData['password'], $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Password salah'
+                ], 401);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Verifikasi berhasil'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Terjadi kesalahan saat verifikasi user'
+            ], 500);
+        }
+    }
 }

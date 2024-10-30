@@ -91,6 +91,7 @@ class ProdukController extends Controller
 
         return response()->json($produk);
     }
+    
     public function updateStatusPengajuan(Request $request, string $no_pengajuan)
     {
         $produk = Produk::where('no_pengajuan', $no_pengajuan)->firstOrFail();
