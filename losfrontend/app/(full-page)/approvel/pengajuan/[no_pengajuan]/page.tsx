@@ -65,6 +65,7 @@ const DetailPengajuan = () => {
             <div className="card">
                 <div className="p-4">
                     <h2>Detail Pengajuan</h2>
+                    <h2>Detail Pengajuan</h2>
                     <div className="p-4 flex gap-6 bg-gray-100 border-round-lg">
                         <div>
                             <div className="mb-4">
