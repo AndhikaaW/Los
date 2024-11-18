@@ -1,6 +1,20 @@
 # 🌿 **Project Loan Origination System (LOS)**
 
-**LOS** adalah aplikasi website modern untuk sistem manajemen pinjaman yang dirancang dengan teknologi terkini untuk pengembangan frontend dan backend.
+**LOS** adalah aplikasi website untuk sistem manajemen pinjaman yang dirancang dengan frontend Next Js dan backend Laravel. Alur dari aplikasi ini dimulai dengan login user berdasarkan role yang ada atau membuat user baru. 
+beberapa role yang ada pada project ini :
+1. Administrator
+   email : admin@gmail.com
+   password : 1
+2. Approval
+   email : approvel1@gmail.com
+   password : 1 
+3. Marketing
+   email : marketing1@gmail.com
+   password : 1
+jika membuat user baru maka akan role otomatis ke marketing
+admin bisa mengakses semua sidebar
+approval hanya bisa akses list pengajuan untuk persetujuan pengajuan
+marketing hanya bisa akses input data ke pemohon dan produk/pengajuan
 
 ---
 
