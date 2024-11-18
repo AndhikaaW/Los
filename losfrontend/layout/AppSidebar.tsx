@@ -8,16 +8,20 @@ const AppSidebar = () => {
     const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
-        const userInfo = localStorage.getItem('user-info');
-        if (userInfo) {
+        // Get user info from cookie
+        const cookies = document.cookie.split(';');
+        const userInfoCookie = cookies.find(cookie => cookie.trim().startsWith('user-info='));
+        
+        if (userInfoCookie) {
+            const userInfo = userInfoCookie.split('=')[1];
             const parsedUserInfo = JSON.parse(userInfo);
             setUser({ name: parsedUserInfo.name });
         }
     }, []);
 
-    // console.log(user);
-
     const handleLogout = () => {
+        // Delete user-info cookie on logout
+        document.cookie = "user-info=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         window.location.href = '/auth/login';
     };
 
@@ -26,7 +30,6 @@ const AppSidebar = () => {
             <AppMenu />
 
             <div className="mt-auto">
-
                 {user && (
                     <div
                         className="flex align-items-center justify-content-between p-2 border-round-lg" style={{ backgroundColor: '#FAF0F0' }}>

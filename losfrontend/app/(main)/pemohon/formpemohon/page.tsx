@@ -381,21 +381,6 @@ const FormPemohon = () => {
                 ...prevData,
                 foto_ktp: selectedImage
             }));
-            // const response = await fetch('/api/upload-foto-ktp', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({ image: selectedImage }),
-            // });
-
-            // if (response.ok) {
-            //     const result = await response.json();
-                
-            //     // toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Foto KTP berhasil diunggah', life: 3000 });
-            // } else {
-            //     throw new Error('Gagal mengunggah foto');
-            // }
         } catch (error) {
             console.error('Error uploading image:', error);
             // toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengunggah foto KTP', life: 3000 });
@@ -495,13 +480,29 @@ const FormPemohon = () => {
                                     <label className="block text-900 font-medium mb-2">Foto KTP</label>
                                     <FileUpload
                                         name="foto_ktp"
-                                        accept="image/*"
+                                        accept="image/*" 
                                         maxFileSize={1000000}
-                                        onSelect={handleImageChange}
-                                        emptyTemplate={<p className="m-0">Seret dan lepas file KTP di sini atau klik untuk memilih.</p>}
+                                        onSelect={(e) => {
+                                            handleImageChange(e);
+                                            const file = e.files[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => {
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        foto_ktp: reader.result
+                                                    }));
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                        emptyTemplate={
+                                            formData.pictures ? 
+                                            <img src={formData.pictures} alt="Preview" style={{width: '100%', maxHeight: '200px', objectFit: 'contain'}}/> :
+                                            <p className="m-0">Seret dan lepas file KTP di sini atau klik untuk memilih.</p>
+                                        }
                                         chooseLabel="Pilih"
-                                        uploadLabel="Unggah"
-                                        cancelLabel="Batal"
+                                        cancelLabel="Batal" 
                                         customUpload
                                         uploadHandler={handleUpload}
                                     />

@@ -1,4 +1,4 @@
-export const api_url = 'http://192.168.200.100:8000/api';
+export const api_url = 'http://192.168.1.74:8000/api';
 // const api_url ='https://e5b1-125-166-8-202.ngrok-free.app/api';
 
 export const API_ENDPOINTS = {

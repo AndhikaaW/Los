@@ -42,7 +42,7 @@ const LoginPage = () => {
     };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // setIsLoading(true);
+        setIsLoading(true);
         try {
             const response = await axios.post(
                 API_ENDPOINTS.LOGIN,
@@ -56,28 +56,27 @@ const LoginPage = () => {
                     },
                 }
             );
-            if (response.data.status === 2) {
-                localStorage.setItem('user-info', JSON.stringify(response.data));
-                // router.push(`/?userId=${response.data.id}`);
+
+            // Set cookie untuk menyimpan user info
+            document.cookie = `user-info=${JSON.stringify(response.data)}; path=/`;
+
+            // Redirect berdasarkan status user
+            if (response.data.status === 2 || response.data.status === 3) {
                 router.push('/');
+            } else if (response.data.status === 1) {
+                router.push('/admin/');
             } else {
-                localStorage.setItem('user-info', JSON.stringify(response.data));
-                router.push("/admin/");
+                router.push('/auth/error');
             }
-            // if (response.data) {
-            // }
-            //   if (response.data.success) {
-            //     // login(response.data.user);
-            //     // document.cookie = `auth_token=${response.data.token}; path=/;`;
-            //     // setIsNavigating(true);
-            //     router.push(response.data.status === 2 ? "/" : "/admin/dashboard");
-            //   } else {
-            //     // setShowAlert(true);
-            //   }
-        } catch (error) {
+
+        } catch (error: any) {
             console.error("Terjadi kesalahan!", error);
+            setShowAlert(true);
+            if(error.response?.status === 401) {
+                setEmailError("Email atau password salah");
+            }
         } finally {
-            //   setIsLoading(false);
+            setIsLoading(false);
         }
     };
     const router = useRouter();

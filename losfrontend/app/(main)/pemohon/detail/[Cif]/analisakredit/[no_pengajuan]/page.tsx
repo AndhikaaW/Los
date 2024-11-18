@@ -21,7 +21,16 @@ interface Location {
 
 const DetailPengajuan = () => {
     const [pengajuan, setPengajuan] = useState<any>(null);
-    const userStatus = JSON.parse(localStorage.getItem('user-info') || '{}').status;
+    const [userStatus, setUserStatus] = useState<number>();
+    useEffect(() => {
+        const cookies = document.cookie.split(';');
+        const userInfoCookie = cookies.find(cookie => cookie.trim().startsWith('user-info='));
+        if (userInfoCookie) {
+            const userInfo = userInfoCookie.split('=')[1];
+            const user = JSON.parse(userInfo);
+            setUserStatus(user.status);
+        }
+    }, []);
     // const [visible, setVisible] = useState(false);
     // const [selectedRow, setSelectedRow] = useState<any>({});
     const params = useParams();

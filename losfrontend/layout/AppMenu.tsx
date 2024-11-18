@@ -24,16 +24,18 @@ const AppMenu = () => {
     useEffect(() => {
         const fetchSidebar = async () => {
             try {
-                const storedUser = localStorage.getItem('user-info');
+                const cookies = document.cookie.split(';');
+                const userInfoCookie = cookies.find(cookie => cookie.trim().startsWith('user-info='));
 
-                if (storedUser) {
-                    const user = JSON.parse(storedUser);
+                if (userInfoCookie) {
+                    const userInfo = userInfoCookie.split('=')[1];
+                    const user = JSON.parse(userInfo);
                     setStatus(user.status)
                     const userId = user.id
                     const response = await axios.get(API_ENDPOINTS.SIDEBAR(userId));
                     setSidebar(response.data.sidebars);
                 } else {
-                    console.error('User info not found in localStorage');
+                    console.error('User info not found in cookies');
                 }
             } catch (error) {
                 console.error('There was an error fetching the sidebar!', error);
