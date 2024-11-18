@@ -3,14 +3,20 @@
 **LOS** adalah aplikasi website untuk sistem manajemen pinjaman yang dirancang dengan frontend Next Js dan backend Laravel. Alur dari aplikasi ini dimulai dengan login user berdasarkan role yang ada atau membuat user baru. 
 beberapa role yang ada pada project ini :
 1. Administrator
+```bash
    email : admin@gmail.com
    password : 1
-2. Approval
+```
+3. Approval
+   ```bash
    email : approvel1@gmail.com
-   password : 1 
-3. Marketing
+   password : 1
+   ```
+5. Marketing
+   ```bash
    email : marketing1@gmail.com
    password : 1
+   ```
 jika membuat user baru maka akan role otomatis ke marketing
 admin bisa mengakses semua sidebar
 approval hanya bisa akses list pengajuan untuk persetujuan pengajuan
