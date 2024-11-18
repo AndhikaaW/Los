@@ -16,6 +16,8 @@
   5. mysql --> "8.0.30"
   
 ## Cara Installasi 
-###Front-end
-     
-###Back-end
+### Front-end
+     1. Langkah pertama clone / download project dari github
+     2. Kemudian buka project di text editor dan masuk ke dalam folder losfrontend melalui terminal menggunakan perintah "cd /losfrontend"
+     3. Jalankan syntax "npm install" untuk menginstall 
+### Back-end
