@@ -24,7 +24,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi frontend:
 1. Langkah Pertama clone project dari github dan buka pada text editor
 2. Navigasikan ke folder **`losfrontend`**:
    ```bash
-   cd /losfrontend
+   cd losfrontend
    ```  
 3. Instal semua dependensi yang diperlukan:  
    ```bash
@@ -34,6 +34,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi frontend:
    ```bash
    npm run dev
    ```
+5. Buka pada browser
 
 ### **2. Backend (Laravel)**  
 Langkah-langkah untuk mengatur backend menggunakan Laravel:  
@@ -44,7 +45,11 @@ Langkah-langkah untuk mengatur backend menggunakan Laravel:
 2. Instal semua dependensi dengan Composer:  
    ```bash
    composer install
-   ```  
+   ```
+3. Jalankan perintah berikut untuk memuat ulang autoloader:
+   ```bash
+   composer dump-autoload
+   ```
 4. Ubah nama file **`.env.example`** menjadi **`.env`**
 5. Buat kunci aplikasi:
    ```bash
@@ -68,16 +73,19 @@ Langkah-langkah untuk mengatur backend menggunakan Laravel:
    ```
 7. Jalankan server backend:  
    ```bash
-   php artisan serve --host=192.168.x.xx --port=8000
+   php artisan serve --host=[ip_address] --port=8000
    ```  
 
 ---
 
 ### **3. Integrasi Backend dengan Frontend**  
 Pastikan untuk mengonfigurasi URL backend di file konfigurasi frontend:
-```typescript
-const API_URL = "http://192.168.x.xx:8000/api";
-```
+1. Buka file api pada folder "/losfrontend/app/api/losbackend/api.tsx"
+2. Sesuaikan api backend dengan frontend pada bagian ini
+   ```typescript
+   const API_URL = "http://[ip_address]:8000/api";
+   ```
+jika langkah-langkah diikuti dengan benar maka program berhasil dijalankan secara local
 
 ## **🚀 Deployment**
 ### Frontend
