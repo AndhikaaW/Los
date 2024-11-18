@@ -19,20 +19,21 @@
 
 ## **📖 Panduan Instalasi**
 
-### **1. Frontend (React + Next.js)**  
+### **1. Frontend (Next.js)**  
 Ikuti langkah-langkah berikut untuk menjalankan aplikasi frontend:  
-1. Navigasikan ke folder **`losfrontend`**:  
+1. Langkah Pertama clone project dari github dan buka pada text editor
+2. Navigasikan ke folder **`losfrontend`**:
    ```bash
-   cd losfrontend
+   cd /losfrontend
    ```  
-2. Instal semua dependensi yang diperlukan:  
+3. Instal semua dependensi yang diperlukan:  
    ```bash
    npm install
    ```  
-3. Jalankan aplikasi frontend:  
+4. Jalankan aplikasi frontend:  
    ```bash
    npm run dev
-   ```  
+   ```
 
 ### **2. Backend (Laravel)**  
 Langkah-langkah untuk mengatur backend menggunakan Laravel:  
@@ -44,27 +45,30 @@ Langkah-langkah untuk mengatur backend menggunakan Laravel:
    ```bash
    composer install
    ```  
-3. Buat salinan file environment:  
-   ```bash
-   cp .env.example .env
-   ```  
-4. Buat kunci aplikasi:  
+4. Ubah nama file **`.env.example`** menjadi **`.env`**
+5. Buat kunci aplikasi:
    ```bash
    php artisan key:generate
    ```  
-5. Atur konfigurasi database di file **`.env`**:  
+6. Atur konfigurasi database di file **`.env`**:  
    ```env
-   DB_DATABASE=los_database
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=los
    DB_USERNAME=root
    DB_PASSWORD=
-   ```  
-6. Jalankan migrasi database:  
-   ```bash
-   php artisan migrate
-   ```  
+
+   DB_CONNECTION_REAL_LOS=mysql
+   DB_HOST_REAL_LOS=127.0.0.1
+   DB_PORT_REAL_LOS=3306
+   DB_DATABASE_REAL_LOS=real_los
+   DB_USERNAME_REAL_LOS=root
+   DB_PASSWORD_REAL_LOS=
+   ```
 7. Jalankan server backend:  
    ```bash
-   php artisan serve
+   php artisan serve --host=192.168.x.xx --port=8000
    ```  
 
 ---
@@ -72,45 +76,11 @@ Langkah-langkah untuk mengatur backend menggunakan Laravel:
 ### **3. Integrasi Backend dengan Frontend**  
 Pastikan untuk mengonfigurasi URL backend di file konfigurasi frontend:
 ```typescript
-const API_URL = "http://localhost:8000/api";
+const API_URL = "http://192.168.x.xx:8000/api";
 ```
-
----
-
-## **🔒 Konfigurasi Keamanan**
-- Pastikan untuk mengatur environment variables dengan aman
-- Gunakan Laravel Sanctum untuk autentikasi
-- Implement CORS di backend Laravel
-
----
 
 ## **🚀 Deployment**
 ### Frontend
 ```bash
 npm run build
 ```
-
-### Backend
-```bash
-composer install --optimize-autoloader --no-dev
-php artisan config:cache
-php artisan route:cache
-```
-
----
-
-## **🤝 Kontribusi**
-1. Fork repository
-2. Buat branch fitur (`git checkout -b fitur/Amazing`)
-3. Commit perubahan (`git commit -m 'Menambahkan fitur baru'`)
-4. Push ke branch (`git push origin fitur/Amazing`)
-5. Buka Pull Request
-
----
-
-## **📝 Catatan Penting**
-- Selalu perbarui `.env` dengan kredensial yang aman
-- Lakukan testing secara menyeluruh sebelum merge
-- Ikuti panduan coding yang konsisten
-
-Selamat mengembangkan! 💻🚀
